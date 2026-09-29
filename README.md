@@ -1,3 +1,20 @@
+# Interruption dataset curation
+
+The current product is a small local dataset-curation app. Import timestamped, speaker-labelled conversations, inspect user-on-agent overlap candidates, attach source WAVs, review, and export selected interruptions. **Laya and correction/cancellation semantics are deferred.** Overlap is not automatically a confirmed interruption.
+
+```sh
+sh scripts/setup.sh core
+# Build the UI from curation-web/: pnpm install --frozen-lockfile && pnpm build
+.venv/bin/curation-serve
+# Open http://127.0.0.1:8766
+```
+
+Use `fixtures/interruption-demo.jsonl` to learn the import format. The UI can load these three constructed examples. They are not real speech or a benchmark. Current limits and semantics are in [the curation plan](docs/CURATION_PLAN.md). Persistent local data lives in ignored `artifacts/interruption-curation/`; source audio is optional, not fetched automatically. The app does not infer speakers/timestamps from raw mixed audio. Run `.venv/bin/python -m pytest -q` for verification.
+
+---
+
+## Preserved earlier work
+
 # Conversation Repair Workbench — feasibility harness
 
 Local feasibility probes and a deterministic **simulator**, preceding the live workbench implementation. No paid API, remote GPU, microphone capture, or physical speaker playback is used here.

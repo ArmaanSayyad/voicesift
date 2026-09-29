@@ -11,3 +11,4 @@ models/
 node_modules/
 web/dist/
 *.tsbuildinfo
+curation-web/dist/

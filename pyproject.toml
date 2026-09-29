@@ -15,6 +15,7 @@ test = ["pytest", "hypothesis", "httpx"]
 [project.scripts]
 repair-bench = "repair_bench.cli:main"
 repair-bench-serve = "repair_bench.api:main"
+curation-serve = "repair_bench.curation.api:main"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
