@@ -1,0 +1,145 @@
+{
+  "arms": {
+    "transcript": {
+      "completed": 100,
+      "strict_correct": 86,
+      "errors": 0,
+      "unclear": 3,
+      "selected_interrupt_only": {
+        "n": 100,
+        "tp": 47,
+        "fp": 9,
+        "tn": 41,
+        "fn": 3,
+        "precision": 0.8392857142857143,
+        "recall": 0.94,
+        "specificity": 0.82,
+        "f1": 0.8867924528301887,
+        "accuracy": 0.88,
+        "balanced_accuracy": 0.8799999999999999
+      },
+      "retained_for_review_including_unknowns": {
+        "n": 100,
+        "tp": 48,
+        "fp": 11,
+        "tn": 39,
+        "fn": 2,
+        "precision": 0.8135593220338984,
+        "recall": 0.96,
+        "specificity": 0.78,
+        "f1": 0.8807339449541285,
+        "accuracy": 0.87,
+        "balanced_accuracy": 0.87
+      },
+      "mean_request_seconds": 1.633862035439888,
+      "tokens": {
+        "promptTokenCount": 18285,
+        "candidatesTokenCount": 799,
+        "thoughtsTokenCount": 9628,
+        "totalTokenCount": 28712
+      },
+      "estimated_usd_successful_responses": 0.052815,
+      "median_request_seconds": 1.3313048749987502,
+      "p95_request_seconds": 3.7484659170004306
+    },
+    "audio": {
+      "completed": 100,
+      "strict_correct": 89,
+      "errors": 0,
+      "unclear": 1,
+      "selected_interrupt_only": {
+        "n": 100,
+        "tp": 48,
+        "fp": 8,
+        "tn": 42,
+        "fn": 2,
+        "precision": 0.8571428571428571,
+        "recall": 0.96,
+        "specificity": 0.84,
+        "f1": 0.9056603773584906,
+        "accuracy": 0.9,
+        "balanced_accuracy": 0.8999999999999999
+      },
+      "retained_for_review_including_unknowns": {
+        "n": 100,
+        "tp": 48,
+        "fp": 9,
+        "tn": 41,
+        "fn": 2,
+        "precision": 0.8421052631578947,
+        "recall": 0.96,
+        "specificity": 0.82,
+        "f1": 0.897196261682243,
+        "accuracy": 0.89,
+        "balanced_accuracy": 0.8899999999999999
+      },
+      "mean_request_seconds": 1.8014110361900384,
+      "tokens": {
+        "promptTokenCount": 23185,
+        "candidatesTokenCount": 946,
+        "thoughtsTokenCount": 7327,
+        "totalTokenCount": 31458
+      },
+      "estimated_usd_successful_responses": 0.0484125,
+      "median_request_seconds": 1.6530595000003814,
+      "p95_request_seconds": 3.041513832999044
+    },
+    "audio_transcript": {
+      "completed": 100,
+      "strict_correct": 88,
+      "errors": 0,
+      "unclear": 2,
+      "selected_interrupt_only": {
+        "n": 100,
+        "tp": 48,
+        "fp": 8,
+        "tn": 42,
+        "fn": 2,
+        "precision": 0.8571428571428571,
+        "recall": 0.96,
+        "specificity": 0.84,
+        "f1": 0.9056603773584906,
+        "accuracy": 0.9,
+        "balanced_accuracy": 0.8999999999999999
+      },
+      "retained_for_review_including_unknowns": {
+        "n": 100,
+        "tp": 48,
+        "fp": 10,
+        "tn": 40,
+        "fn": 2,
+        "precision": 0.8275862068965517,
+        "recall": 0.96,
+        "specificity": 0.8,
+        "f1": 0.8888888888888888,
+        "accuracy": 0.88,
+        "balanced_accuracy": 0.88
+      },
+      "mean_request_seconds": 2.372611982910239,
+      "tokens": {
+        "promptTokenCount": 24770,
+        "candidatesTokenCount": 916,
+        "thoughtsTokenCount": 7926,
+        "totalTokenCount": 33612
+      },
+      "estimated_usd_successful_responses": 0.051735,
+      "median_request_seconds": 1.692563770997367,
+      "p95_request_seconds": 3.582076042002882
+    }
+  },
+  "paired_vs_transcript": {
+    "audio": {
+      "corrected_transcript_errors": 4,
+      "introduced_errors": 1
+    },
+    "audio_transcript": {
+      "corrected_transcript_errors": 2,
+      "introduced_errors": 0
+    }
+  },
+  "unknown_policy": "Errors and unclear are retained for review, never silently rejected. Selected-only metrics count positive unknowns as missed selections.",
+  "cost_note": "Estimate at 2026-09-29 standard Gemini 3.8 Flash rates, not an invoice. Failed requests may have unreported charges.",
+  "model_versions": [
+    "gemini-3.8-flash"
+  ]
+}
