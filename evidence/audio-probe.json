@@ -1,0 +1,191 @@
+{
+  "scope": "synthetic development fixtures only",
+  "tts": [
+    {
+      "text": "Plan dinner Friday at seven for two people.",
+      "seconds": 7.301223041999037,
+      "duration": 3.125,
+      "rtf": 2.336391373439692,
+      "segment_arrivals_s": [
+        7.293802207997942
+      ],
+      "sample_rate": 24000,
+      "first_call": true
+    },
+    {
+      "text": "Actually Saturday. Keep the time and party size.",
+      "seconds": 0.16870158399979118,
+      "duration": 3.575,
+      "rtf": 0.047189254265675856,
+      "segment_arrivals_s": [
+        0.16296162499929778
+      ],
+      "sample_rate": 24000,
+      "first_call": false
+    },
+    {
+      "text": "Do not book Friday. I said Saturday at eight.",
+      "seconds": 0.15882187499664724,
+      "duration": 3.175,
+      "rtf": 0.05002263779421961,
+      "segment_arrivals_s": [
+        0.15310108300036518
+      ],
+      "sample_rate": 24000,
+      "first_call": false
+    },
+    {
+      "text": "Cancel the dinner plan. Do not make a reservation.",
+      "seconds": 0.18102304200147046,
+      "duration": 3.575,
+      "rtf": 0.050635815944467255,
+      "segment_arrivals_s": [
+        0.17540791699866531
+      ],
+      "sample_rate": 24000,
+      "first_call": false
+    },
+    {
+      "text": "Um, let me think. Seven, no, actually eight.",
+      "seconds": 0.16919566700380528,
+      "duration": 3.375,
+      "rtf": 0.05013204948260897,
+      "segment_arrivals_s": [
+        0.16360995799914235
+      ],
+      "sample_rate": 24000,
+      "first_call": false
+    },
+    {
+      "text": "I would like a quiet restaurant on Saturday at seven for two people. Please keep the budget below forty dollars per person and make sure there are vegetarian options.",
+      "seconds": 0.5362943330037524,
+      "duration": 10.3,
+      "rtf": 0.05206741097123809,
+      "segment_arrivals_s": [
+        0.5262535000001662
+      ],
+      "sample_rate": 24000,
+      "first_call": false
+    }
+  ],
+  "asr": [
+    {
+      "expected_script": "Plan dinner Friday at seven for two people.",
+      "text": "Planned dinner Friday at 7 for two people.",
+      "seconds": 1.2417286669951864,
+      "duration": 3.125,
+      "first_call": true
+    },
+    {
+      "expected_script": "Actually Saturday. Keep the time and party size.",
+      "text": "Actually Saturday, keep the time and party size.",
+      "seconds": 0.04205208400526317,
+      "duration": 3.575,
+      "first_call": false
+    },
+    {
+      "expected_script": "Do not book Friday. I said Saturday at eight.",
+      "text": "Do not book Friday. I said Saturday at eight.",
+      "seconds": 0.03992166599346092,
+      "duration": 3.175,
+      "first_call": false
+    },
+    {
+      "expected_script": "Cancel the dinner plan. Do not make a reservation.",
+      "text": "Cancel the dinner plan. Do not make a reservation.",
+      "seconds": 0.038846750001539476,
+      "duration": 3.575,
+      "first_call": false
+    },
+    {
+      "expected_script": "Um, let me think. Seven, no, actually eight.",
+      "text": "Um, let me think. Seven no, actually eight.",
+      "seconds": 0.03908920899993973,
+      "duration": 3.375,
+      "first_call": false
+    },
+    {
+      "expected_script": "I would like a quiet restaurant on Saturday at seven for two people. Please keep the budget below forty dollars per person and make sure there are vegetarian options.",
+      "text": "I would like a quiet restaurant on Saturday at 7 for two people. Please keep the budget below $40 per person and make sure there are vegetarian options.",
+      "seconds": 0.13843308400100796,
+      "duration": 10.3,
+      "first_call": false
+    }
+  ],
+  "prefix": [
+    {
+      "available_audio_s": 0.5,
+      "compute_s": 0.2513600420061266,
+      "text": "Do not"
+    },
+    {
+      "available_audio_s": 1.0,
+      "compute_s": 0.031064000002515968,
+      "text": "Do not book Friday."
+    },
+    {
+      "available_audio_s": 1.5,
+      "compute_s": 0.03308145800110651,
+      "text": "Do not book Friday."
+    },
+    {
+      "available_audio_s": 2.0,
+      "compute_s": 0.036870916999760084,
+      "text": "Do not book Friday, I said Saturday."
+    },
+    {
+      "available_audio_s": 3.0,
+      "compute_s": 0.039748959003190976,
+      "text": "Do not book Friday. I said Saturday at eight."
+    },
+    {
+      "available_audio_s": 3.175,
+      "compute_s": 0.039413708000211045,
+      "text": "Do not book Friday. I said Saturday at eight."
+    }
+  ],
+  "vad": [
+    {
+      "fixture": 1,
+      "spans": [
+        {
+          "start": 1.3,
+          "end": 2.4
+        },
+        {
+          "start": 2.5,
+          "end": 4.3
+        }
+      ],
+      "compute_s": 0.01808625000558095,
+      "duration": 5.575,
+      "padding_s": 1
+    },
+    {
+      "fixture": 2,
+      "spans": [
+        {
+          "start": 1.3,
+          "end": 2.4
+        },
+        {
+          "start": 2.5,
+          "end": 3.8
+        }
+      ],
+      "compute_s": 0.010372333003033418,
+      "duration": 5.175,
+      "padding_s": 1
+    }
+  ],
+  "tts_load_s": 0.11828279199835379,
+  "peak_rss_bytes": 2988949504,
+  "mlx_peak_bytes": 2804887970,
+  "asr_load_s": 2.3883405000015046,
+  "silence_asr": {
+    "text": "",
+    "seconds": 0.03504604199406458
+  },
+  "silence_vad": [],
+  "status": "completed"
+}

@@ -1,0 +1,120 @@
+{
+  "model": "qwen3.5:9b",
+  "scope": "constructed development cases, not benchmark",
+  "cases": [
+    {
+      "replicate": 0,
+      "input": "Friday at 19:00 for two. Change only the day to Saturday.",
+      "expected": {
+        "day": "Saturday",
+        "time": "19:00",
+        "party_size": 2
+      },
+      "actual": {
+        "day": "Saturday",
+        "time": "19:00",
+        "party_size": 2
+      },
+      "correct": true,
+      "ttfc_s": 0.2733259159940644,
+      "total_s": 1.4863973749961588,
+      "load_ns": 3032667,
+      "eval_count": 32
+    },
+    {
+      "replicate": 0,
+      "input": "Saturday at 18:00 for four. Change only the time to 20:00.",
+      "expected": {
+        "day": "Saturday",
+        "time": "20:00",
+        "party_size": 4
+      },
+      "actual": {
+        "day": "Saturday",
+        "time": "20:00",
+        "party_size": 4
+      },
+      "correct": true,
+      "ttfc_s": 0.20389187499677064,
+      "total_s": 1.439666499994928,
+      "load_ns": 667417,
+      "eval_count": 32
+    },
+    {
+      "replicate": 0,
+      "input": "Sunday at 12:00 for three. Change only the party size to five.",
+      "expected": {
+        "day": "Sunday",
+        "time": "12:00",
+        "party_size": 5
+      },
+      "actual": {
+        "day": "Sunday",
+        "time": "12:00",
+        "party_size": 5
+      },
+      "correct": true,
+      "ttfc_s": 0.20303712499298854,
+      "total_s": 1.4043949999977485,
+      "load_ns": 705209,
+      "eval_count": 32
+    },
+    {
+      "replicate": 1,
+      "input": "Friday at 19:00 for two. Change only the day to Saturday.",
+      "expected": {
+        "day": "Saturday",
+        "time": "19:00",
+        "party_size": 2
+      },
+      "actual": {
+        "day": "Saturday",
+        "time": "19:00",
+        "party_size": 2
+      },
+      "correct": true,
+      "ttfc_s": 0.07867404200078454,
+      "total_s": 1.2870407919981517,
+      "load_ns": 607167,
+      "eval_count": 32
+    },
+    {
+      "replicate": 1,
+      "input": "Saturday at 18:00 for four. Change only the time to 20:00.",
+      "expected": {
+        "day": "Saturday",
+        "time": "20:00",
+        "party_size": 4
+      },
+      "actual": {
+        "day": "Saturday",
+        "time": "20:00",
+        "party_size": 4
+      },
+      "correct": true,
+      "ttfc_s": 0.07166683299874421,
+      "total_s": 1.272314916997857,
+      "load_ns": 604750,
+      "eval_count": 32
+    },
+    {
+      "replicate": 1,
+      "input": "Sunday at 12:00 for three. Change only the party size to five.",
+      "expected": {
+        "day": "Sunday",
+        "time": "12:00",
+        "party_size": 5
+      },
+      "actual": {
+        "day": "Sunday",
+        "time": "12:00",
+        "party_size": 5
+      },
+      "correct": true,
+      "ttfc_s": 0.07456558299600147,
+      "total_s": 1.2827784580003936,
+      "load_ns": 528875,
+      "eval_count": 32
+    }
+  ]
+}

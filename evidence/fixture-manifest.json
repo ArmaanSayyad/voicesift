@@ -1,0 +1,16 @@
+{
+  "fixture": true,
+  "samples": 48000,
+  "sample_rate": 24000,
+  "cancellation_sample": 7200,
+  "repair_sample": 12000,
+  "stale_output_rendered": false,
+  "events": 107,
+  "last_event_hash": "a23ea88eed2a478a39abd34eef98a39bbc3de01cb3eca0a64be59edb9bf36038",
+  "artifacts": {
+    "events.jsonl": "cebb95614a68f1e331d718778701950ce366f519d836f2f9f709ee9e61f7d24a",
+    "generated.wav": "59e647defbf7c1b71123c82fbaefaa8ab71e397460d3c0b2e1dacc08b6994350",
+    "input.wav": "d45f9568be53ba59bba33651e81055c356859184e9841d8704aaebf6914e1086",
+    "rendered.wav": "914f151d1e3ddeeda3df2613e0da569a4c5d421241651a3e67225753d881839f"
+  }
+}

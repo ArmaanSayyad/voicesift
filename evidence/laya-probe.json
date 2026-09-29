@@ -1,0 +1,124 @@
+{
+  "scope": "six constructed development cases; not held-out validation",
+  "device": "cpu",
+  "cases": [
+    {
+      "response": "Saturday at seven for two people.",
+      "expected": "incorporated",
+      "seconds": 0.1720675839969772,
+      "answer": {
+        "type": "choice",
+        "choice": "contradicted",
+        "probabilities": {
+          "incorporated": 0.4104,
+          "contradicted": 0.4311,
+          "not_established": 0.1585
+        },
+        "confidence": 0.0713,
+        "answer_confidence": 0.4311,
+        "action": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    {
+      "response": "Understood. Friday at seven for two people.",
+      "expected": "contradicted",
+      "seconds": 0.09789895800349768,
+      "answer": {
+        "type": "choice",
+        "choice": "incorporated",
+        "probabilities": {
+          "incorporated": 0.7684,
+          "contradicted": 0.1157,
+          "not_established": 0.1159
+        },
+        "confidence": 0.3613,
+        "answer_confidence": 0.7684,
+        "action": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    {
+      "response": "Got it.",
+      "expected": "not_established",
+      "seconds": 0.10070104100304889,
+      "answer": {
+        "type": "choice",
+        "choice": "contradicted",
+        "probabilities": {
+          "incorporated": 0.2732,
+          "contradicted": 0.4048,
+          "not_established": 0.3219
+        },
+        "confidence": 0.012,
+        "answer_confidence": 0.4048,
+        "action": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    {
+      "response": "Not Friday anymore. Saturday at seven.",
+      "expected": "incorporated",
+      "seconds": 0.09562220799853094,
+      "answer": {
+        "type": "choice",
+        "choice": "incorporated",
+        "probabilities": {
+          "incorporated": 0.4115,
+          "contradicted": 0.3999,
+          "not_established": 0.1886
+        },
+        "confidence": 0.0474,
+        "answer_confidence": 0.4115,
+        "action": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    {
+      "response": "Friday, as requested.",
+      "expected": "contradicted",
+      "seconds": 0.0909514999948442,
+      "answer": {
+        "type": "choice",
+        "choice": "incorporated",
+        "probabilities": {
+          "incorporated": 0.5572,
+          "contradicted": 0.2563,
+          "not_established": 0.1866
+        },
+        "confidence": 0.1007,
+        "answer_confidence": 0.5572,
+        "action": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    {
+      "response": "Would you like Saturday or Sunday?",
+      "expected": "not_established",
+      "seconds": 0.092811458001961,
+      "answer": {
+        "type": "choice",
+        "choice": "contradicted",
+        "probabilities": {
+          "incorporated": 0.2054,
+          "contradicted": 0.4179,
+          "not_established": 0.3767
+        },
+        "confidence": 0.0374,
+        "answer_confidence": 0.4179,
+        "action": {
+          "act_probability": 1.0
+        }
+      }
+    }
+  ],
+  "revision": "55cf4c4ebb4ebe31b2550e8bdf3bd21b99753851",
+  "load_seconds": 35.26782162499876,
+  "peak_rss_bytes": 3015442432,
+  "status": "completed"
+}

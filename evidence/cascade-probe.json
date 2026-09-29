@@ -1,0 +1,56 @@
+{
+  "scope": "sequential resident component-chain; synthetic completed utterances; no endpointing or speaker playback",
+  "runs": [
+    {
+      "replicate": 0,
+      "first_call": true,
+      "transcript": "Actually Saturday, keep the time and party size.",
+      "state": {
+        "day": "Saturday",
+        "time": "19:00",
+        "party_size": 2
+      },
+      "correct": true,
+      "asr_s": 2.2037441249995027,
+      "llm_s": 1.48964958400029,
+      "tts_s": 3.8695295409997925,
+      "first_audio_after_input_available_s": 7.549349583998264,
+      "total_s": 7.562923249999585
+    },
+    {
+      "replicate": 1,
+      "first_call": false,
+      "transcript": "Actually Saturday, keep the time and party size.",
+      "state": {
+        "day": "Saturday",
+        "time": "19:00",
+        "party_size": 2
+      },
+      "correct": true,
+      "asr_s": 0.10819741700106533,
+      "llm_s": 1.4163243749935646,
+      "tts_s": 0.2697363330007647,
+      "first_audio_after_input_available_s": 1.7854081249970477,
+      "total_s": 1.7942581249953946
+    },
+    {
+      "replicate": 2,
+      "first_call": false,
+      "transcript": "Actually Saturday, keep the time and party size.",
+      "state": {
+        "day": "Saturday",
+        "time": "19:00",
+        "party_size": 2
+      },
+      "correct": true,
+      "asr_s": 0.0621499579938245,
+      "llm_s": 1.4312669589999132,
+      "tts_s": 0.2239775410052971,
+      "first_audio_after_input_available_s": 1.7095737079944229,
+      "total_s": 1.7173944579990348
+    }
+  ],
+  "peak_python_rss_bytes": 3406856192,
+  "mlx_peak_bytes": 3983719010,
+  "status": "completed"
+}
