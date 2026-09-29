@@ -8,3 +8,6 @@ artifacts/
 .env*
 models/
 .DS_Store
+node_modules/
+web/dist/
+*.tsbuildinfo

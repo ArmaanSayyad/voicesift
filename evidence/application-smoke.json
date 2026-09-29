@@ -1,0 +1,81 @@
+{
+  "run_id": "668d198d721441008f2e7390665127b3",
+  "mode": "offline_completed_utterances",
+  "variant": "C0-history-dev",
+  "synthetic_input": true,
+  "human_reviewed": false,
+  "physical_playback_measured": false,
+  "interruption_tested": false,
+  "turns": [
+    {
+      "index": 0,
+      "input_asset": "input-0.wav",
+      "output_asset": "response-0.wav",
+      "transcript": "Planned dinner Friday at 7 for two people.",
+      "plan": {
+        "day": "Friday",
+        "time": "19:00",
+        "party_size": 2,
+        "status": "proposed"
+      },
+      "response": "The proposed dinner is Friday at seven P M for two people. No reservation has been made.",
+      "timings_s": {
+        "asr": 0.04338100000313716,
+        "llm": 6.418828041001689,
+        "tts": 0.35512466599902837
+      },
+      "duration_s": 6.3
+    },
+    {
+      "index": 1,
+      "input_asset": "input-1.wav",
+      "output_asset": "response-1.wav",
+      "transcript": "Actually Saturday, keep the time and party size.",
+      "plan": {
+        "day": "Saturday",
+        "time": "19:00",
+        "party_size": 2,
+        "status": "proposed"
+      },
+      "response": "The proposed dinner is Saturday at seven P M for two people. No reservation has been made.",
+      "timings_s": {
+        "asr": 0.231266125003458,
+        "llm": 1.7837597090037889,
+        "tts": 0.3206628330008243
+      },
+      "duration_s": 6.375
+    }
+  ],
+  "status": "complete",
+  "score": {
+    "metric": "exact_proposed_plan/v1",
+    "status": "scored",
+    "value": true,
+    "expected": {
+      "day": "Saturday",
+      "time": "19:00",
+      "party_size": 2,
+      "status": "proposed"
+    },
+    "actual": {
+      "day": "Saturday",
+      "time": "19:00",
+      "party_size": 2,
+      "status": "proposed"
+    },
+    "denominator": 1,
+    "review": "unreviewed",
+    "scope": "model-proposed structured plan only; not acoustic or interruption success"
+  },
+  "code_commit": "7722f8490b9fad1b5e542552ea92e82dff713693",
+  "code_dirty": true,
+  "artifact_hashes": {
+    "input-1.wav": "b0bcf93989d27725eb7fae724fd736cbb2f84f182f7036dcca9d622111aab82a",
+    "response-0.wav": "893268f3eb6b6ea8e71e7068c6c99342819a612b2aeecc39d87933b63c82a9cb",
+    "response-1.wav": "6a35fc033c72099723b507a326695d7d2458e8a4458ed9a383b99d670636c2f2",
+    "input-0.wav": "772bb98b3df2081fb3b255b609d308546a54c71ae1d58c7e9e1bddb1b53d3d63",
+    "events.jsonl": "95298b5c6a0fc238ad9839a28f92d5ec414abccc1bae86f301959e25c91df447"
+  },
+  "last_event_hash": "f2a35601a5b6c2d7cd478d79169e415c11b6cb276d556a7b373ce621024ca267",
+  "validation_note": "One synthetic development case, run before this implementation commit; source was dirty. Browser verified run completion and hashes. No perceptual audio review."
+}

@@ -46,3 +46,18 @@ Ollama probes require a running local Ollama server with `qwen3.5:9b` already do
 - The harness has no frontend, microphone workflow, C0/C1 production adapter, durable streaming event writer, or real-world behavioral benchmark yet.
 
 Read [feasibility findings](docs/FEASIBILITY.md) for the implementation decision and its limits.
+
+## Initial application slice
+
+A local React evidence viewer and serialized C0 development runner now wrap the tested models. This slice accepts **two completed synthetic utterances**, saves generated speech, proposed plans, host-clock events and hashes, and exposes replay controls. It does not exercise live interruption, perform real bookings, or establish a benchmark result.
+
+```sh
+sh scripts/setup.sh core
+# From web/: pnpm install --frozen-lockfile && pnpm build
+.venv/bin/repair-bench-serve
+# Open http://127.0.0.1:8765
+```
+
+The earlier model/fixture setup is required to start a real run. Run records live under ignored `artifacts/runs/`; they survive restarts, and unfinished attempts are marked interrupted. The API accepts one active run. Replay never silently starts microphone capture or audio playback. Stop the server with Ctrl-C after active runs complete. Local write endpoints require a per-process token and matching browser origin; this is not a remotely deployed service.
+
+**Direction checkpoint:** before extending this into a general runtime, assess reuse of Pipecat Evals and Full-Duplex-Bench. Existing tools overlap strongly. The highest-value custom work is the repair-specific dataset, diagnosis and controlled experiment, not duplicating generic voice infrastructure. Laya remains unvalidated; an offline repair-event miner is a candidate to evaluate, not an implemented or proven capability. See `docs/PRODUCT_DIRECTION.md`.
