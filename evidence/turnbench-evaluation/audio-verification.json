@@ -1,0 +1,38 @@
+[
+  {
+    "window": "42-s1-w0",
+    "max_abs_pcm_error": 3.0517323466483504e-05,
+    "channel_order_verified": true,
+    "original_offset_verified": true
+  },
+  {
+    "window": "42-s2-w0",
+    "max_abs_pcm_error": 3.0517323466483504e-05,
+    "channel_order_verified": true,
+    "original_offset_verified": true
+  },
+  {
+    "window": "128-s1-w0",
+    "max_abs_pcm_error": 3.0517338018398732e-05,
+    "channel_order_verified": true,
+    "original_offset_verified": true
+  },
+  {
+    "window": "128-s2-w0",
+    "max_abs_pcm_error": 3.0517338018398732e-05,
+    "channel_order_verified": true,
+    "original_offset_verified": true
+  },
+  {
+    "window": "170-s1-w0",
+    "max_abs_pcm_error": 3.0517287086695433e-05,
+    "channel_order_verified": true,
+    "original_offset_verified": true
+  },
+  {
+    "window": "170-s2-w0",
+    "max_abs_pcm_error": 3.0517287086695433e-05,
+    "channel_order_verified": true,
+    "original_offset_verified": true
+  }
+]

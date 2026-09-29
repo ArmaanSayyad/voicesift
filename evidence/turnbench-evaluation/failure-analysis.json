@@ -1,0 +1,38 @@
+{
+  "ordinary_turn_false_positive_source_A_labels": {
+    "Normal Turn": 772,
+    "Strong Floor Hold": 121,
+    "Overlap": 78,
+    "Floor-taking Cooperative Interruption": 52,
+    "Bounded Response": 12,
+    "Reaction Backchannel": 4,
+    "Floor-taking Competitive Interruption": 11,
+    "Non-floor Taking Cooperative Interruption": 11,
+    "Filler": 9,
+    "Continuer Backchannel": 3,
+    "Laughter": 1,
+    "Acknowledgement Backchannel": 2,
+    "Non-floor Taking Competitive Interruption": 6,
+    "Non-Speech Noise": 1,
+    "Speech, Non-Linguistic": 1
+  },
+  "opposing_active_source_A_labels": {
+    "Floor-taking Competitive Interruption": 25,
+    "Normal Turn": 514,
+    "Strong Floor Hold": 46,
+    "Reaction Backchannel": 68,
+    "Floor-taking Cooperative Interruption": 78,
+    "Continuer Backchannel": 78,
+    "Acknowledgement Backchannel": 69,
+    "Overlap": 57,
+    "Non-floor Taking Competitive Interruption": 10,
+    "Laughter": 21,
+    "Non-floor Taking Cooperative Interruption": 82,
+    "Bounded Response": 11,
+    "Filler": 8,
+    "Speech, Non-Linguistic": 6,
+    "Non-Speech Noise": 7,
+    "Channel Bleed": 3,
+    "Awkward Silence": 1
+  }
+}

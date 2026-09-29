@@ -1,0 +1,6 @@
+# Install into the project venv after the normal project/test requirements.
+# Official consensus implementation is imported from the pinned reference checkout.
+pyarrow==25.0.1
+datasets==5.0.1
+huggingface-hub==1.33.0
+typer==0.27.2

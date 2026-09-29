@@ -1,0 +1,499 @@
+{
+  "conversations": 38,
+  "hours": 7.307464826388888,
+  "candidates": 4216,
+  "completed": 4216,
+  "errors": 91,
+  "unclear": 15,
+  "unscored_candidates": 229,
+  "model_flagged": 1856,
+  "flagged_unmatched": 133,
+  "gold_counts": {
+    "Turn": 2748,
+    "Backchannel": 1839,
+    "Interruption": 347,
+    "Laughter": 177,
+    "NonFloorTakingInterruption": 359,
+    "NonContent": 1894,
+    "AwkwardSilence": 1
+  },
+  "timing_coverage": {
+    "AwkwardSilence": {
+      "total": 1,
+      "detected": 0
+    },
+    "Backchannel": {
+      "total": 1839,
+      "detected": 1673
+    },
+    "Interruption": {
+      "total": 347,
+      "detected": 345
+    },
+    "Laughter": {
+      "total": 177,
+      "detected": 167
+    },
+    "NonContent": {
+      "total": 1894,
+      "detected": 197
+    },
+    "NonFloorTakingInterruption": {
+      "total": 359,
+      "detected": 350
+    },
+    "Turn": {
+      "total": 2748,
+      "detected": 1255
+    }
+  },
+  "audio_status": {
+    "clean": 20,
+    "noisy": 18
+  },
+  "successful": {
+    "gemini": {
+      "candidate_only": {
+        "tp": 341,
+        "fp": 1382,
+        "tn": 2260,
+        "fn": 4,
+        "precision": 0.1979106210098665,
+        "recall": 0.9884057971014493
+      },
+      "all_consensus_events": {
+        "tp": 341,
+        "fp": 1382,
+        "tn": 5636,
+        "fn": 6,
+        "precision": 0.1979106210098665,
+        "recall": 0.9827089337175793
+      }
+    },
+    "four_words": {
+      "candidate_only": {
+        "tp": 345,
+        "fp": 1524,
+        "tn": 2118,
+        "fn": 0,
+        "precision": 0.18459069020866772,
+        "recall": 1.0
+      },
+      "all_consensus_events": {
+        "tp": 345,
+        "fp": 1524,
+        "tn": 5494,
+        "fn": 2,
+        "precision": 0.18459069020866772,
+        "recall": 0.9942363112391931
+      }
+    },
+    "timing_only": {
+      "candidate_only": {
+        "tp": 345,
+        "fp": 3642,
+        "tn": 0,
+        "fn": 0,
+        "precision": 0.08653122648607976,
+        "recall": 1.0
+      },
+      "all_consensus_events": {
+        "tp": 345,
+        "fp": 3642,
+        "tn": 3376,
+        "fn": 2,
+        "precision": 0.08653122648607976,
+        "recall": 0.9942363112391931
+      }
+    },
+    "review_queue": {
+      "candidate_only": {
+        "tp": 345,
+        "fp": 1472,
+        "tn": 2170,
+        "fn": 0,
+        "precision": 0.189873417721519,
+        "recall": 1.0
+      },
+      "all_consensus_events": {
+        "tp": 345,
+        "fp": 1472,
+        "tn": 5546,
+        "fn": 2,
+        "precision": 0.189873417721519,
+        "recall": 0.9942363112391931
+      }
+    },
+    "conversations": {
+      "tp": 33,
+      "fp": 5,
+      "tn": 0,
+      "fn": 0,
+      "precision": 0.868421052631579,
+      "recall": 1.0
+    }
+  },
+  "successful_attempts_excluded": {
+    "gemini": {
+      "candidate_only": {
+        "tp": 341,
+        "fp": 1130,
+        "tn": 2162,
+        "fn": 4,
+        "precision": 0.2318150917743032,
+        "recall": 0.9884057971014493
+      },
+      "all_consensus_events": {
+        "tp": 341,
+        "fp": 1130,
+        "tn": 5529,
+        "fn": 6,
+        "precision": 0.2318150917743032,
+        "recall": 0.9827089337175793
+      }
+    },
+    "four_words": {
+      "candidate_only": {
+        "tp": 345,
+        "fp": 1263,
+        "tn": 2029,
+        "fn": 0,
+        "precision": 0.21455223880597016,
+        "recall": 1.0
+      },
+      "all_consensus_events": {
+        "tp": 345,
+        "fp": 1263,
+        "tn": 5396,
+        "fn": 2,
+        "precision": 0.21455223880597016,
+        "recall": 0.9942363112391931
+      }
+    },
+    "timing_only": {
+      "candidate_only": {
+        "tp": 345,
+        "fp": 3292,
+        "tn": 0,
+        "fn": 0,
+        "precision": 0.09485839978003849,
+        "recall": 1.0
+      },
+      "all_consensus_events": {
+        "tp": 345,
+        "fp": 3292,
+        "tn": 3367,
+        "fn": 2,
+        "precision": 0.09485839978003849,
+        "recall": 0.9942363112391931
+      }
+    },
+    "review_queue": {
+      "candidate_only": {
+        "tp": 345,
+        "fp": 1211,
+        "tn": 2081,
+        "fn": 0,
+        "precision": 0.2217223650385604,
+        "recall": 1.0
+      },
+      "all_consensus_events": {
+        "tp": 345,
+        "fp": 1211,
+        "tn": 5448,
+        "fn": 2,
+        "precision": 0.2217223650385604,
+        "recall": 0.9942363112391931
+      }
+    },
+    "conversations": {
+      "tp": 33,
+      "fp": 5,
+      "tn": 0,
+      "fn": 0,
+      "precision": 0.868421052631579,
+      "recall": 1.0
+    }
+  },
+  "attempt_inclusive": {
+    "gemini": {
+      "candidate_only": {
+        "tp": 593,
+        "fp": 1130,
+        "tn": 2162,
+        "fn": 102,
+        "precision": 0.3441671503192107,
+        "recall": 0.8532374100719424
+      },
+      "all_consensus_events": {
+        "tp": 593,
+        "fp": 1130,
+        "tn": 5529,
+        "fn": 113,
+        "precision": 0.3441671503192107,
+        "recall": 0.839943342776204
+      }
+    },
+    "four_words": {
+      "candidate_only": {
+        "tp": 606,
+        "fp": 1263,
+        "tn": 2029,
+        "fn": 89,
+        "precision": 0.32423756019261635,
+        "recall": 0.8719424460431655
+      },
+      "all_consensus_events": {
+        "tp": 606,
+        "fp": 1263,
+        "tn": 5396,
+        "fn": 100,
+        "precision": 0.32423756019261635,
+        "recall": 0.8583569405099151
+      }
+    },
+    "timing_only": {
+      "candidate_only": {
+        "tp": 695,
+        "fp": 3292,
+        "tn": 0,
+        "fn": 0,
+        "precision": 0.17431652871833458,
+        "recall": 1.0
+      },
+      "all_consensus_events": {
+        "tp": 695,
+        "fp": 3292,
+        "tn": 3367,
+        "fn": 11,
+        "precision": 0.17431652871833458,
+        "recall": 0.9844192634560907
+      }
+    },
+    "review_queue": {
+      "candidate_only": {
+        "tp": 606,
+        "fp": 1211,
+        "tn": 2081,
+        "fn": 89,
+        "precision": 0.33351678591084205,
+        "recall": 0.8719424460431655
+      },
+      "all_consensus_events": {
+        "tp": 606,
+        "fp": 1211,
+        "tn": 5448,
+        "fn": 100,
+        "precision": 0.33351678591084205,
+        "recall": 0.8583569405099151
+      }
+    },
+    "conversations": {
+      "tp": 37,
+      "fp": 1,
+      "tn": 0,
+      "fn": 0,
+      "precision": 0.9736842105263158,
+      "recall": 1.0
+    }
+  },
+  "by_gold_label": {
+    "AwkwardSilence": {
+      "candidates": 0,
+      "flagged": 0
+    },
+    "Backchannel": {
+      "candidates": 1673,
+      "flagged": 44
+    },
+    "Interruption": {
+      "candidates": 345,
+      "flagged": 341
+    },
+    "Laughter": {
+      "candidates": 167,
+      "flagged": 0
+    },
+    "NonContent": {
+      "candidates": 197,
+      "flagged": 2
+    },
+    "NonFloorTakingInterruption": {
+      "candidates": 350,
+      "flagged": 252
+    },
+    "Turn": {
+      "candidates": 1255,
+      "flagged": 1084
+    }
+  },
+  "by_audio_status": {
+    "clean": {
+      "tp": 334,
+      "fp": 606,
+      "tn": 1167,
+      "fn": 56,
+      "precision": 0.3553191489361702,
+      "recall": 0.8564102564102564
+    },
+    "noisy": {
+      "tp": 259,
+      "fp": 524,
+      "tn": 995,
+      "fn": 46,
+      "precision": 0.33077905491698595,
+      "recall": 0.8491803278688524
+    }
+  },
+  "target_truncated": 57,
+  "context_truncated": 0,
+  "model_versions": {
+    "null": 91,
+    "gemini-3.8-flash": 4125
+  },
+  "target_absent_from_text": 0,
+  "errors_by_gold_label": {
+    "Turn": 57,
+    "Unmatched": 9,
+    "Backchannel": 9,
+    "NonFloorTakingInterruption": 8,
+    "Interruption": 4,
+    "NonContent": 4
+  },
+  "by_conversation_type": {
+    "Argumentative/Deliberative": {
+      "conversations": 8,
+      "attempt_inclusive": {
+        "tp": 161,
+        "fp": 158,
+        "tn": 1060,
+        "fn": 21,
+        "precision": 0.5047021943573667,
+        "recall": 0.8846153846153846
+      }
+    },
+    "Casual/Spontaneous": {
+      "conversations": 7,
+      "attempt_inclusive": {
+        "tp": 71,
+        "fp": 307,
+        "tn": 1217,
+        "fn": 17,
+        "precision": 0.18783068783068782,
+        "recall": 0.8068181818181818
+      }
+    },
+    "Collaborative/Problem-Solving": {
+      "conversations": 6,
+      "attempt_inclusive": {
+        "tp": 131,
+        "fp": 177,
+        "tn": 924,
+        "fn": 28,
+        "precision": 0.4253246753246753,
+        "recall": 0.8238993710691824
+      }
+    },
+    "Instructional": {
+      "conversations": 6,
+      "attempt_inclusive": {
+        "tp": 75,
+        "fp": 162,
+        "tn": 854,
+        "fn": 14,
+        "precision": 0.31645569620253167,
+        "recall": 0.8426966292134831
+      }
+    },
+    "Narrative/Storytelling": {
+      "conversations": 5,
+      "attempt_inclusive": {
+        "tp": 27,
+        "fp": 153,
+        "tn": 691,
+        "fn": 17,
+        "precision": 0.15,
+        "recall": 0.6136363636363636
+      }
+    },
+    "Task-Oriented/Transactional": {
+      "conversations": 6,
+      "attempt_inclusive": {
+        "tp": 128,
+        "fp": 173,
+        "tn": 783,
+        "fn": 16,
+        "precision": 0.42524916943521596,
+        "recall": 0.8888888888888888
+      }
+    }
+  },
+  "usage": {
+    "promptTokenCount": 3481385,
+    "candidatesTokenCount": 242394,
+    "thoughtsTokenCount": 948175
+  },
+  "estimated_successful_response_usd": 7.0756725,
+  "cost_note": "Published standard Gemini 3.8 Flash prices checked 2026-09-29: $0.75/M input, $3.75/M output including thinking. Failed/interrupted request usage is not available; this is not the complete billed cost. https://ai.google.dev/gemini-api/docs/pricing",
+  "matching_sensitivity": {
+    "0.1": {
+      "unmatched_candidates": 229,
+      "attempt_inclusive": {
+        "tp": 593,
+        "fp": 1130,
+        "tn": 5529,
+        "fn": 113,
+        "precision": 0.3441671503192107,
+        "recall": 0.839943342776204
+      }
+    },
+    "0.2": {
+      "unmatched_candidates": 229,
+      "attempt_inclusive": {
+        "tp": 593,
+        "fp": 1130,
+        "tn": 5529,
+        "fn": 113,
+        "precision": 0.3441671503192107,
+        "recall": 0.839943342776204
+      }
+    },
+    "0.3": {
+      "unmatched_candidates": 228,
+      "attempt_inclusive": {
+        "tp": 593,
+        "fp": 1130,
+        "tn": 5529,
+        "fn": 113,
+        "precision": 0.3441671503192107,
+        "recall": 0.839943342776204
+      }
+    }
+  },
+  "conversation_bootstrap_95pct": {
+    "gemini": {
+      "precision": [
+        0.26979397891231965,
+        0.41394276804394037
+      ],
+      "recall": [
+        0.7974034108321407,
+        0.8820907204309941
+      ],
+      "resamples": 2000,
+      "seed": 20260929
+    },
+    "four_words": {
+      "precision": [
+        0.2493393797132422,
+        0.3942990784050387
+      ],
+      "recall": [
+        0.8272561807978159,
+        0.8870304699107007
+      ],
+      "resamples": 2000,
+      "seed": 20260929
+    }
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "reason": "Increase workers from 8 to 24; reuse all stored results including errors. At most 8 active requests could be repeated if their results were not persisted. No selective retry.",
+  "old_pid": 20421
+}
