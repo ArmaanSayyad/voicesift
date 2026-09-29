@@ -1,0 +1,65 @@
+{
+  "sample_candidates": 400,
+  "scored_candidates": 374,
+  "budget": 2048,
+  "arms": {
+    "original": {
+      "successful": {
+        "tp": 36,
+        "fp": 146,
+        "tn": 191,
+        "fn": 1,
+        "precision": 0.1978021978021978,
+        "recall": 0.972972972972973
+      },
+      "attempt_inclusive": {
+        "tp": 65,
+        "fp": 117,
+        "tn": 184,
+        "fn": 8,
+        "precision": 0.35714285714285715,
+        "recall": 0.8904109589041096
+      },
+      "errors": 3,
+      "incomplete": 0,
+      "flags": 198,
+      "unscored_flags": 16,
+      "unclear": 1,
+      "usage": {
+        "promptTokenCount": 339127,
+        "candidatesTokenCount": 23699,
+        "thoughtsTokenCount": 108281
+      },
+      "estimated_recorded_usage_usd": 0.74927025
+    },
+    "text_examples": {
+      "successful": {
+        "tp": 29,
+        "fp": 53,
+        "tn": 284,
+        "fn": 8,
+        "precision": 0.35365853658536583,
+        "recall": 0.7837837837837838
+      },
+      "attempt_inclusive": {
+        "tp": 56,
+        "fp": 26,
+        "tn": 275,
+        "fn": 17,
+        "precision": 0.6829268292682927,
+        "recall": 0.7671232876712328
+      },
+      "errors": 1,
+      "incomplete": 0,
+      "flags": 98,
+      "unscored_flags": 16,
+      "unclear": 0,
+      "usage": {
+        "promptTokenCount": 2152094,
+        "candidatesTokenCount": 20115,
+        "thoughtsTokenCount": 173877
+      },
+      "estimated_recorded_usage_usd": 2.3415405
+    }
+  }
+}

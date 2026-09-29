@@ -1,0 +1,388 @@
+{
+  "sample_candidates": 400,
+  "scored_candidates": 374,
+  "unscored_candidates": 26,
+  "evaluation_conversations": 29,
+  "example_conversations": 9,
+  "counts": {
+    "Turn": 126,
+    "NonContent": 23,
+    "NonFloorTakingInterruption": 36,
+    "Interruption": 37,
+    "Backchannel": 134,
+    "Laughter": 18
+  },
+  "scope": "Candidate-only paired development comparison on 400 uniformly sampled existing timing candidates, 29 conversations. Not all conversations or end-to-end raw-audio accuracy.",
+  "arms": {
+    "original": {
+      "successful": {
+        "tp": 36,
+        "fp": 142,
+        "tn": 195,
+        "fn": 1,
+        "precision": 0.20224719101123595,
+        "recall": 0.972972972972973
+      },
+      "attempt_inclusive": {
+        "tp": 64,
+        "fp": 114,
+        "tn": 187,
+        "fn": 9,
+        "precision": 0.3595505617977528,
+        "recall": 0.8767123287671232
+      },
+      "flags": 194,
+      "unscored_flags": 16,
+      "errors": 12,
+      "error_types": {
+        "incomplete_response": 8,
+        "TimeoutError": 4
+      },
+      "unclear": 2,
+      "intent_counts": {
+        "backchannel": 165,
+        "take_floor": 194,
+        "error": 12,
+        "other_overlap": 27,
+        "unclear": 2
+      },
+      "by_gold_label": {
+        "Backchannel": {
+          "total": 134,
+          "flagged": 6
+        },
+        "Interruption": {
+          "total": 37,
+          "flagged": 36
+        },
+        "Laughter": {
+          "total": 18,
+          "flagged": 0
+        },
+        "NonContent": {
+          "total": 23,
+          "flagged": 0
+        },
+        "NonFloorTakingInterruption": {
+          "total": 36,
+          "flagged": 28
+        },
+        "Turn": {
+          "total": 126,
+          "flagged": 108
+        }
+      },
+      "usage": {
+        "promptTokenCount": 338685,
+        "candidatesTokenCount": 23336,
+        "thoughtsTokenCount": 98173
+      },
+      "estimated_recorded_usage_usd": 0.7096725
+    },
+    "definitions": {
+      "successful": {
+        "tp": 26,
+        "fp": 41,
+        "tn": 296,
+        "fn": 11,
+        "precision": 0.3880597014925373,
+        "recall": 0.7027027027027027
+      },
+      "attempt_inclusive": {
+        "tp": 49,
+        "fp": 18,
+        "tn": 283,
+        "fn": 24,
+        "precision": 0.7313432835820896,
+        "recall": 0.6712328767123288
+      },
+      "flags": 81,
+      "unscored_flags": 14,
+      "errors": 18,
+      "error_types": {
+        "incomplete_response": 15,
+        "TimeoutError": 3
+      },
+      "unclear": 0,
+      "intent_counts": {
+        "other_overlap": 41,
+        "backchannel": 142,
+        "normal_handoff": 76,
+        "continuation": 42,
+        "take_floor": 81,
+        "error": 18
+      },
+      "by_gold_label": {
+        "Backchannel": {
+          "total": 134,
+          "flagged": 2
+        },
+        "Interruption": {
+          "total": 37,
+          "flagged": 26
+        },
+        "Laughter": {
+          "total": 18,
+          "flagged": 0
+        },
+        "NonContent": {
+          "total": 23,
+          "flagged": 0
+        },
+        "NonFloorTakingInterruption": {
+          "total": 36,
+          "flagged": 23
+        },
+        "Turn": {
+          "total": 126,
+          "flagged": 16
+        }
+      },
+      "usage": {
+        "promptTokenCount": 497089,
+        "candidatesTokenCount": 21318,
+        "thoughtsTokenCount": 115871
+      },
+      "estimated_recorded_usage_usd": 0.8872755
+    },
+    "text_examples": {
+      "successful": {
+        "tp": 28,
+        "fp": 44,
+        "tn": 293,
+        "fn": 9,
+        "precision": 0.3888888888888889,
+        "recall": 0.7567567567567568
+      },
+      "attempt_inclusive": {
+        "tp": 53,
+        "fp": 19,
+        "tn": 282,
+        "fn": 20,
+        "precision": 0.7361111111111112,
+        "recall": 0.726027397260274
+      },
+      "flags": 85,
+      "unscored_flags": 13,
+      "errors": 44,
+      "error_types": {
+        "incomplete_response": 42,
+        "TimeoutError": 2
+      },
+      "unclear": 0,
+      "intent_counts": {
+        "backchannel": 139,
+        "take_floor": 85,
+        "normal_handoff": 54,
+        "continuation": 35,
+        "error": 44,
+        "other_overlap": 43
+      },
+      "by_gold_label": {
+        "Backchannel": {
+          "total": 134,
+          "flagged": 2
+        },
+        "Interruption": {
+          "total": 37,
+          "flagged": 28
+        },
+        "Laughter": {
+          "total": 18,
+          "flagged": 0
+        },
+        "NonContent": {
+          "total": 23,
+          "flagged": 0
+        },
+        "NonFloorTakingInterruption": {
+          "total": 36,
+          "flagged": 25
+        },
+        "Turn": {
+          "total": 126,
+          "flagged": 17
+        }
+      },
+      "usage": {
+        "promptTokenCount": 2147130,
+        "candidatesTokenCount": 18701,
+        "thoughtsTokenCount": 152155
+      },
+      "estimated_recorded_usage_usd": 2.2510575
+    },
+    "audio_examples": {
+      "successful": {
+        "tp": 26,
+        "fp": 53,
+        "tn": 284,
+        "fn": 11,
+        "precision": 0.3291139240506329,
+        "recall": 0.7027027027027027
+      },
+      "attempt_inclusive": {
+        "tp": 52,
+        "fp": 27,
+        "tn": 274,
+        "fn": 21,
+        "precision": 0.6582278481012658,
+        "recall": 0.7123287671232876
+      },
+      "flags": 93,
+      "unscored_flags": 14,
+      "errors": 26,
+      "error_types": {
+        "incomplete_response": 20,
+        "TimeoutError": 6
+      },
+      "unclear": 0,
+      "intent_counts": {
+        "backchannel": 140,
+        "normal_handoff": 59,
+        "take_floor": 93,
+        "other_overlap": 42,
+        "error": 26,
+        "continuation": 40
+      },
+      "by_gold_label": {
+        "Backchannel": {
+          "total": 134,
+          "flagged": 3
+        },
+        "Interruption": {
+          "total": 37,
+          "flagged": 26
+        },
+        "Laughter": {
+          "total": 18,
+          "flagged": 0
+        },
+        "NonContent": {
+          "total": 23,
+          "flagged": 1
+        },
+        "NonFloorTakingInterruption": {
+          "total": 36,
+          "flagged": 26
+        },
+        "Turn": {
+          "total": 126,
+          "flagged": 23
+        }
+      },
+      "usage": {
+        "promptTokenCount": 3026157,
+        "candidatesTokenCount": 17651,
+        "thoughtsTokenCount": 125509
+      },
+      "estimated_recorded_usage_usd": 2.80646775
+    }
+  },
+  "four_words": {
+    "successful": {
+      "tp": 37,
+      "fp": 162,
+      "tn": 175,
+      "fn": 0,
+      "precision": 0.18592964824120603,
+      "recall": 1.0
+    },
+    "attempt_inclusive": {
+      "tp": 66,
+      "fp": 133,
+      "tn": 168,
+      "fn": 7,
+      "precision": 0.3316582914572864,
+      "recall": 0.9041095890410958
+    }
+  },
+  "original_repeatability": {
+    "changed_binary_decisions": 20,
+    "previous_attempt_inclusive": {
+      "tp": 66,
+      "fp": 118,
+      "tn": 183,
+      "fn": 7,
+      "precision": 0.358695652173913,
+      "recall": 0.9041095890410958
+    }
+  },
+  "bootstrap_cluster": {
+    "unit": "speaker_pair",
+    "count": 10,
+    "resamples": 3000,
+    "seed": 20260930
+  },
+  "paired_bootstrap_differences_95pct": {
+    "definitions": {
+      "precision": [
+        0.27872515809888593,
+        0.45071006777209344
+      ],
+      "recall": [
+        -0.31081831831831835,
+        -0.11762796027501894
+      ]
+    },
+    "text_examples": {
+      "precision": [
+        0.29415839931017745,
+        0.45450487874178186
+      ],
+      "recall": [
+        -0.19480519480519476,
+        -0.10256410256410264
+      ]
+    },
+    "audio_examples": {
+      "precision": [
+        0.19776913048750908,
+        0.3682375482007273
+      ],
+      "recall": [
+        -0.25,
+        -0.09523809523809523
+      ]
+    }
+  },
+  "total_estimated_recorded_usage_usd": 6.65447325,
+  "common_complete_diagnostic": {
+    "count": 303,
+    "note": "Conditional diagnostic excluding every item with a failure in any arm; not a replacement for full-sample metrics.",
+    "arms": {
+      "original": {
+        "tp": 47,
+        "fp": 86,
+        "tn": 165,
+        "fn": 5,
+        "precision": 0.3533834586466165,
+        "recall": 0.9038461538461539
+      },
+      "definitions": {
+        "tp": 43,
+        "fp": 13,
+        "tn": 238,
+        "fn": 9,
+        "precision": 0.7678571428571429,
+        "recall": 0.8269230769230769
+      },
+      "text_examples": {
+        "tp": 46,
+        "fp": 15,
+        "tn": 236,
+        "fn": 6,
+        "precision": 0.7540983606557377,
+        "recall": 0.8846153846153846
+      },
+      "audio_examples": {
+        "tp": 44,
+        "fp": 15,
+        "tn": 236,
+        "fn": 8,
+        "precision": 0.7457627118644068,
+        "recall": 0.8461538461538461
+      }
+    }
+  },
+  "cost_note": "Published standard rates $0.75/M input, $3.75/M output including thinking; includes incomplete responses with returned usage, excludes transport errors without usage. Not a billing statement."
+}

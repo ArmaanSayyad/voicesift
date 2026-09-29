@@ -1,0 +1,12 @@
+{
+  "parent_protocol_sha256": "9091b18c6871495d57698d0388377644100c6a6acb7cf8c96e6735ee19ba77c9",
+  "arms": [
+    "original",
+    "text_examples"
+  ],
+  "maxOutputTokens": 2048,
+  "sample_candidates": 400,
+  "requests": 800,
+  "seed": 20260931,
+  "reason": "Phase 1 text arm had 42 token-cap errors. Rerun ALL 400 items in original and text arms, not only failures. Only output cap changes; same inputs, prompts and examples. This is an adaptive development follow-up, not fresh validation."
+}
