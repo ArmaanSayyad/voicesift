@@ -1,0 +1,15 @@
+{
+  "schema": {
+    "keep": {
+      "type": "choice",
+      "instructions": "Keep a conversation exactly when the user begins speaking strictly after an assistant speech interval starts and strictly before it ends. An equal endpoint is not an overlap. Use the numeric start_s and end_s values. Ignore whether the words sound like a correction or backchannel.",
+      "criteria": {
+        "keep": "At least one user speech onset falls strictly inside an assistant speech interval.",
+        "reject": "No user speech onset falls strictly inside any assistant speech interval."
+      }
+    }
+  },
+  "n": 100,
+  "scope": "Constructed timing diagnostic; not naturally observed interactions",
+  "model_revision": "55cf4c4ebb4ebe31b2550e8bdf3bd21b99753851"
+}

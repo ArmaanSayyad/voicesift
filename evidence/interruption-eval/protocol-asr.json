@@ -1,0 +1,19 @@
+{
+  "seed": 20260929,
+  "laya_model_revision": "55cf4c4ebb4ebe31b2550e8bdf3bd21b99753851",
+  "schema": {
+    "intent": {
+      "type": "choice",
+      "instructions": "An agent is speaking and this is incoming user speech. Does the user want to take a substantive speaking turn, or are they only acknowledging/listening? Classify interruption intent, not mere voice activity. A substantive comment, question, objection or request takes the floor. A brief supportive acknowledgement without taking the floor does not.",
+      "criteria": {
+        "interrupt": "The user intends to take the floor or redirect the conversation with substantive speech.",
+        "non_interrupt": "The user is only giving a backchannel, acknowledgement, filler, or non-directed speech, without taking the floor."
+      }
+    }
+  },
+  "input": "Only cleaned user transcript; agent speaking is a fixed task assumption. No file names, gold labels, duration or break times.",
+  "subset": "First two rows and first three negative rows excluded after format inspection.",
+  "reference_sha256": "ceb18d41d2e014e225b3d729bd3a380514cb1fec911c9747325094138a104544",
+  "n": 100,
+  "timing_claim": "No raw-audio or actual overlap detection evaluated."
+}
