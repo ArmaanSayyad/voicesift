@@ -1,0 +1,1166 @@
+{
+  "summary": {
+    "scope": "40 new SID source clips (20 positive,20 negative) overlapped with fixed Kokoro agent speech, plus 10 non-overlap controls. Constructed audio/timelines; source semantic labels are proxies, not human annotations of the new conversations. Reference user transcripts supplied, not ASR. Not a natural-conversation accuracy estimate.",
+    "input_conversations": 50,
+    "overlap_candidates": 40,
+    "nonoverlap_controls_excluded": 10,
+    "candidate_errors": 0,
+    "analysis_errors": 0,
+    "intent_proxy_metrics": {
+      "n": 40,
+      "tp": 18,
+      "fp": 1,
+      "tn": 19,
+      "fn": 2,
+      "precision": 0.9473684210526315,
+      "recall": 0.9,
+      "specificity": 0.95,
+      "f1": 0.9230769230769231,
+      "accuracy": 0.925,
+      "balanced_accuracy": 0.925
+    },
+    "unclear": 2,
+    "automated_fixture_exports": 20,
+    "zip_clips": 20,
+    "model_prompt_changed_from_prior_ablation": true,
+    "estimated_api_usd": 0.05237025,
+    "cached_rerun_without_provider_calls": 40,
+    "unclear_positive": 0,
+    "unclear_negative": 2,
+    "four_word_reference_baseline": {
+      "n": 40,
+      "tp": 17,
+      "fp": 1,
+      "tn": 19,
+      "fn": 3,
+      "precision": 0.9444444444444444,
+      "recall": 0.85,
+      "specificity": 0.95,
+      "f1": 0.8947368421052632,
+      "accuracy": 0.9,
+      "balanced_accuracy": 0.8999999999999999
+    }
+  },
+  "predictions": [
+    {
+      "id": "99878504c96af65dcfb9-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "dfea0547b5a89f5fc49cb0625007162ff13de88281457b0dcecfb599066b5193",
+      "request_sha256": "c919ac6e16ac7b67494e418497f27994cdf5e7c33702c3fc9341ce47ac2bc583",
+      "usage": {
+        "candidatesTokenCount": 60,
+        "promptTokenCount": 490,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 174
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 316
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 233,
+        "totalTokenCount": 783
+      },
+      "seconds": 3.2445388330015703
+    },
+    {
+      "id": "c0f4cecf2dee43c92d0a-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "508a2f6444f2918cc02bfe287a1f8f73734891efa2ac36f2c80649b7f1dcbc0a",
+      "request_sha256": "68eddc8a1e6a10c2d5d399aa92026019cc30a12ab99d959b1560f41da65e2eb9",
+      "usage": {
+        "candidatesTokenCount": 54,
+        "promptTokenCount": 449,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 317
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 132
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 211,
+        "totalTokenCount": 714
+      },
+      "seconds": 2.767542292000144
+    },
+    {
+      "id": "65f35ac5efc0861ae883-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "bf3e280289b8f6a4bb1fea32064c721f4b82904776411526aec13c753e02e98a",
+      "request_sha256": "774ae4273ef9294fddca0dae16fb8773d49ac31c8e84889e28ce4429d38bfac7",
+      "usage": {
+        "candidatesTokenCount": 55,
+        "promptTokenCount": 522,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 173
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 349
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 112,
+        "totalTokenCount": 689
+      },
+      "seconds": 2.1437520000035875
+    },
+    {
+      "id": "3afa80e79288ac78b193-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "972bb3cbc1530b774ef7bc9136afc57ba311c88824267f8eda9fa1dced9d375e",
+      "request_sha256": "c64effedbf7d2a17380edf115a4c4b4af137db59b12dc0e290607f6bc0d7aac5",
+      "usage": {
+        "candidatesTokenCount": 67,
+        "promptTokenCount": 728,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 361
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 367
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 133,
+        "totalTokenCount": 928
+      },
+      "seconds": 2.6336055409992696
+    },
+    {
+      "id": "edb42b13fcf3eecf0c64-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "3193282250e29b67726340628b9b402e1c9b71f196f02436209ece569dd835d7",
+      "request_sha256": "542e5b8feba9b13759be18fba6ed0e0664193d4d28b0ddbe0ae3c14b22154672",
+      "usage": {
+        "candidatesTokenCount": 50,
+        "promptTokenCount": 460,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 330
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 130
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 125,
+        "totalTokenCount": 635
+      },
+      "seconds": 2.341723790996184
+    },
+    {
+      "id": "07917a0d8588f61cf10e-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "other_overlap",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "c758efd566b54f1aea91872b69ddc6ad086831d53124a8858aa27619eedbec2d",
+      "request_sha256": "adb8a7e6879e72560c6d905a1eda66553ade94e6241f9ddcfd708a9127507370",
+      "usage": {
+        "candidatesTokenCount": 50,
+        "promptTokenCount": 453,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 134
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 319
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 618,
+        "totalTokenCount": 1121
+      },
+      "seconds": 5.373871333002171
+    },
+    {
+      "id": "1e34be25c160be0b39bc-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "7218f0ec0f35659062dbf37480fd9e22ff27e9da375bbda045fbddf0cb1b18b8",
+      "request_sha256": "e8fa374410ea2486838fdae1d444c7bb71394456eb65a2f63f7f81501379cc01",
+      "usage": {
+        "candidatesTokenCount": 60,
+        "promptTokenCount": 492,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 323
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 169
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 158,
+        "totalTokenCount": 710
+      },
+      "seconds": 2.543295957999362
+    },
+    {
+      "id": "8174c5b566f12f890800-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "6566eb800741120a99bbf37205242adf7826da465df059ddf35c90adf0384954",
+      "request_sha256": "f570653dd650a467ee75e427b52c580fa30cbdba96b603d40231309659333c37",
+      "usage": {
+        "candidatesTokenCount": 58,
+        "promptTokenCount": 545,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 221
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 324
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 141,
+        "totalTokenCount": 744
+      },
+      "seconds": 2.685712250000506
+    },
+    {
+      "id": "dbb54cbd55be4e3f9e97-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "11adc616969cff4bf3b7673661030acae5ceee413f3cdbedf964f2c9bf9b3e9d",
+      "request_sha256": "a546dbcff48c796244bae3e211289357c42c6e39c8e8ae334829287fd8105725",
+      "usage": {
+        "candidatesTokenCount": 48,
+        "promptTokenCount": 461,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 131
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 330
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 112,
+        "totalTokenCount": 621
+      },
+      "seconds": 2.24433316700015
+    },
+    {
+      "id": "58c10c5e89b962ff6d56-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "035960032bb38c3000064247b9f25783a16e50a79366816c848e30c73ee5d42f",
+      "request_sha256": "4dba970f3701cc9ef871df1a32e1bb4caa221f373dc03359761d32c3d729babd",
+      "usage": {
+        "candidatesTokenCount": 66,
+        "promptTokenCount": 648,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 309
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 339
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 163,
+        "totalTokenCount": 877
+      },
+      "seconds": 2.5522238339981413
+    },
+    {
+      "id": "3ee685a6166b2800d55a-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "36806de2487fc4a7d3a5f9e4968f37c195d99106e49cf65a40eb94720b593e25",
+      "request_sha256": "7df617eb83b2d1a222dd594e8c7365e36d90123e476d5d4eceb34e89ce933c61",
+      "usage": {
+        "candidatesTokenCount": 77,
+        "promptTokenCount": 812,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 402
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 410
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 140,
+        "totalTokenCount": 1029
+      },
+      "seconds": 2.751356625005428
+    },
+    {
+      "id": "31163e58bdbce606d0ff-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "58260db64cd3a4bdda42563bd273797b76cf5a61033d35d0ae34892bed9daee6",
+      "request_sha256": "d10b1be0f6e31323fb7106edac3c6663c2aa49b6a87dff0fab6caaf321b61f9c",
+      "usage": {
+        "candidatesTokenCount": 48,
+        "promptTokenCount": 480,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 148
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 332
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 48,
+        "totalTokenCount": 576
+      },
+      "seconds": 1.838135208003223
+    },
+    {
+      "id": "7b5f65475911f94b3433-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "4825e81985fe400b29e52ccd2f775e6ddb71b2767320203f4d32327d6b4cfa7a",
+      "request_sha256": "8dec36e4b119826df2a6cfe6805dc202bc0d690abfc94deccea21bd31d1ae28f",
+      "usage": {
+        "candidatesTokenCount": 54,
+        "promptTokenCount": 497,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 142
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 355
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 514,
+        "totalTokenCount": 1065
+      },
+      "seconds": 4.718616666999878
+    },
+    {
+      "id": "166a14ed09c9d449214d-overlap",
+      "positive": false,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "dd1731e145555d0cbf5bf45c6fb2b1e1ee11e07364776bc3ee542ca837ecce2f",
+      "request_sha256": "27d529797813b0828c6a2d296215e22d6f92bc2a98d32b49b5d6a61f7eededdd",
+      "usage": {
+        "candidatesTokenCount": 61,
+        "promptTokenCount": 453,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 317
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 136
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 342,
+        "totalTokenCount": 856
+      },
+      "seconds": 3.5875610419971053
+    },
+    {
+      "id": "fcaa016a4b189d845dc4-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "00c405acb6293e4098ca2a27461fc5e312e9a9ea44ab45b89d20cfdb480c9c2a",
+      "request_sha256": "7d74b16de8d032b550fff5a5a331e2eb174a573e775792ff818cce262e73a92e",
+      "usage": {
+        "candidatesTokenCount": 68,
+        "promptTokenCount": 753,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 396
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 357
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 150,
+        "totalTokenCount": 971
+      },
+      "seconds": 2.3466375839998364
+    },
+    {
+      "id": "a88ab4989d1eed43e820-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "be84231f243ffb691b3691251cd99112360fa69eb5cb2239b9c75482ff54a042",
+      "request_sha256": "68e7f369300c67242efcd5992d8687d75c115ed34469f6fb9cec48a19ee3ee2f",
+      "usage": {
+        "candidatesTokenCount": 53,
+        "promptTokenCount": 648,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 371
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 277
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 143,
+        "totalTokenCount": 844
+      },
+      "seconds": 2.053424540994456
+    },
+    {
+      "id": "54ab01d891c6b318a8cd-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "unclear",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "89125e58fb1e914016bbf9d700c93cd8a1f6c01131c58d5d9d18a160cfcdbc55",
+      "request_sha256": "b31b2032984334c9120c9817031b3879e3f34f0d48ed5bfc3357627103544df5",
+      "usage": {
+        "candidatesTokenCount": 74,
+        "promptTokenCount": 454,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 317
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 137
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 306,
+        "totalTokenCount": 834
+      },
+      "seconds": 3.776475083002879
+    },
+    {
+      "id": "cdf625a9dc8c03944472-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "fa2a4301751ed284bc2f0bf2ae47bc524d21b964379e1213d1f82c2871a5ddf4",
+      "request_sha256": "c9af4b51ac0958cfc2cd48afbd8fbf1b4bd94f0c4b968c2c8f98c7a717842521",
+      "usage": {
+        "candidatesTokenCount": 48,
+        "promptTokenCount": 460,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 130
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 330
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 76,
+        "totalTokenCount": 584
+      },
+      "seconds": 2.3013428330013994
+    },
+    {
+      "id": "9a42bf83c4c735f4673b-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "e8f6d143697bcd21fe7249e3165bf9ac0f75adf74f46417b731e5bf1900a2ae9",
+      "request_sha256": "9996f93d0b5fa5adc7513e0c2d39dcbd55335be99747604bf10fc1a7f3f5dcbd",
+      "usage": {
+        "candidatesTokenCount": 48,
+        "promptTokenCount": 446,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 131
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 315
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 75,
+        "totalTokenCount": 569
+      },
+      "seconds": 2.156305374999647
+    },
+    {
+      "id": "3db964a5e34405135292-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "9f3d9410d132d73320cf67b6889f99d46d574d08fd36ed21916001b8e669e5d4",
+      "request_sha256": "91d2106fdeeebb1bdf602bd453f49bcb995227593cd83d21bd2841e84afbdcc5",
+      "usage": {
+        "candidatesTokenCount": 50,
+        "promptTokenCount": 487,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 336
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 151
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 108,
+        "totalTokenCount": 645
+      },
+      "seconds": 3.205006250005681
+    },
+    {
+      "id": "4db018d7526bf4be1469-overlap",
+      "positive": true,
+      "prediction": false,
+      "intent": "other_overlap",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "a2fe480fa689496d56384efb5169b3c58dc242034e7506879c680a4df8b52c4e",
+      "request_sha256": "303a0d651597779b5e2528dfb19f7d32b5afe110b04830762393c16093143e16",
+      "usage": {
+        "candidatesTokenCount": 79,
+        "promptTokenCount": 582,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 237
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 345
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 539,
+        "totalTokenCount": 1200
+      },
+      "seconds": 4.287341540999478
+    },
+    {
+      "id": "07b920b3996c325354a1-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "61c00c29f2cb48b1dc53c5b7c6533b64ebf62151b7a87f78614087f7b40ef538",
+      "request_sha256": "d3eb0bd21b626935fc95e469614ec8864c4ba33494c81450e58bc9fdcebf7962",
+      "usage": {
+        "candidatesTokenCount": 59,
+        "promptTokenCount": 507,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 356
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 151
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 104,
+        "totalTokenCount": 670
+      },
+      "seconds": 2.102474625004106
+    },
+    {
+      "id": "6d7fc5193566b87eeab8-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "0761bddaf8212d457c9a580773646b9e9931b3d1ba74f7d58dbddd35fcca4d13",
+      "request_sha256": "6abd4c2c6604012a18aeac6deea9528564d2abba6d6945d62871e077032fdda3",
+      "usage": {
+        "candidatesTokenCount": 55,
+        "promptTokenCount": 465,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 320
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 145
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 172,
+        "totalTokenCount": 692
+      },
+      "seconds": 2.4523512500018114
+    },
+    {
+      "id": "6a6cc2d01957c892a878-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "eaa8f93f0d0c413d3ce44a23eaaf17b7a90ed052a0dad91a787275f287fadf09",
+      "request_sha256": "60685b0a2d36d876f61bf3d657d641a26512e46edc52df2554cf4bdc81f49dff",
+      "usage": {
+        "candidatesTokenCount": 58,
+        "promptTokenCount": 703,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 371
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 332
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 144,
+        "totalTokenCount": 905
+      },
+      "seconds": 2.6286442080017878
+    },
+    {
+      "id": "67e2d0d89f6895326d4f-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "6ec47016afc7cb14c9c959432f3e5326a2a19a1cbc62644cc9518a9c36e8adba",
+      "request_sha256": "24e063b1eef10154eef40ad0e0b3042b0cb76e7b5271cad9271a6def7beb5fa6",
+      "usage": {
+        "candidatesTokenCount": 58,
+        "promptTokenCount": 660,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 309
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 351
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 140,
+        "totalTokenCount": 858
+      },
+      "seconds": 3.154070666001644
+    },
+    {
+      "id": "86c5256eaaef38a9eff5-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "330d028985ab35bcc7900ff0084417f54d4fd2b27d38bb1b9e2ba25e296d553a",
+      "request_sha256": "f8de380bcda4a9138b46c1aaeb889423167d23dc4023c8090b32d879d15f2082",
+      "usage": {
+        "candidatesTokenCount": 71,
+        "promptTokenCount": 703,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 348
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 355
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 166,
+        "totalTokenCount": 940
+      },
+      "seconds": 2.7872444160020677
+    },
+    {
+      "id": "24e846113b096ed8bc4d-overlap",
+      "positive": true,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "d5335c6328d08ac302fe0a3118dd5969114a28ae7e970edf928d0fb3ac601692",
+      "request_sha256": "6aca68354cde9a5926de438fe1dc6d1a2cca771766d774ff0b2168a38f673c63",
+      "usage": {
+        "candidatesTokenCount": 53,
+        "promptTokenCount": 467,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 136
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 331
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 110,
+        "totalTokenCount": 630
+      },
+      "seconds": 2.0469798749982147
+    },
+    {
+      "id": "1b8cc8299713f0438bb2-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "unclear",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "b5c5523da3b0d13031cf945f873c0ad99ea941bc468d2d0fd2eeb81bbf712e13",
+      "request_sha256": "1d3a6e0fb5f814412caead82a7b245af877188becdb011335b7ffdd7e160dc80",
+      "usage": {
+        "candidatesTokenCount": 68,
+        "promptTokenCount": 470,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 330
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 140
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 455,
+        "totalTokenCount": 993
+      },
+      "seconds": 4.247641542002384
+    },
+    {
+      "id": "4d91c695e3e514c8c7b4-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "ce28ef515e5db5f882dd87a7c3f0587d0efdad60033d22bba8ef6299ce364a74",
+      "request_sha256": "619e3766b24251f90d35e801f4a08488ed646ba987d54b86b1a1f42a6fa6bdd5",
+      "usage": {
+        "candidatesTokenCount": 54,
+        "promptTokenCount": 470,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 140
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 330
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 131,
+        "totalTokenCount": 655
+      },
+      "seconds": 3.6384178340013023
+    },
+    {
+      "id": "1d95ed0b6cc8df5dac27-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "3f446c933585186f59c70802ebaa7a2adec82652021928e09dd19b1ef222a858",
+      "request_sha256": "f97599573317396e9b3dd55f70e910f72950ceeefb119793864cae833d4f31c0",
+      "usage": {
+        "candidatesTokenCount": 65,
+        "promptTokenCount": 782,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 382
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 400
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 128,
+        "totalTokenCount": 975
+      },
+      "seconds": 2.530804165995505
+    },
+    {
+      "id": "1685d451712e097b432d-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "6c2a9a1544e4b5edec10f0981493ac36b3c093ac03398b9fe65d943f3b8db099",
+      "request_sha256": "4d37c1f3d7cb893fb3285735cf701e94592b282292d0237330456b7cdbff43fe",
+      "usage": {
+        "candidatesTokenCount": 51,
+        "promptTokenCount": 496,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 153
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 343
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 144,
+        "totalTokenCount": 691
+      },
+      "seconds": 2.2763630830013426
+    },
+    {
+      "id": "dfaedbd2c31d4ec0fc38-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "8bf9f15a288918ddccccfa33bc3d2516130d129de0adb6a0edc6b3f2400fffd8",
+      "request_sha256": "bada7b095a9e05a9f1e5f7ee359a407816ed5196bddd7f0cc6df74368c81c2d8",
+      "usage": {
+        "candidatesTokenCount": 64,
+        "promptTokenCount": 458,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 141
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 317
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 94,
+        "totalTokenCount": 616
+      },
+      "seconds": 1.9440840419993037
+    },
+    {
+      "id": "777bc9a7d19436f44488-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "bf3c357336c3bf1cbcd68ed99809f9fef88bc58d4a6d196d0fca768c3ed05a7b",
+      "request_sha256": "6f75dd9c597b44da999ac68a906482dc594c666c697094106aeee1528a1691f9",
+      "usage": {
+        "candidatesTokenCount": 70,
+        "promptTokenCount": 722,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 337
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 385
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 244,
+        "totalTokenCount": 1036
+      },
+      "seconds": 3.0940364580019377
+    },
+    {
+      "id": "50d8f7f479ae0fd62883-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "f8ede2e1052d927ce16a7377fcf77920bc85e225f2564dfe284802ee9d7887f2",
+      "request_sha256": "4bbc0365c2e32654c4203451081e86719ccdf3e0bd149f0406db30a9af7234cf",
+      "usage": {
+        "candidatesTokenCount": 57,
+        "promptTokenCount": 452,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 317
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 135
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 62,
+        "totalTokenCount": 571
+      },
+      "seconds": 1.8908196659976966
+    },
+    {
+      "id": "87ab56d8456a1a2d9617-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "91389234ff38cd14304b31b642f5d3c5b89c57a9f1f2fa0be412cc4a073527cf",
+      "request_sha256": "61309786f6ea43f353f7a173cc0606b51993f0ecbdd175f563b109e8dcf8396a",
+      "usage": {
+        "candidatesTokenCount": 48,
+        "promptTokenCount": 481,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 343
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 138
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 79,
+        "totalTokenCount": 608
+      },
+      "seconds": 2.0458582499995828
+    },
+    {
+      "id": "d60c2fcd431a33b51010-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "098535911b56e0221ae2d2e25cfea49cc82c017d8f1d8727997cf0d971561cd7",
+      "request_sha256": "fd2c93f17f8304f1224feace0bd808148a5f6a7036f62c4ace28f5e741546c14",
+      "usage": {
+        "candidatesTokenCount": 69,
+        "promptTokenCount": 650,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 309
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 341
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 208,
+        "totalTokenCount": 927
+      },
+      "seconds": 2.76376487500238
+    },
+    {
+      "id": "96410e7eba31b9623f4e-overlap",
+      "positive": true,
+      "prediction": true,
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "e3d0bcbefcc84ad4720c744be1a6c29095ea87329032d0d66cc9370eeeee941f",
+      "request_sha256": "a94cd2bcf741f79bca300a9844d573f81a14b34af52767870e4d7970d9fe0d2d",
+      "usage": {
+        "candidatesTokenCount": 56,
+        "promptTokenCount": 544,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 338
+          },
+          {
+            "modality": "AUDIO",
+            "tokenCount": 206
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 122,
+        "totalTokenCount": 722
+      },
+      "seconds": 2.2085968750034226
+    },
+    {
+      "id": "e126f87ef05c6587090d-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "286547d85d90e89f99c1db799d9b1a3c32a4e4acf2ebb8f56daa8096fb57cbf4",
+      "request_sha256": "e3a3741b73a36274bb97a7b4b61446eb43b17ad4c6e3b6f31a7bb7b1e0976f2f",
+      "usage": {
+        "candidatesTokenCount": 50,
+        "promptTokenCount": 468,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 149
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 319
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 120,
+        "totalTokenCount": 638
+      },
+      "seconds": 2.7312103329968522
+    },
+    {
+      "id": "993969abf335d09fbbec-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "87e134d4a118eebc3f6649981a1fd620086ea0b564f6b8e677924a5d10b340c3",
+      "request_sha256": "b3a66c86244a882ab89f519d520508e26a988ca42c536f34f9b088c2505d7108",
+      "usage": {
+        "candidatesTokenCount": 53,
+        "promptTokenCount": 469,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 139
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 330
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 116,
+        "totalTokenCount": 638
+      },
+      "seconds": 2.397999583998171
+    },
+    {
+      "id": "b7a2ff1a6fd490bbbb3f-overlap",
+      "positive": false,
+      "prediction": false,
+      "intent": "backchannel",
+      "agent_outcome": "continued",
+      "status": "complete",
+      "source_audio_sha256": "9f7244cc6ac86ede830105c559882c330ee4aea16acb42af8a567367981bd56c",
+      "request_sha256": "eebb9ee9ab2c5fc356a26e678f753af435901213720c9ac7459678f5e5c6b86b",
+      "usage": {
+        "candidatesTokenCount": 50,
+        "promptTokenCount": 470,
+        "promptTokensDetails": [
+          {
+            "modality": "AUDIO",
+            "tokenCount": 140
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 330
+          }
+        ],
+        "serviceTier": "standard",
+        "thoughtsTokenCount": 91,
+        "totalTokenCount": 611
+      },
+      "seconds": 1.7945947499974864
+    }
+  ]
+}

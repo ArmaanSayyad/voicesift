@@ -31,6 +31,9 @@ class Corpus:
             CREATE TABLE IF NOT EXISTS candidates(id TEXT PRIMARY KEY, conversation_id TEXT, turn_index INTEGER, UNIQUE(conversation_id,turn_index));
             CREATE TABLE IF NOT EXISTS reviews(seq INTEGER PRIMARY KEY AUTOINCREMENT,candidate_id TEXT,version INTEGER,body TEXT,created TEXT,UNIQUE(candidate_id,version));
             CREATE TABLE IF NOT EXISTS assets(conversation_id TEXT PRIMARY KEY,name TEXT,hash TEXT,duration REAL);
+            CREATE TABLE IF NOT EXISTS analyses(seq INTEGER PRIMARY KEY AUTOINCREMENT,candidate_id TEXT,body TEXT);
+            CREATE TABLE IF NOT EXISTS analysis_cache(hash TEXT PRIMARY KEY,body TEXT);
+            CREATE TABLE IF NOT EXISTS analysis_jobs(id TEXT PRIMARY KEY,status TEXT,total INTEGER,completed INTEGER,errors INTEGER,created TEXT,candidates TEXT);
             CREATE TABLE IF NOT EXISTS exports(id TEXT PRIMARY KEY,manifest TEXT,created TEXT);
             """)
 
@@ -134,6 +137,11 @@ class Corpus:
                 (row["conversation_id"],),
             ).fetchone()
             result["audio"] = dict(asset) if asset else None
+            analysis = db.execute(
+                "SELECT body FROM analyses WHERE candidate_id=? ORDER BY seq DESC LIMIT 1",
+                (candidate,),
+            ).fetchone()
+            result["analysis"] = json.loads(analysis["body"]) if analysis else None
             return result
 
     def list(self):
@@ -209,7 +217,8 @@ class Corpus:
                         raise ValueError("Source audio hash mismatch; export refused")
                 rows.append(
                     {
-                        "schema_version": 1,
+                        "schema_version": 2,
+                        "model_suggestion": c["analysis"],
                         "candidate_id": cid,
                         "conversation": c["conversation"],
                         "source_content_hash": c["hash"],

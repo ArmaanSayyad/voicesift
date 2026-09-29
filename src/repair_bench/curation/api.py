@@ -1,4 +1,4 @@
-import hashlib, io, json, secrets, uuid
+import hashlib, io, json, secrets, uuid, zipfile
 from pathlib import Path
 import soundfile as sf
 from fastapi import FastAPI, Request, HTTPException
@@ -7,17 +7,21 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from .store import Corpus, Conflict
-from .models import Import, Review
+from .models import Import, Review, Analyze
+from .analysis import Analysis, evidence
+from fastapi.responses import Response
 
 REPO = Path(__file__).resolve().parents[3]
 MAX_AUDIO = 50_000_000
 
 
-def create_app(root=None):
+def create_app(root=None, backend=None):
     corpus = Corpus(root or REPO / "artifacts/interruption-curation")
+    analysis = Analysis(corpus, backend)
     token = secrets.token_urlsafe(32)
     app = FastAPI(title="Interruption Curation")
     app.state.corpus = corpus
+    app.state.analysis = analysis
     app.add_middleware(
         TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "testserver"]
     )
@@ -74,7 +78,21 @@ def create_app(root=None):
             "token": token,
             "goal": "user onset during agent speech",
             "laya_enabled": False,
+            "gemini_configured": analysis.configured,
         }
+
+    @app.get("/api/curation/jobs")
+    def jobs():
+        return {"items": analysis.jobs()}
+
+    @app.post("/api/curation/analyze")
+    def analyze(body: Analyze):
+        return analysis.submit(body.candidate_ids)
+
+    @app.get("/api/curation/candidates/{candidate}/clip")
+    def clip(candidate: str):
+        _, audio, _ = evidence(corpus, candidate)
+        return Response(audio, media_type="audio/wav")
 
     @app.get("/api/curation/candidates")
     def candidates():
@@ -118,6 +136,35 @@ def create_app(root=None):
             path,
             media_type="application/x-ndjson",
             filename=f"interruptions-{eid}.jsonl",
+        )
+
+    @app.get("/api/curation/exports/{eid}/bundle")
+    def bundle(eid: str):
+        # Validate the immutable annotation export before packaging source-derived clips.
+        download(eid)
+        source = corpus.root / "exports" / f"{eid}.jsonl"
+        target = corpus.root / "exports" / f"{eid}-{uuid.uuid4().hex}.zip"
+        clips = []
+        with zipfile.ZipFile(target, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            archive.write(source, "annotations.jsonl")
+            for line in source.read_text().splitlines():
+                row = json.loads(line)
+                if row["audio"]:
+                    _, audio, metadata = evidence(corpus, row["candidate_id"])
+                    name = "clips/" + row["candidate_id"] + ".wav"
+                    archive.writestr(name, audio)
+                    clips.append(
+                        {
+                            "candidate_id": row["candidate_id"],
+                            "file": name,
+                            "source_start_s": metadata["clip_start_s"],
+                            "source_end_s": metadata["clip_end_s"],
+                            "sha256": metadata["clip_sha256"],
+                        }
+                    )
+            archive.writestr("clips.json", json.dumps(clips, indent=2))
+        return FileResponse(
+            target, media_type="application/zip", filename=f"interruptions-{eid}.zip"
         )
 
     @app.post("/api/curation/conversations/{cid}/audio")

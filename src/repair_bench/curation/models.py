@@ -38,6 +38,7 @@ class Conversation(Strict):
 
 class Review(Strict):
     label: Label
+    agent_outcome: Literal["stopped", "continued", "resumed", "unknown"] = "unknown"
     include: bool = False
     note: str = Field(default="", max_length=2000)
     reviewer: str = Field(min_length=1, max_length=80)
@@ -52,3 +53,7 @@ class Review(Strict):
 
 class Import(Strict):
     jsonl: str = Field(min_length=1, max_length=2_000_000)
+
+
+class Analyze(Strict):
+    candidate_ids: list[str] = Field(min_length=1, max_length=50)
