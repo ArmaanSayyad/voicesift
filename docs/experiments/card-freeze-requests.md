@@ -28,7 +28,7 @@ Ordinary card declines or malfunction are a separate intent unless the speaker r
 
 ## Reproduce and inspect
 
-This goal is available through the evaluation CLI; it is not enabled in the interruption-only web UI. From the repository root, after the [core setup](../../README.md#run-locally):
+This goal is configured in a preset audio-only evaluation script. It is not yet selectable in the web UI, and the script does not expose a general freeform-objective CLI. From the repository root, after the [core setup](../../README.md#get-started):
 
 ```sh
 .venv/bin/python scripts/evaluate_voice_lanes.py --run

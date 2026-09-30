@@ -1,5 +1,7 @@
 # Gemini-assisted interruption curation: implementation and validation
 
+> Historical development document. Its proposed scope and implementation state may be superseded. See [VoiceSift’s current purpose and capabilities](../../docs/README.md#project-scope-and-current-capabilities).
+
 Built 2026-09-29. The local app at http://127.0.0.1:8766 now supports timed conversation import, source WAV attachment, Gemini background analysis, model-guided review, and JSONL/ZIP export. Laya is not in the default decision path.
 
 ## User workflow

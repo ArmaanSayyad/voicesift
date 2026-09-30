@@ -1,5 +1,7 @@
 # Product direction checkpoint — 29 September 2026
 
+> Historical development document. Its proposed scope and implementation state may be superseded. See [VoiceSift’s current purpose and capabilities](../../docs/README.md#project-scope-and-current-capabilities).
+
 The interview goal is to demonstrate useful technical judgment for a team building speech-to-speech models. The user's earlier account says Velvet is moving toward its own voice models; we have not verified its internal stack, dataset needs, model endpoints or priorities. A custom agent scaffold is not automatically useful to a model research team, and improving a cascaded agent with an external state reducer does not establish improvement of an end-to-end speech model.
 
 ## Reuse before extending

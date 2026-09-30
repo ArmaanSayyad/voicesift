@@ -1,5 +1,7 @@
 # Feasibility decision — 29 September 2026
 
+> Historical development document. Its proposed scope and implementation state may be superseded. See [VoiceSift’s current purpose and capabilities](../../docs/README.md#project-scope-and-current-capabilities).
+
 **Ready to begin the main local cascade workbench implementation.** The deterministic simulator and component feasibility checks are complete. This is not a claim that the live workbench is built or that its behavioral evaluation has passed.
 
 Use Parakeet → local Qwen → Kokoro as the primary cascade, with Silero VAD and explicit versioned repair state. Build the ordinary cascade (C0) and repair-aware cascade (C1) with identical components, cancellation plumbing and evaluation inputs. Keep Laya as an optional offline experimental critic. Keep Moshi Q4 as an offline native-speech comparator until a separate live performance gate passes. Neither optional component should block the core demonstration.

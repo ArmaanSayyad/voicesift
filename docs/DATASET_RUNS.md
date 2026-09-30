@@ -1,6 +1,8 @@
-# Dataset-in, curated-ZIP-out
+# Current interruption workflow: dataset-in, curated-ZIP-out
 
-The default app at http://127.0.0.1:8766 now has one form and a run history. Choose a ZIP upload or a Hugging Face dataset URL, leave the fixed requirement `conversations where there is an interruption`, and check the dataset. After validation, click **Curate dataset**. Other requirements are rejected by the API as well as being uneditable in the UI. No general-purpose natural-language planning is implemented yet.
+This guide documents VoiceSift’s first web workflow, not its full intended scope. The project aims to support LALM-based voice dataset curation from freeform text objectives; arbitrary objectives are not yet wired into the dataset-to-export app. See [scope and capabilities](README.md#project-scope-and-current-capabilities).
+
+The default app at http://127.0.0.1:8766 now has one form and a run history. Choose a ZIP upload or a Hugging Face dataset URL, leave the fixed requirement `conversations where there is an interruption`, and check the dataset. After validation, click **Curate dataset**. Other requirements are rejected by the API as well as being uneditable in the UI. The fixed interruption requirement is the only supported web objective.
 
 The policy remains `successful-interruption-v1`: timed overlaps propose candidates; Gemini judges the audio and nearby transcript; only clear successful-interruption suggestions with no detected evidence truncation are shortlisted. A conversation is selected when at least one event is shortlisted. **Automatic ZIPs contain model-selected, unreviewed examples.** They are not labeled as human-confirmed. Review selected examples before using them as training labels.
 
@@ -106,7 +108,7 @@ Browser verification uses an isolated server with a controlled judge. It checks 
 
 ```sh
 sh scripts/setup.sh core
-(cd curation-web && npm install && npm run build)
+(cd curation-web && pnpm install --frozen-lockfile && pnpm build)
 # Configure GEMINI_API_KEY in the process environment, outside project files.
 .venv/bin/curation-serve
 ```

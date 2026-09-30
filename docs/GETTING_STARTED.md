@@ -4,7 +4,9 @@ Start with the [README quickstart](../README.md#get-started). Commands assume a 
 
 ## First use
 
-The app requires real conversation audio and speaker-labeled transcripts with start/end timestamps in seconds. It does not transcribe or diarize arbitrary recordings. See the [dataset format](DATASET_RUNS.md#supported-sources) before preparing a ZIP. The downloadable example is intentionally silent and demonstrates structure only.
+This guide covers the current fixed interruption workflow. VoiceSift’s broader goal is curation through freeform text objectives; that end-to-end interface is not available yet.
+
+The interruption workflow requires real conversation audio and speaker-labeled transcripts with start/end timestamps in seconds. It does not transcribe or diarize arbitrary recordings. This is a requirement of the current conversation adapter, not of every LALM-based curation goal; the separate audio-only experiments use recordings directly. See the [dataset format](DATASET_RUNS.md#supported-sources) before preparing a ZIP. The downloadable example is intentionally silent and demonstrates structure only.
 
 The built-in Hugging Face adapter accepts this source:
 

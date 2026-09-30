@@ -1,6 +1,8 @@
 # VoiceSift
 
-Find **successful interruptions** in voice conversations, review the matches, and download a curated dataset. A minimal, black-and-white localhost app. No GPU, Docker or database setup required.
+VoiceSift uses **large audio-language models (LALMs)** to help curate voice datasets. The goal is to extract relevant examples from larger collections using **freeform text objectives**: describe what you want, review the matches, and export a curated dataset.
+
+The current implementation is a minimal localhost app; no GPU, Docker or database setup is required.
 
 <p>
   <img src="docs/images/voicesift-start.jpg" width="49%" alt="VoiceSift dataset upload, Hugging Face link and interruption requirement" />
@@ -9,7 +11,7 @@ Find **successful interruptions** in voice conversations, review the matches, an
 
 *Choose a source, then listen and review. Screenshots show a development run, not benchmark results.*
 
-**Local beta for technical users.** Tested on macOS; other platforms are not yet verified. The web app supports interruption curation only. It uses Gemini, not Laya. Model suggestions can be wrong—review them before using them as training labels.
+**Current beta:** the web app implements one fixed objective—conversations containing a successful interruption. Arbitrary freeform objectives are not yet supported in the UI or a general-purpose CLI. Other objectives have been tested through preset audio-only evaluation scripts. Gemini is the current model provider. Tested on macOS; other platforms are not yet verified. Review model suggestions before using them as training labels.
 
 ## Get started
 
@@ -33,7 +35,7 @@ Start the server; enter your key at the hidden prompt:
 
 Open **http://127.0.0.1:8766/**. Keep the terminal running. If `GEMINI_API_KEY` is already set in your environment, simply run `.venv/bin/curation-serve`. Stop with **Ctrl+C**; rerun either startup command to restart. No reinstall is needed.
 
-## Curate your first dataset
+## Try the interruption workflow
 
 1. Upload a **ZIP containing `dataset.jsonl` and audio**, or paste a supported Hugging Face dataset URL. [Format and limits](docs/DATASET_RUNS.md#supported-sources). The app’s Example ZIP is a silent format template, not real speech.
 2. Click **Check dataset** to download/validate it without model calls, then **Curate dataset** to start analysis.
@@ -44,10 +46,10 @@ Pause/resume, retry failures, undo reviews, search, archive/restore and rerun ar
 
 ## Know before running
 
-- **Inputs:** timed `assistant`/`user` transcripts and audio are required. Supports our manifest format and `mundo-ai/turn-benchmark-dev`; arbitrary Hub schemas and raw-audio transcription are unsupported. ZIP uploads: 512 MB; selected Hub files: up to 6 GB.
+- **Current web inputs:** timed `assistant`/`user` transcripts and audio are required. Supports our manifest format and `mundo-ai/turn-benchmark-dev`; arbitrary Hub schemas and raw-audio transcription are unsupported. ZIP uploads: 512 MB; selected Hub files: up to 6 GB.
 - **Privacy and cost:** curation sends audio excerpts and nearby transcripts to Gemini. Checking can download the full supported source. Paid analysis uses your API quota; there is no dollar spending cap.
 - **Persistence:** history, audio, reviews and exports stay under `artifacts/interruption-curation/dataset-runs/`. Back up the whole directory. Deleting a run retains shared caches. Run one server process locally; this is not a hosted multi-user service.
-- **Quality:** overlap proposes candidates; it does not prove interruption. Counts are not accuracy estimates. Other [experimental goals and benchmarks](docs/README.md) are CLI-only.
+- **Quality:** the interruption workflow uses overlap to propose candidates; overlap alone does not prove interruption. Other [experimental goals](docs/README.md) judge audio directly. Their benchmark results do not establish accuracy for arbitrary objectives.
 
 [Setup help, gated datasets, updates and troubleshooting](docs/GETTING_STARTED.md) · [Full workflow and ZIP contents](docs/DATASET_RUNS.md) · [Verification](evidence/curation-workflow/README.md)
 

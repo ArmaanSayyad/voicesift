@@ -1,5 +1,7 @@
 # Interruption curation — first release
 
+> Historical development document. Its proposed scope and implementation state may be superseded. See [VoiceSift’s current purpose and capabilities](../../docs/README.md#project-scope-and-current-capabilities).
+
 ## Goal
 Find datapoints where a user begins speaking while the agent is already speaking. A deterministic overlap detector finds candidates; a reviewer determines whether they are interruptions, backchannels, other overlaps, or uncertain. Correction/cancellation semantics and Laya integration are deferred. This supersedes the earlier semantic-mining first-release plan.
 
