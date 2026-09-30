@@ -50,13 +50,14 @@ The runtime is one FastAPI process serving the React UI, with one dataset run ac
 
 ## Selected experiment results
 
-The [experiment docs](docs/README.md) describe three audio-only curation goals with strong final benchmark results. These are available through the evaluation CLI; the web app currently supports interruption curation only.
+The [experiment docs](docs/README.md) describe selected audio-only curation goals and their final benchmark results. These are available through the evaluation CLI; the web app currently supports interruption curation only.
 
 | Experiment | Accuracy | Precision | Recall |
 |---|---:|---:|---:|
 | [Balance inquiries](docs/experiments/balance-inquiries.md) | 99.6% | 95.3% | 100% |
 | [Card-freeze requests](docs/experiments/card-freeze-requests.md) | 100% | 100% | 100% |
 | [Laughter](docs/experiments/laughter.md) | 97.7% | 93.9% | 92.0% |
+| [Coughing](docs/experiments/coughing.md) | 94.0% | 79.6% | 86.0% |
 
 Results measure agreement with reference labels on the documented datasets. They are selected examples of supported experimental goals, not accuracy claims for every curation requirement or the interruption UI. Review model-selected data before using it as training ground truth.
 
