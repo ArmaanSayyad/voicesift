@@ -1,6 +1,6 @@
 # Documentation
 
-Start with the [project setup](../README.md#run-locally), [setup help](GETTING_STARTED.md), and [dataset workflow](DATASET_RUNS.md).
+Start with the [project setup](../README.md#get-started), [setup help](GETTING_STARTED.md), and [dataset workflow](DATASET_RUNS.md).
 
 ## Selected experiments
 
