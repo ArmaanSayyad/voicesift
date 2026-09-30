@@ -41,8 +41,10 @@ def evidence(corpus, cid):
     asset = c["audio"]
     if not asset:
         raise ValueError("Attach source WAV before audio analysis")
-    data = (corpus.root / "assets" / asset["name"]).read_bytes()
-    if hashlib.sha256(data).hexdigest() != asset["hash"]:
+    source = corpus.root / "assets" / asset["name"]
+    with source.open("rb") as f:
+        digest = hashlib.file_digest(f, "sha256").hexdigest()
+    if digest != asset["hash"]:
         raise ValueError("Source audio hash mismatch")
     onset = c["detection"]["user_onset_s"]
     end = max(
@@ -51,9 +53,12 @@ def evidence(corpus, cid):
     )
     start = max(0.0, onset - 3.0)
     stop = min(asset["duration"], end + 3.0, start + 30.0)
-    samples, sr = sf.read(io.BytesIO(data), always_2d=True)
+    with sf.SoundFile(source) as f:
+        sr = f.samplerate
+        f.seek(int(start * sr))
+        samples = f.read(int(stop * sr) - int(start * sr), always_2d=True)
     clip = io.BytesIO()
-    samples = soxr.resample(samples[int(start * sr) : int(stop * sr)], sr, 16000)
+    samples = soxr.resample(samples, sr, 16000)
     sf.write(clip, samples, 16000, format="WAV", subtype="PCM_16")
     turns = [
         {**t, "turn_index": i}

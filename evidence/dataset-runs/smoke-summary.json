@@ -1,0 +1,23 @@
+{
+  "real_browser_upload": true,
+  "real_browser_download": true,
+  "zip_crc_ok": true,
+  "real_audio_runs": [
+    {
+      "conversations": 2,
+      "events": 5,
+      "selected": 0,
+      "errors": 0
+    },
+    {
+      "conversations": 1,
+      "events": 7,
+      "selected": 1,
+      "errors": 0
+    }
+  ],
+  "scope": "Workflow smoke tests on previously inspected development material, not an accuracy evaluation",
+  "huggingface_revision": "c29aa4e6422122a8dccbe23598016a089bea2121",
+  "huggingface_download": "Actual authenticated Hub calls; 5 files and 4215901555 bytes resolved from existing local cache",
+  "unit_tests": 86
+}

@@ -1,4 +1,8 @@
 import hashlib, io, json, secrets, uuid, zipfile
+import tempfile
+from pydantic import BaseModel, ConfigDict
+from .runs import Runs
+from .sources import MAX_UPLOAD, REQUIREMENT
 from pathlib import Path
 import soundfile as sf
 from fastapi import FastAPI, Request, HTTPException
@@ -10,7 +14,14 @@ from .store import Corpus, Conflict
 from .models import Import, Review, Analyze
 from .analysis import Analysis, evidence
 from .precision import VERSION as POLICY_VERSION
-from fastapi.responses import Response
+from fastapi.responses import Response, PlainTextResponse
+
+
+class DatasetRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    url: str
+    requirement: str = REQUIREMENT
+
 
 REPO = Path(__file__).resolve().parents[3]
 MAX_AUDIO = 50_000_000
@@ -19,10 +30,14 @@ MAX_AUDIO = 50_000_000
 def create_app(root=None, backend=None):
     corpus = Corpus(root or REPO / "artifacts/interruption-curation")
     analysis = Analysis(corpus, backend)
+    runs = Runs(
+        corpus.root / "dataset-runs", backend=backend, configured=analysis.configured
+    )
     token = secrets.token_urlsafe(32)
     app = FastAPI(title="Interruption Curation")
     app.state.corpus = corpus
     app.state.analysis = analysis
+    app.state.runs = runs
     app.add_middleware(
         TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "testserver"]
     )
@@ -40,15 +55,18 @@ def create_app(root=None, backend=None):
                     {"detail": "Local session token and matching origin required"},
                     status_code=403,
                 )
-            limit = MAX_AUDIO if request.url.path.endswith("/audio") else 2_100_000
-            total = 0
-            chunks = []
-            async for chunk in request.stream():
-                total += len(chunk)
-                if total > limit:
-                    return JSONResponse({"detail": "Upload too large"}, status_code=413)
-                chunks.append(chunk)
-            request._body = b"".join(chunks)
+            if request.url.path != "/api/curation/runs/upload":
+                limit = MAX_AUDIO if request.url.path.endswith("/audio") else 2_100_000
+                total = 0
+                chunks = []
+                async for chunk in request.stream():
+                    total += len(chunk)
+                    if total > limit:
+                        return JSONResponse(
+                            {"detail": "Upload too large"}, status_code=413
+                        )
+                    chunks.append(chunk)
+                request._body = b"".join(chunks)
         response = await call_next(request)
         response.headers.update(
             {
@@ -81,7 +99,79 @@ def create_app(root=None, backend=None):
             "laya_enabled": False,
             "gemini_configured": analysis.configured,
             "policy_version": POLICY_VERSION,
+            "requirement": REQUIREMENT,
         }
+
+    @app.get("/api/curation/format", response_class=PlainTextResponse)
+    def dataset_format():
+        return """Upload format
+
+A ZIP containing dataset.jsonl at its root and the referenced audio files.
+One JSON object per line, one conversation per object. Example:
+
+{"id":"call-001","audio":"audio/call-001.wav","turns":[{"role":"assistant","text":"The first option is...","start_s":0.0,"end_s":3.0},{"role":"user","text":"Wait, let me clarify.","start_s":1.5,"end_s":4.0}]}
+
+This example shows the structure, not a validated interruption.
+Use actual mono/stereo audio (up to one hour), speaker labels, transcripts and timestamps in seconds.
+User-on-assistant interruptions are searched. Raw audio without timed transcripts is not supported yet.
+Optional: source_group, split, provenance, timing_source. Include source LICENSE/README.md notices.
+ZIP: up to 512 MB compressed / 2 GB expanded. 1–500 conversations, up to 10,000 candidate events per run.
+
+Hugging Face
+Use https://huggingface.co/datasets/owner/name. The repo must contain dataset.jsonl plus its audio files,
+or use mundo-ai/turn-benchmark-dev (adapter included, both speaker directions searched).
+Up to 6 GB of selected source files. Gated sources require accepted terms and local Hugging Face CLI login.
+Unsupported schemas are rejected; dataset code is never executed.
+
+Results
+The ZIP contains selected full conversations and 16 kHz WAV audio, event clips, model decisions,
+source notices and a manifest. These are model-selected candidates, not human-confirmed labels.
+"""
+
+    @app.get("/api/curation/runs")
+    def dataset_runs():
+        return {"items": runs.list()}
+
+    @app.post("/api/curation/runs/huggingface")
+    def dataset_link(body: DatasetRequest):
+        return runs.submit(body.requirement, url=body.url)
+
+    @app.post("/api/curation/runs/upload")
+    async def dataset_upload(
+        request: Request, filename: str = "dataset.zip", requirement: str = REQUIREMENT
+    ):
+        if requirement != REQUIREMENT:
+            raise ValueError("Only the fixed interruption requirement is supported")
+        if not runs.configured:
+            raise ValueError("Gemini is not configured on the server")
+        if not filename.lower().endswith(".zip"):
+            raise ValueError(
+                "Upload a ZIP containing dataset.jsonl and its referenced audio"
+            )
+        path = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                dir=runs.root, suffix=".zip", delete=False
+            ) as f:
+                path = Path(f.name)
+                size = 0
+                async for chunk in request.stream():
+                    size += len(chunk)
+                    if size > MAX_UPLOAD:
+                        raise HTTPException(413, "Upload exceeds 512 MB")
+                    f.write(chunk)
+            return runs.submit(requirement, upload=path, filename=filename)
+        finally:
+            if path:
+                path.unlink(missing_ok=True)
+
+    @app.get("/api/curation/runs/{rid}/download")
+    def dataset_download(rid: str):
+        return FileResponse(
+            runs.download(rid),
+            media_type="application/zip",
+            filename=f"curated-{rid[:8]}.zip",
+        )
 
     @app.get("/api/curation/jobs")
     def jobs():

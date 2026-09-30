@@ -1,17 +1,18 @@
 # Interruption dataset curation
 
-The current product is a small local dataset-curation app. Import timestamped, speaker-labelled conversations, inspect user-on-agent overlap candidates, attach source WAVs, review, and export human-confirmed successful interruptions. **Laya and correction/cancellation semantics are deferred.** Overlap is not automatically a confirmed interruption.
+A minimal local app: upload a dataset ZIP or paste a supported Hugging Face dataset URL, submit the fixed interruption requirement, and download the selected conversations from run history. The interface is black and white; the requirement is currently read-only.
 
 ```sh
 sh scripts/setup.sh core
-# Build the UI from curation-web/: pnpm install --frozen-lockfile && pnpm build
+# Build from curation-web/: pnpm install --frozen-lockfile && pnpm build
+# Set GEMINI_API_KEY in the process environment, outside project files.
 .venv/bin/curation-serve
 # Open http://127.0.0.1:8766
 ```
 
-Use `fixtures/interruption-demo.jsonl` to learn the import format. The UI can load these three constructed examples. They are not real speech or a benchmark. Current limits and semantics are in [the curation plan](docs/CURATION_PLAN.md). Persistent local data lives in ignored `artifacts/interruption-curation/`; source audio is optional, not fetched automatically. The app does not infer speakers/timestamps from raw mixed audio. Run `.venv/bin/python -m pytest -q` for verification.
+[Supported input format, persistence, ZIP contents, limits and tests](docs/DATASET_RUNS.md). Hugging Face support currently covers normalized dataset.jsonl/audio repositories and mundo-ai/turn-benchmark-dev. Arbitrary schemas and raw audio without timed transcripts are not supported yet.
 
-See [precision-first policy and measured results](docs/PRECISION_CURATION.md) for the current classifier, migration, and accuracy limits. Gemini uses audio plus context; a shortlist is a review suggestion, not an automatically clean dataset.
+Automatic exports contain **model-selected candidates, not human-confirmed labels**. The [precision evaluation](docs/PRECISION_CURATION.md) documents known false positives and misses. Laya and general natural-language curation are deferred. Run history and artifacts persist locally; no Docker or GPU is required. Earlier manual-review data and exports remain intact.
 
 ---
 

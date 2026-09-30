@@ -7,7 +7,7 @@ name = "repair-bench"
 version = "0.1.0"
 description = "Deterministic audio/event feasibility harness"
 requires-python = ">=3.12"
-dependencies = ["numpy", "scipy", "soxr", "soundfile", "psutil", "fastapi", "uvicorn", "pydantic"]
+dependencies = ["numpy", "scipy", "soxr", "soundfile", "psutil", "fastapi", "uvicorn", "pydantic", "huggingface_hub>=1.0,<2", "pyarrow>=20,<26"]
 
 [project.optional-dependencies]
 test = ["pytest", "hypothesis", "httpx"]
