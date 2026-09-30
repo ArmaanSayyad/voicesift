@@ -1,4 +1,4 @@
-# Conversation dataset curator
+# VoiceSift
 
 Find **successful interruptions** in voice conversations, review the matches, and download a curated dataset. A minimal, black-and-white localhost app. No GPU, Docker or database setup required.
 
