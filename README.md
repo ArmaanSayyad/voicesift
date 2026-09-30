@@ -1,78 +1,49 @@
 # Conversation dataset curator
 
-A local tool for finding useful voice conversations inside a larger dataset. Upload a dataset ZIP or provide a supported Hugging Face link, run curation, inspect the selected examples, and download a curated ZIP.
+Find **successful interruptions** in voice conversations, review the matches, and download a curated dataset. A minimal, black-and-white localhost app. No GPU, Docker or database setup required.
 
-The current app curates **conversations containing a successful interruption**. Its minimal black-and-white interface has a source input, a fixed requirement, and persistent run history. Check compatibility before paid analysis; open a run to listen, review, inspect omissions and export the examples you explicitly keep.
+**Local beta for technical users.** Tested on macOS; other platforms are not yet verified. The web app supports interruption curation only. It uses Gemini, not Laya. Model suggestions can be wrong—review them before using them as training labels.
 
-Model ZIPs contain unverified suggestions. Reviewed ZIPs contain only events explicitly marked **Keep**; Exclude, Unsure and unreviewed events are omitted. The selected experiment pages document their measured results and evaluation scope.
+## Get started
 
-## Run locally
+You need Git, [uv](https://docs.astral.sh/uv/getting-started/installation/), [Node.js](https://nodejs.org/en/download) 24 and pnpm, plus a [Gemini API key](https://ai.google.dev/gemini-api/docs/api-key) with access to `gemini-3.8-flash` and available quota. Python 3.12 is installed by uv if needed.
 
-Prerequisites: `uv`, Node.js, `pnpm`, and a Gemini API key. The core setup uses Python 3.12; `uv` can obtain it. The application requires no GPU, Docker, or PostgreSQL.
-
-Run these commands from the repository root:
+The repository is currently private: request access from the maintainer and authenticate GitHub before cloning. The latest review UI is on the branch below, not `main`.
 
 ```sh
+# If pnpm is not already installed:
+npm install -g pnpm@12.6.0
+
+git clone --branch codex/minimal-curation-review https://github.com/ArmaanSayyad/conversation-repair-workbench.git
+cd conversation-repair-workbench
 sh scripts/setup.sh core
 (cd curation-web && pnpm install --frozen-lockfile && pnpm build)
-# Set GEMINI_API_KEY in your process environment, outside project files.
-.venv/bin/curation-serve
 ```
 
-Open **http://127.0.0.1:8766/**. Source audio and nearby transcript context are sent to Gemini during interruption classification. Downloaded source datasets, model caches, run artifacts and feedback stay on the local machine.
-
-## Use the app
-
-1. Upload a ZIP containing `dataset.jsonl` and its referenced audio, or paste a supported Hugging Face dataset URL.
-2. Click **Check dataset**. The source is downloaded/extracted and all audio and timed transcripts are validated without model calls.
-3. Click **Curate dataset** after the compatibility summary appears. Closing the browser does not stop processing; **Pause** stops new work after in-flight requests finish.
-4. Open a history entry. Listen and mark examples **Keep**, **Exclude** or **Unsure**, with undo. Use the example filter to inspect rejected, unresolved or never-proposed turns; optional sample order provides reproducible spot checks.
-5. Download the **Model ZIP**, or **Prepare reviewed ZIP** and download a version containing only explicitly kept examples.
-
-History supports search, archive/restore, rerunning the same validated source, and confirmed deletion of a run's local data. Partial runs can resume/retry remaining work without rejudging completed responses. Earlier ZIP versions remain immutable. Run notes are separate from review labels; saving a note does not change exports or retrain the model. Empty selections still produce a ZIP with a manifest.
-
-### Supported datasets
-
-- **Uploaded ZIP:** a root `dataset.jsonl` with unique conversation IDs, relative audio paths, and timed `assistant`/`user` turns, plus the referenced audio files.
-- **Hugging Face:** repositories using that same manifest/audio format, and a dedicated adapter for `mundo-ai/turn-benchmark-dev`. Gated datasets use existing local Hugging Face authentication and require accepted access terms.
-
-Arbitrary Hub schemas, raw audio without timed transcripts, and editable natural-language requirements are not supported yet. The current upload limit is 512 MB. See [input examples, limits and export format](docs/DATASET_RUNS.md).
-
-## How selection works
-
-Timed speech overlap proposes candidates. Gemini judges their audio and nearby transcript using the `successful-interruption-v1` policy. Only clear successful-interruption suggestions with no detected evidence truncation are shortlisted. A conversation is exported if it contains at least one shortlisted event.
-
-Overlap alone does not establish an interruption. The classifier can confuse turn-taking, continuation and backchannels, and the pipeline can miss events absent from the supplied timing annotations. Model exports are explicitly `model_selected_not_human_verified`; kept events in reviewed exports are `human_reviewed_keep`. Full conversations can contain other, unlabeled speech. Coverage and review counts are not accuracy estimates.
-
-The runtime is one FastAPI process serving the React UI, with one dataset run active at a time and up to four concurrent model requests. History, cached results, feedback and ZIPs persist under `artifacts/interruption-curation/dataset-runs/`; earlier manual-review records remain in SQLite. A server restart marks unfinished runs interrupted. **Resume** reuses the prepared source and completed event records; exact-request model caches also persist. Provider rate/access limits pause scheduling rather than treating missing responses as negative labels. Large datasets can incur substantial API usage; the processing limits are not a spending cap.
-
-**Laya is not used in the current selection pipeline.** Current classification uses Gemini; local model downloads are unnecessary for the curator.
-
-## Selected experiment results
-
-The [experiment docs](docs/README.md) describe selected audio-only curation goals and their final benchmark results. These are available through the evaluation CLI; the web app currently supports interruption curation only.
-
-| Experiment | Accuracy | Precision | Recall |
-|---|---:|---:|---:|
-| [Balance inquiries](docs/experiments/balance-inquiries.md) | 99.6% | 95.3% | 100% |
-| [Card-freeze requests](docs/experiments/card-freeze-requests.md) | 100% | 100% | 100% |
-| [Laughter](docs/experiments/laughter.md) | 97.7% | 93.9% | 92.0% |
-| [Coughing](docs/experiments/coughing.md) | 94.0% | 79.6% | 86.0% |
-
-Results measure agreement with reference labels on the documented datasets. They are selected examples of supported experimental goals, not accuracy claims for every curation requirement or the interruption UI. Review model-selected data before using it as training ground truth.
-
-## Validation
+Start the server; enter your key at the hidden prompt:
 
 ```sh
-.venv/bin/python -m pytest -q
-(cd curation-web && pnpm build)
+.venv/bin/python -c 'import getpass, os; os.environ["GEMINI_API_KEY"] = getpass.getpass("Gemini API key: "); from repair_bench.curation.api import main; main()'
 ```
 
-The current suite has **109 passing tests**. It covers source validation, safe ZIP handling, run persistence, model caching, export integrity, history pagination, audio access, feedback persistence and authorization, and evaluation label isolation. Recovery/review tests cover model-free preflight, bounded pause and quota handling, restart/resume, retrying only failures, kept-only immutable exports, review conflicts, legacy history, archive/rerun/delete, and integrity/authorization. Browser smoke tests exercise the complete source-to-reviewed-ZIP flow, audio and transcript previews, undo, persistent notes, filters and history controls. Workflow tests do not measure classifier accuracy.
+Open **http://127.0.0.1:8766/**. Keep the terminal running. If `GEMINI_API_KEY` is already set in your environment, simply run `.venv/bin/curation-serve`. Stop with **Ctrl+C**; rerun either startup command to restart. No reinstall is needed.
 
-## Documentation
+## Curate your first dataset
 
-- [Documentation and experiment index](docs/README.md)
-- [Dataset workflow, persistence and format](docs/DATASET_RUNS.md)
+1. Upload a **ZIP containing `dataset.jsonl` and audio**, or paste a supported Hugging Face dataset URL. [Format and limits](docs/DATASET_RUNS.md#supported-sources). The app’s Example ZIP is a silent format template, not real speech.
+2. Click **Check dataset** to download/validate it without model calls, then **Curate dataset** to start analysis.
+3. Open its history entry. Listen, inspect transcripts, and mark examples **Keep / Exclude / Unsure**. Filters let you check rejected, unresolved and unproposed examples too.
+4. **Prepare reviewed ZIP**, then download it. Only explicitly kept events receive positive annotations. **Model ZIP** downloads the original unverified selections.
 
-Local datasets, credentials, model weights and run artifacts are not committed. Source dataset licenses continue to apply to downloaded and curated material.
+Pause/resume, retry failures, undo reviews, search, archive/restore and rerun are available in history. Earlier export versions are preserved.
+
+## Know before running
+
+- **Inputs:** timed `assistant`/`user` transcripts and audio are required. Supports our manifest format and `mundo-ai/turn-benchmark-dev`; arbitrary Hub schemas and raw-audio transcription are unsupported. ZIP uploads: 512 MB; selected Hub files: up to 6 GB.
+- **Privacy and cost:** curation sends audio excerpts and nearby transcripts to Gemini. Checking can download the full supported source. Paid analysis uses your API quota; there is no dollar spending cap.
+- **Persistence:** history, audio, reviews and exports stay under `artifacts/interruption-curation/dataset-runs/`. Back up the whole directory. Deleting a run retains shared caches. Run one server process locally; this is not a hosted multi-user service.
+- **Quality:** overlap proposes candidates; it does not prove interruption. Counts are not accuracy estimates. Other [experimental goals and benchmarks](docs/README.md) are CLI-only.
+
+[Setup help, gated datasets, updates and troubleshooting](docs/GETTING_STARTED.md) · [Full workflow and ZIP contents](docs/DATASET_RUNS.md) · [Verification](evidence/curation-workflow/README.md)
+
+**Distribution:** no project license has been selected yet; contact the maintainer about reuse or redistribution. Source dataset licenses continue to apply to curated outputs.
