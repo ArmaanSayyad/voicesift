@@ -1,0 +1,133 @@
+{
+  "sample": "First two recordings per VocalSound class in source order; not a held-out accuracy benchmark",
+  "source_repo": "DynamicSuperb/VocalSoundRecognition_VocalSound",
+  "source_revision": "beb7fe456e01f1a9959daae8dd507fa7790f4b62",
+  "objective": "Recordings containing audible laughter or chuckling, but no coughing.",
+  "plan": {
+    "supported": true,
+    "summary": "Audio recordings containing audible laughter or chuckling with no coughing present.",
+    "criteria": [
+      "At least one instance of audible laughter or chuckling is heard in the recording.",
+      "No audible coughing occurs anywhere in the recording."
+    ],
+    "reason": ""
+  },
+  "total": 12,
+  "completed": 8,
+  "correct_completed": 8,
+  "true_positive": 1,
+  "false_positive": 0,
+  "true_negative": 7,
+  "false_negative": 0,
+  "unresolved": 4,
+  "results": [
+    {
+      "id": "example-00",
+      "source_label": "Sigh",
+      "status": "complete",
+      "answer": {
+        "match": "no",
+        "evidence_note": "The recording contains a vocalized sigh or exhale, with no audible laughter or chuckling."
+      },
+      "error": null
+    },
+    {
+      "id": "example-01",
+      "source_label": "Sneeze",
+      "status": "complete",
+      "answer": {
+        "match": "no",
+        "evidence_note": "The audio contains a sharp vocal yell and sudden movement noises, but no laughter or chuckling is heard."
+      },
+      "error": null
+    },
+    {
+      "id": "example-02",
+      "source_label": "Cough",
+      "status": "complete",
+      "answer": {
+        "match": "no",
+        "evidence_note": "The recording contains clear coughing sounds and lacks any audible laughter or chuckling."
+      },
+      "error": null
+    },
+    {
+      "id": "example-03",
+      "source_label": "Throat clearing",
+      "status": "complete",
+      "answer": {
+        "match": "no",
+        "evidence_note": "The recording contains throat clearing or coughing sounds and lacks any audible laughter or chuckling."
+      },
+      "error": null
+    },
+    {
+      "id": "example-04",
+      "source_label": "Sigh",
+      "status": "complete",
+      "answer": {
+        "match": "no",
+        "evidence_note": "The recording contains a vocalized sigh or exhale, but no audible laughter or chuckling."
+      },
+      "error": null
+    },
+    {
+      "id": "example-05",
+      "source_label": "Laughter",
+      "status": "complete",
+      "answer": {
+        "match": "yes",
+        "evidence_note": "Audible laughter is heard throughout the recording with no coughing detected."
+      },
+      "error": null
+    },
+    {
+      "id": "example-06",
+      "source_label": "Sniff",
+      "status": "error",
+      "answer": null,
+      "error": "RateLimit"
+    },
+    {
+      "id": "example-07",
+      "source_label": "Throat clearing",
+      "status": "complete",
+      "answer": {
+        "match": "no",
+        "evidence_note": "The recording contains heavy breathing and sighing sounds, but no audible laughter, chuckling, or coughing."
+      },
+      "error": null
+    },
+    {
+      "id": "example-08",
+      "source_label": "Cough",
+      "status": "complete",
+      "answer": {
+        "match": "no",
+        "evidence_note": "The audio contains audible coughing/throat clearing and no laughter or chuckling."
+      },
+      "error": null
+    },
+    {
+      "id": "example-09",
+      "source_label": "Laughter",
+      "status": "error",
+      "answer": null,
+      "error": "RateLimit"
+    },
+    {
+      "id": "example-10",
+      "source_label": "Sneeze",
+      "status": "error",
+      "answer": null,
+      "error": "RateLimit"
+    },
+    {
+      "id": "example-11",
+      "source_label": "Sniff",
+      "status": "error",
+      "answer": null,
+      "error": "RateLimit"
+    }
+  ]
+}

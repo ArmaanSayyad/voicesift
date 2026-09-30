@@ -124,7 +124,7 @@ def download_dataset(url, cache, progress):
             adapter = "turnbench"
         else:
             raise ValueError(
-                "Unsupported dataset schema. Provide a dataset.jsonl with timed turns and audio paths, or use mundo-ai/turn-benchmark-dev."
+                "Unsupported dataset schema. Provide a dataset.jsonl with audio paths and optional timed turns, or use mundo-ai/turn-benchmark-dev."
             )
         names = sorted(set(names + license_names))
         if not names or any(n not in files or files[n].size is None for n in names):
@@ -182,6 +182,8 @@ def validate_record(row):
             "Each conversation needs a string id of at most 200 characters"
         )
     turns = row.get("turns")
+    if turns is None or turns == []:
+        return {**row, "turns": [], "timing_source": "none"}
     if not isinstance(turns, list) or not 2 <= len(turns) <= 10000:
         raise ValueError("Each conversation needs 2–10,000 timed speaker turns")
     turns = [Turn.model_validate(t).model_dump() for t in turns]
@@ -300,7 +302,7 @@ def prepare_records(source, dest, adapter, progress):
             normalize_audio(
                 path,
                 wav,
-                max(t["end_s"] for t in record["turns"]),
+                max((t["end_s"] for t in record["turns"]), default=0),
                 MAX_DOWNLOAD - used_bytes,
             )
             used_bytes += wav.stat().st_size

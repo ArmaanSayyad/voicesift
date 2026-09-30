@@ -4,9 +4,9 @@ Start with the [README quickstart](../README.md#get-started). Commands assume a 
 
 ## First use
 
-This guide covers the current fixed interruption workflow. VoiceSift’s broader goal is curation through freeform text objectives; that end-to-end interface is not available yet.
+Enter a plain-language objective in the Requirement box. Checking validates the dataset without model calls; curation interprets the objective and judges the audio. History shows the interpretation, decisions, reviews and exports.
 
-The interruption workflow requires real conversation audio and speaker-labeled transcripts with start/end timestamps in seconds. It does not transcribe or diarize arbitrary recordings. This is a requirement of the current conversation adapter, not of every LALM-based curation goal; the separate audio-only experiments use recordings directly. See the [dataset format](DATASET_RUNS.md#supported-sources) before preparing a ZIP. The downloadable example is intentionally silent and demonstrates structure only.
+The interruption workflow requires real conversation audio and speaker-labeled transcripts with start/end timestamps in seconds. It does not transcribe or diarize arbitrary recordings. This requirement applies only to the optimized interruption path. Freeform goals accept audio-only records and evaluate each complete recording, up to five minutes. See the [dataset format](DATASET_RUNS.md#supported-sources) before preparing a ZIP. The downloadable example is intentionally silent and demonstrates structure only.
 
 The built-in Hugging Face adapter accepts this source:
 
@@ -76,4 +76,4 @@ For a reproducible bug, [open an issue](https://github.com/ArmaanSayyad/voicesif
 (cd curation-web && pnpm build)
 ```
 
-The workflow verification records 109 passing tests and browser checks. These test application behavior, not classifier accuracy. See [verification details](../evidence/curation-workflow/README.md) and the [selected experimental results](README.md).
+The earlier interruption workflow verification records 109 passing tests and browser checks. The freeform extension adds tests for objective validation, planning, audio-only input, caching, retries and reviewed exports; run the suite for the current count. These test application behavior, not classifier accuracy. See [verification details](../evidence/curation-workflow/README.md) and the [selected experimental results](README.md).

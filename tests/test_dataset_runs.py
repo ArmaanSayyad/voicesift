@@ -189,7 +189,7 @@ def test_hf_job_uses_adapter_and_preserves_revision(tmp_path):
         )
 
 
-def test_fixed_requirement_busy_and_restart(tmp_path):
+def test_requirement_validation_busy_and_restart(tmp_path):
     entered = threading.Event()
     release = threading.Event()
 
@@ -200,7 +200,7 @@ def test_fixed_requirement_busy_and_restart(tmp_path):
 
     m = Runs(tmp_path / "runs", backend=block)
     with pytest.raises(ValueError):
-        m.submit("find laughter", upload=bundle(tmp_path))
+        m.submit("   ", upload=bundle(tmp_path))
     r = m.submit(REQUIREMENT, upload=bundle(tmp_path))
     assert entered.wait(2)
     with pytest.raises(Conflict):
@@ -212,7 +212,7 @@ def test_fixed_requirement_busy_and_restart(tmp_path):
     assert other.get(r["id"])["status"] == "interrupted"
 
 
-def test_api_upload_download_and_requirement_enforcement(tmp_path):
+def test_api_upload_download_and_requirement_validation(tmp_path):
     app = create_app(tmp_path / "app", backend=backend)
     with TestClient(app) as client:
         p = bundle(tmp_path)
@@ -228,7 +228,7 @@ def test_api_upload_download_and_requirement_enforcement(tmp_path):
                 "/api/curation/runs/huggingface",
                 json={
                     "url": "https://huggingface.co/datasets/a/b",
-                    "requirement": "find laughter",
+                    "requirement": "   ",
                 },
             ).status_code
             == 422

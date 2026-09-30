@@ -12,7 +12,7 @@ from pathlib import Path
 import soundfile as sf
 
 from ..store import atomic_json
-from . import precision
+from . import objectives, precision
 from .analysis import MODEL, evidence, gemini
 from .detect import detect
 from .sources import (
@@ -108,8 +108,7 @@ class Runs(Workflow):
     def submit(
         self, requirement, *, upload=None, filename=None, url=None, preflight=False
     ):
-        if requirement != REQUIREMENT:
-            raise ValueError("Only the fixed interruption requirement is supported")
+        requirement = objectives.requirement(requirement)
         if bool(upload) == bool(url):
             raise ValueError("Choose either an upload or a Hugging Face URL")
         if not self.configured and not preflight:
@@ -150,8 +149,12 @@ class Runs(Workflow):
             self.pool.submit(self.run, rid, url)
         return row
 
-    def predict(self, packet, audio):
-        body = precision.request(packet, audio)
+    def predict(self, packet, audio, objective=None, plan=None):
+        body = (
+            objectives.judge_request(audio, objective, plan)
+            if objective
+            else precision.request(packet, audio)
+        )
         key = hashlib.sha256((MODEL + canonical(body)).encode()).hexdigest()
         with self.lock:
             cache_lock = self.prediction_locks.setdefault(key, threading.Lock())
@@ -159,19 +162,28 @@ class Runs(Workflow):
             path = self.cache / f"{key}.json"
             cached = path.exists()
             result = json.loads(path.read_text()) if cached else self.backend(body)
-            precision.validate(result["answer"])
+            (objectives.validate_answer if objective else precision.validate)(
+                result["answer"]
+            )
             if not cached:
                 atomic_json(path, result)
         return {
             **result,
             "request_sha256": key,
             "cached": cached,
-            "disposition": precision.disposition(result["answer"], packet),
+            "disposition": (
+                {"yes": "shortlist", "no": "not_selected", "unclear": "needs_review"}[
+                    result["answer"]["match"]
+                ]
+                if objective
+                else precision.disposition(result["answer"], packet)
+            ),
         }
 
     def run(self, rid, url):
         folder = self.folder(rid)
         stop = self.stops.setdefault(rid, threading.Event())
+        objective = self.get(rid)["requirement"]
 
         def progress(**fields):
             if stop.is_set():
@@ -183,7 +195,12 @@ class Runs(Workflow):
             if snapshot.exists():
                 prepared = json.loads(snapshot.read_text())
                 if (
-                    prepared["policy_version"] != precision.VERSION
+                    prepared["policy_version"]
+                    != (
+                        objectives.VERSION
+                        if prepared.get("mode") == "audio"
+                        else precision.VERSION
+                    )
                     or prepared["model"] != MODEL
                 ):
                     raise ValueError(
@@ -216,11 +233,34 @@ class Runs(Workflow):
                     message="Validating transcripts and audio; no model calls",
                 )
                 records = prepare_records(source, folder / "assets", adapter, progress)
+                mode = (
+                    "interruption"
+                    if objective == REQUIREMENT and all(r["turns"] for r in records)
+                    else "audio"
+                )
+                policy = (
+                    precision.VERSION if mode == "interruption" else objectives.VERSION
+                )
                 tasks, unscreened = [], []
                 timed = untimed = 0
                 for i, r in enumerate(records):
                     r["duration"] = sf.info(folder / "assets" / r["file"]).duration
                     r["audio_sha256"] = file_hash(folder / "assets" / r["file"])
+                    if mode == "audio":
+                        if r["duration"] > objectives.MAX_SECONDS:
+                            raise ValueError(
+                                "Freeform objectives require complete recordings of at most 5 minutes. Split longer recordings into meaningful examples before uploading; nothing is silently truncated."
+                            )
+                        if (
+                            folder / "assets" / r["file"]
+                        ).stat().st_size > objectives.MAX_AUDIO_BYTES:
+                            raise ValueError(
+                                "Freeform audio exceeds the 14 MB normalized WAV inline allowance. Use a shorter recording (about 3.6 minutes for stereo); nothing is truncated."
+                            )
+                        tasks.append(
+                            (i, {"turn_index": 0, "whole_record": True}, False)
+                        )
+                        continue
                     for reverse in [False, True] if r["both_directions"] else [False]:
                         turns = (
                             [
@@ -271,7 +311,9 @@ class Runs(Workflow):
                     "tasks": tasks,
                     "unscreened": unscreened,
                     "provenance": provenance,
-                    "policy_version": precision.VERSION,
+                    "policy_version": policy,
+                    "mode": mode,
+                    "requirement": objective,
                     "model": MODEL,
                     "coverage": {
                         "timed_turns": timed,
@@ -286,7 +328,11 @@ class Runs(Workflow):
                 conversations=len(records),
                 candidates=len(tasks),
                 coverage=prepared["coverage"],
-                compatibility="Audio and timed speaker transcripts validated",
+                mode=prepared.get("mode", "interruption"),
+                policy_version=prepared["policy_version"],
+                compatibility="Complete audio validated"
+                if prepared.get("mode") == "audio"
+                else "Audio and timed speaker transcripts validated",
             )
             if self.get(rid).get("preflight"):
                 progress(
@@ -294,7 +340,36 @@ class Runs(Workflow):
                     message="Compatible. Ready for curation; no model calls made.",
                 )
                 return
-            progress(status="curating", message="Finding interruptions")
+            audio_mode = prepared.get("mode") == "audio"
+            if audio_mode:
+                plan_path = folder / "objective-plan.json"
+                if plan_path.exists():
+                    plan_result = json.loads(plan_path.read_text())
+                else:
+                    progress(status="curating", message="Interpreting your objective")
+                    plan_body = objectives.plan_request(objective)
+                    plan_result = self.backend(plan_body)
+                    plan_result["request_sha256"] = hashlib.sha256(
+                        (MODEL + canonical(plan_body)).encode()
+                    ).hexdigest()
+                    objectives.validate_plan(plan_result["answer"])
+                    atomic_json(plan_path, plan_result)
+                plan = plan_result["answer"]
+                objectives.validate_plan(plan)
+                self.update(rid, objective_plan=plan)
+                if not plan["supported"]:
+                    progress(status="needs_clarification", message=plan["reason"])
+                    return
+                if stop.is_set():
+                    raise Paused()
+            else:
+                plan = None
+            progress(
+                status="curating",
+                message="Evaluating complete recordings"
+                if audio_mode
+                else "Finding interruptions",
+            )
             (folder / "clips").mkdir(exist_ok=True)
             (folder / "events").mkdir(exist_ok=True)
             results = []
@@ -319,16 +394,25 @@ class Runs(Workflow):
                     "target_turn_index": d["turn_index"],
                     "roles_reversed": reverse,
                     "detection": d,
-                    "policy_version": precision.VERSION,
+                    "policy_version": prepared["policy_version"],
                     "model": MODEL,
                 }
                 try:
-                    packet, audio, meta = evidence(
-                        EvidenceSource(folder, records[i], d, reverse), eid
-                    )
+                    if audio_mode:
+                        audio, meta = self.event_audio(rid, result)
+                        packet = None
+                    else:
+                        packet, audio, meta = evidence(
+                            EvidenceSource(folder, records[i], d, reverse), eid
+                        )
                     result.update(evidence=meta)
                     (folder / "clips" / f"{eid}.wav").write_bytes(audio)
-                    result.update(self.predict(packet, audio), status="complete")
+                    result.update(
+                        self.predict(
+                            packet, audio, objective if audio_mode else None, plan
+                        ),
+                        status="complete",
+                    )
                 except Exception as exc:  # noqa: BLE001 - persist sanitized failure state without provider secrets
                     result.update(
                         status="error",
@@ -384,6 +468,17 @@ class Runs(Workflow):
         except Paused:
             self.update(rid, status="paused", message="Paused. Resume when ready.")
         except Exception as exc:  # noqa: BLE001 - persist sanitized failure state without provider secrets
+            if getattr(exc, "code", None) in (401, 403, 429):
+                self.update(
+                    rid,
+                    status="paused",
+                    message=(
+                        "Gemini rate limit reached while interpreting the objective. Wait before resuming."
+                        if exc.code == 429
+                        else "Gemini access failed while interpreting the objective. Check model access before resuming."
+                    ),
+                )
+                return
             message = (
                 str(exc)[:300]
                 if type(exc) is ValueError

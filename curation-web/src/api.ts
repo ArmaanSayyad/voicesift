@@ -3,6 +3,8 @@ export type Run = {
   message: string; conversations: number; candidates: number; processed: number;
   selected_conversations: number; selected_events: number; errors: number;
   exports?: {path: string; created: string; status: string}[];
+  mode?: "audio" | "interruption";
+  objective_plan?: {supported: boolean; summary: string; criteria: string[]; reason: string};
   download_ready: boolean; archived?: boolean; compatibility?: string;
   coverage?: {timed_turns: number; untimed_turns: number; candidate_events: number; not_proposed_turns: number};
 };
@@ -41,6 +43,6 @@ export const send = <T,>(url: string, body?: unknown, method = "POST") => api<T>
 });
 export const message = (e: unknown) => e instanceof Error ? e.message : String(e);
 export function status(r: Run) {
-  return ({completed: "Complete", completed_with_errors: "Partial", interrupted: "Interrupted", ready: "Ready", paused: "Paused"} as Record<string, string>)[r.status]
+  return ({completed: "Complete", completed_with_errors: "Partial", interrupted: "Interrupted", ready: "Ready", paused: "Paused", needs_clarification: "Clarify objective"} as Record<string, string>)[r.status]
     || r.status.charAt(0).toUpperCase() + r.status.slice(1);
 }

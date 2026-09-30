@@ -28,7 +28,7 @@ This test distinguishes isolated vocal events. It does not measure laughter dete
 
 ## Reproduce and inspect
 
-This goal is configured in a preset audio-only evaluation script. It is not yet selectable in the web UI, and the script does not expose a general freeform-objective CLI. From the repository root, after the [core setup](../../README.md#get-started):
+This goal is configured in a preset audio-only evaluation script. The web UI now accepts a comparable freeform objective, but adds an automatic interpretation step; the scores here apply to this preset experiment, not that new path. The script itself does not expose a general freeform-objective CLI. From the repository root, after the [core setup](../../README.md#get-started):
 
 ```sh
 .venv/bin/python scripts/evaluate_voice_lanes.py --run

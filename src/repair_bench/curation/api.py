@@ -18,6 +18,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from . import objectives
 from .analysis import Analysis, evidence
 from .models import Analyze, Import, Review
 from .precision import VERSION as POLICY_VERSION
@@ -130,7 +131,7 @@ def create_app(root=None, backend=None):
     def bootstrap():
         return {
             "token": token,
-            "goal": "user onset during agent speech",
+            "goal": "voice dataset curation from freeform objectives",
             "laya_enabled": False,
             "gemini_configured": analysis.configured,
             "policy_version": POLICY_VERSION,
@@ -147,8 +148,10 @@ One JSON object per line, one conversation per object. Example:
 {"id":"call-001","audio":"audio/call-001.wav","turns":[{"role":"assistant","text":"The first option is...","start_s":0.0,"end_s":3.0},{"role":"user","text":"Wait, let me clarify.","start_s":1.5,"end_s":4.0}]}
 
 This example shows the structure, not a validated interruption.
-Use actual mono/stereo audio (up to one hour), speaker labels, transcripts and timestamps in seconds.
-User-on-assistant interruptions are searched. Raw audio without timed transcripts is not supported yet.
+Audio-only records may omit turns: {"id":"clip-001","audio":"audio/clip-001.wav"}
+Freeform objectives judge complete mono/stereo recordings up to five minutes and 14 MB normalized WAV.
+The exact default interruption objective with timed transcripts uses overlap candidates (audio up to one hour).
+Supplied turns require user/assistant roles and timestamps in seconds; automatic transcription is not provided.
 Optional: source_group, split, provenance, timing_source. Include source LICENSE/README.md notices.
 ZIP: up to 512 MB compressed / 2 GB expanded. 1–500 conversations, up to 10,000 candidate events per run.
 
@@ -178,8 +181,7 @@ source notices and a manifest. These are model-selected candidates, not human-co
         requirement: str = REQUIREMENT,
         preflight: bool = False,
     ):
-        if requirement != REQUIREMENT:
-            raise ValueError("Only the fixed interruption requirement is supported")
+        requirement = objectives.requirement(requirement)
         if not runs.configured and not preflight:
             raise ValueError("Gemini is not configured on the server")
         if not filename.lower().endswith(".zip"):

@@ -11,7 +11,7 @@ The current implementation is a minimal localhost app; no GPU, Docker or databas
 
 *Choose a source, then listen and review. Screenshots show a development run, not benchmark results.*
 
-**Current beta:** the web app implements one fixed objective—conversations containing a successful interruption. Arbitrary freeform objectives are not yet supported in the UI or a general-purpose CLI. Other objectives have been tested through preset audio-only evaluation scripts. Gemini is the current model provider. Tested on macOS; other platforms are not yet verified. Review model suggestions before using them as training labels.
+**Current beta:** type an objective, check a supported dataset, then curate with Gemini. Freeform goals evaluate complete recordings up to five minutes / 14 MB normalized WAV; the default interruption objective retains its tested overlap workflow when timed transcripts are supplied. Model interpretations and suggestions need review. Tested on macOS; other platforms are not yet verified.
 
 ## Get started
 
@@ -35,10 +35,10 @@ Start the server; enter your key at the hidden prompt:
 
 Open **http://127.0.0.1:8766/**. Keep the terminal running. If `GEMINI_API_KEY` is already set in your environment, simply run `.venv/bin/curation-serve`. Stop with **Ctrl+C**; rerun either startup command to restart. No reinstall is needed.
 
-## Try the interruption workflow
+## Curate a dataset
 
 1. Upload a **ZIP containing `dataset.jsonl` and audio**, or paste a supported Hugging Face dataset URL. [Format and limits](docs/DATASET_RUNS.md#supported-sources). The app’s Example ZIP is a silent format template, not real speech.
-2. Click **Check dataset** to download/validate it without model calls, then **Curate dataset** to start analysis.
+2. Describe what to keep, such as “recordings containing laughter but no coughing.” Click **Check dataset** to download/validate it without model calls, then **Curate dataset** to start analysis.
 3. Open its history entry. Listen, inspect transcripts, and mark examples **Keep / Exclude / Unsure**. Filters let you check rejected, unresolved and unproposed examples too.
 4. **Prepare reviewed ZIP**, then download it. Only explicitly kept events receive positive annotations. **Model ZIP** downloads the original unverified selections.
 
@@ -46,11 +46,11 @@ Pause/resume, retry failures, undo reviews, search, archive/restore and rerun ar
 
 ## Know before running
 
-- **Current web inputs:** timed `assistant`/`user` transcripts and audio are required. Supports our manifest format and `mundo-ai/turn-benchmark-dev`; arbitrary Hub schemas and raw-audio transcription are unsupported. ZIP uploads: 512 MB; selected Hub files: up to 6 GB.
-- **Privacy and cost:** curation sends audio excerpts and nearby transcripts to Gemini. Checking can download the full supported source. Paid analysis uses your API quota; there is no dollar spending cap.
+- **Inputs:** audio is required; timed `assistant`/`user` transcripts are optional. Supports our manifest format and `mundo-ai/turn-benchmark-dev`; arbitrary Hub schemas and raw-audio transcription are unsupported. ZIP uploads: 512 MB; selected Hub files: up to 6 GB.
+- **Privacy and cost:** curation sends your objective and audio to Gemini; the interruption path also sends nearby transcripts. Freeform runs use one planning call plus one call per recording, with exact-result caching. Checking can download the full supported source. Paid analysis uses your API quota; there is no dollar spending cap.
 - **Persistence:** history, audio, reviews and exports stay under `artifacts/interruption-curation/dataset-runs/`. Back up the whole directory. Deleting a run retains shared caches. Run one server process locally; this is not a hosted multi-user service.
-- **Quality:** the interruption workflow uses overlap to propose candidates; overlap alone does not prove interruption. Other [experimental goals](docs/README.md) judge audio directly. Their benchmark results do not establish accuracy for arbitrary objectives.
+- **Quality:** the interruption workflow uses overlap to propose candidates; overlap alone does not prove interruption. Freeform goals judge complete audio directly. [Prior benchmarks](docs/README.md) do not establish accuracy for arbitrary objectives or the new automatic planning step. Ambiguous or unsupported objectives stop with an explanation.
 
-[Setup help, gated datasets, updates and troubleshooting](docs/GETTING_STARTED.md) · [Full workflow and ZIP contents](docs/DATASET_RUNS.md) · [Verification](evidence/curation-workflow/README.md)
+[Setup help, gated datasets, updates and troubleshooting](docs/GETTING_STARTED.md) · [Full workflow and ZIP contents](docs/DATASET_RUNS.md) · [Freeform verification](evidence/freeform-workflow/README.md) · [Interruption verification](evidence/curation-workflow/README.md)
 
 **License:** [MIT](LICENSE), copyright 2026 Armaan Sayyad. The license covers this project’s code; source datasets, recordings and third-party dependencies retain their own licenses.

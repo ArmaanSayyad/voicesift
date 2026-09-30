@@ -135,7 +135,7 @@ def gemini(body):
             if not p.get("thought")
         )
     )
-    precision.validate(answer)
+    # Callers validate against their task-specific schema.
     return {
         "answer": answer,
         "usage": data.get("usageMetadata", {}),

@@ -62,9 +62,10 @@ export function RunDetail({run}: {run: Run}) {
     {notice && <p role="status">{notice} {undo && <button className="text-button" disabled={working} onClick={() => review(undo.id, undo.decision, true)}>Undo review</button>}</p>}
     {loading && detail && <p role="status" className="help">Updating examples…</p>}
     {detail ? <>
+      {run.objective_plan && <details open><summary>Objective interpretation</summary><p>{run.objective_plan.summary}</p><ul>{run.objective_plan.criteria.map((c, i) => <li key={i}>{c}</li>)}</ul>{run.objective_plan.reason && <p>{run.objective_plan.reason}</p>}</details>}
       {detail.coverage && <details className="coverage"><summary>What was searched</summary>
-        <p>{run.conversations} conversations · {detail.coverage.timed_turns} timed incoming turns · {detail.coverage.candidate_events} overlap candidates · {detail.coverage.not_proposed_turns} turns not proposed · {detail.coverage.untimed_turns} untimed turns.</p>
-        <p className="help">Only overlap candidates go to the model. “Not proposed” is not a negative label. Counts do not measure accuracy or recall. Human–human TurnBench data is searched in both speaker directions.</p>
+        {run.mode === "audio" ? <p>{run.conversations} complete recordings scheduled for judging against your objective. No overlap prefilter. Unclear or failed judgments remain unresolved. Counts are not accuracy estimates.</p> : <><p>{run.conversations} conversations · {detail.coverage.timed_turns} timed incoming turns · {detail.coverage.candidate_events} overlap candidates · {detail.coverage.not_proposed_turns} turns not proposed · {detail.coverage.untimed_turns} untimed turns.</p>
+        <p className="help">Only overlap candidates go to the model. “Not proposed” is not a negative label. Counts do not measure accuracy or recall. Human–human TurnBench data is searched in both speaker directions.</p></>}
       </details>}
       {detail.legacy && <p className="help">Older run: inspection is limited to conversations retained in its original ZIP. Submit the source again for complete coverage and resumable processing.</p>}
       <div className="review-summary"><span>{reviewed} reviewed · {kept} kept</span>
@@ -86,7 +87,7 @@ export function RunDetail({run}: {run: Run}) {
       {sample && <p className="help">A reproducible shuffled order for spot checks. The first page is a sample, not an accuracy estimate.</p>}
       {view === "not_proposed" && <p className="help">These turns did not trigger the overlap detector. Listen to check for omissions; the model did not judge them.</p>}
       {!detail.total ? <p>{active(run) || run.status === "ready" ? "No results in this view yet." : "No examples in this view."}</p> : <>
-        <p className="help">{offset + 1}–{Math.min(offset + detail.limit, detail.total)} of {detail.total} events / turns</p>
+        <p className="help">{offset + 1}–{Math.min(offset + detail.limit, detail.total)} of {detail.total} {run.mode === "audio" ? "recordings" : "events / turns"}</p>
         {detail.items.map(item => <article className="datapoint" key={item.id}>
           <h3>{item.conversation_id} · {item.id}</h3>
           <p className="help">{item.category.replaceAll("_", " ")} · {item.evidence.clip_start_s.toFixed(1)}–{item.evidence.clip_end_s.toFixed(1)}s in source{item.roles_reversed && " · Opposite speaker direction"}</p>
@@ -98,7 +99,7 @@ export function RunDetail({run}: {run: Run}) {
             {(["keep", "exclude", "unsure"] as Decision[]).map(d => <button key={d} disabled={working} aria-pressed={item.review.decision === d} onClick={() => review(item.id, d)}>{d.charAt(0).toUpperCase() + d.slice(1)}</button>)}
             {item.review.decision !== "unreviewed" && <button className="text-button" disabled={working} onClick={() => review(item.id, "unreviewed")}>Clear</button>}
           </div>
-          <details><summary>Transcript context</summary><p className="help">Source speaker labels and times. Highlighted text is the target turn.</p>
+          <details><summary>Transcript context</summary>{!item.turns.length && <p className="help">No transcript supplied. Judgment uses the audio.</p>}<p className="help">Source speaker labels and times. Highlighted text is the target turn.</p>
             {item.turns.map(t => <p key={t.index} className={t.index === item.target_turn_index ? "target-turn" : ""}><strong>{t.role}</strong>{t.start_s !== null && ` (${t.start_s.toFixed(1)}s)`}: {t.text}</p>)}
             {item.context_truncated && <p className="help">Preview shortened. Full conversations are retained in exports for kept examples.</p>}
           </details>

@@ -1,24 +1,32 @@
-# Current interruption workflow: dataset-in, curated-ZIP-out
+# Dataset-in, curated-ZIP-out
 
-This guide documents VoiceSift’s first web workflow, not its full intended scope. The project aims to support LALM-based voice dataset curation from freeform text objectives; arbitrary objectives are not yet wired into the dataset-to-export app. See [scope and capabilities](README.md#project-scope-and-current-capabilities).
+Upload a ZIP or enter a supported Hugging Face URL, describe which examples to keep, then click **Check dataset** and **Curate dataset**. The objective is saved with the run. Editing it invalidates the current form’s preflight selection; historical runs and their exports remain unchanged.
 
-The default app at http://127.0.0.1:8766 now has one form and a run history. Choose a ZIP upload or a Hugging Face dataset URL, leave the fixed requirement `conversations where there is an interruption`, and check the dataset. After validation, click **Curate dataset**. Other requirements are rejected by the API as well as being uneditable in the UI. The fixed interruption requirement is the only supported web objective.
+Freeform objectives use `freeform-audio-v1`: Gemini interprets the request into a per-recording rubric and judges every complete recording as yes, no, or unclear. Only yes enters the model-selected ZIP. No overlap prefilter or source gold labels are sent to this judge. The original objective takes precedence over its generated interpretation. Interpretations appear in history and in model/reviewed export manifests. Ambiguous requests or goals requiring unavailable evidence stop with an explanation; edit the objective and submit a new run. Dataset-wide ranking, quotas, audio editing and externally verifiable facts are outside this selection workflow.
 
-The policy remains `successful-interruption-v1`: timed overlaps propose candidates; Gemini judges the audio and nearby transcript; only clear successful-interruption suggestions with no detected evidence truncation are shortlisted. A conversation is selected when at least one event is shortlisted. **Automatic ZIPs contain model-selected, unreviewed examples.** They are not labeled as human-confirmed. Review selected examples before using them as training labels.
+The exact default `conversations where there is an interruption` retains `successful-interruption-v1` when all records have timed speaker transcripts: overlaps propose candidates and Gemini judges audio plus transcript context. Only clear successful interruptions with complete target evidence are shortlisted. Without transcripts, that objective uses the general whole-recording audio path. Reworded interruption objectives also use the general path and have not inherited the optimized path’s benchmark results.
+
+**Automatic ZIPs contain model-selected, unreviewed examples.** Review the interpretation and examples before treating them as training labels.
 
 ## Supported sources
 
 ### Uploaded ZIP
 
-`dataset.jsonl` must be at the root. Each line contains a conversation with a unique string ID, an audio path relative to the ZIP root, and speaker-labelled timed turns:
+`dataset.jsonl` must be at the root. Each line contains a conversation with a unique string ID, an audio path relative to the ZIP root, and optionally speaker-labelled timed turns. Audio-only example:
+
+```json
+{"id":"clip-001","audio":"audio/clip-001.wav"}
+```
+
+For the optimized interruption path:
 
 ```json
 {"id":"call-001","audio":"audio/call-001.wav","turns":[{"role":"assistant","text":"The first option is...","start_s":0.0,"end_s":3.0},{"role":"user","text":"Wait, let me clarify.","start_s":1.5,"end_s":4.0}]}
 ```
 
-This illustrates the schema, not a verified positive example. Include the actual audio and original transcript. Optional metadata such as `source_group`, `split`, `provenance` and `timing_source` is retained. Default timing provenance is `transcript_segments`; timestamps are not independently validated against speech. Root LICENSE files and README.md are copied into the result's source notices.
+This illustrates the schema, not a verified positive example. Include the actual audio; include the original transcript when using timed turns. Optional metadata such as `source_group`, `split`, `provenance` and `timing_source` is retained. Default timing provenance is `transcript_segments`; timestamps are not independently validated against speech. Root LICENSE files and README.md are copied into the result's source notices.
 
-User-on-assistant interruptions are searched for this format. Raw audio alone, untimed transcripts, arbitrary speaker names and arbitrary dataset schemas are not supported. Missing/malformed sources fail before paid classification begins. Mono/stereo audio readable by libsndfile is normalized to 16 kHz PCM16 WAV; selected conversations retain their entire supplied duration, not only the positive event.
+The optimized interruption path searches user-on-assistant interruptions. Freeform goals accept audio without turns. When turns are supplied, they must use the documented timed user/assistant schema. Arbitrary dataset schemas are not supported. Missing/malformed sources fail before paid classification begins. Mono/stereo audio readable by libsndfile is normalized to 16 kHz PCM16 WAV; selected conversations retain their entire supplied duration, not only the positive event.
 
 ### Hugging Face URL
 
@@ -42,11 +50,12 @@ Limits are explicit rather than silent truncation:
 
 - Uploaded ZIP: 512 MB compressed, 2 GB expanded, 10,000 entries.
 - Downloaded source files: 6 GB; normalized audio: 6 GB per run.
-- Manifest: 20 MB, 1–500 conversations, 2–10,000 timed turns per conversation.
-- Mono/stereo recordings: at most one hour each.
+- Manifest: 20 MB, 1–500 recordings; optional transcripts have 2–10,000 timed turns per conversation.
+- Mono/stereo recordings: at most five minutes for freeform judging; one hour for the optimized interruption path. Oversized recordings fail before model calls; split into meaningful examples yourself, since splitting can change conversation-level meaning.
+- Freeform normalized WAV: at most 14 MB per recording (about 3.6 minutes for stereo), conservatively allowing for base64 and prompts within the [documented inline request limit](https://ai.google.dev/gemini-api/docs/generate-content/audio). Full source audio is preserved; no downmixing or truncation.
 - Up to 10,000 detected candidate events per run. The full supported source is processed; no hidden sampling.
 
-Costs scale with candidate count. The 10,000-event ceiling is a processing bound, not a dollar budget. Large runs can cost more than the small smoke tests.
+Freeform costs include one objective-planning request and one request per complete recording; interruption costs scale with candidate count. The 10,000-event ceiling is a processing bound, not a dollar budget. Large runs can cost more than the small smoke tests.
 
 ## Minimal workflow and review
 
@@ -58,9 +67,9 @@ Open a history row for:
 - **Not selected:** candidates the model rejected.
 - **Unresolved:** pending, failed or uncertain candidates; these are not negative labels.
 - **Not proposed:** incoming turns outside the detector's candidate groups. They did not receive a model judgment.
-- **All examples:** these categories together. The unit is an event or incoming turn, not a distinct conversation.
+- **All examples:** these categories together. For freeform runs the unit is a complete recording; for interruption runs it is an event or incoming turn.
 
-Each page has at most ten examples, source-relative audio previews, model reasons where available and expandable transcript context. Sample order uses a fixed hash ordering per run, so paging is reproducible. It is for spot checks, not a statistically justified accuracy estimate. Coverage lists timed/untimed incoming turns, overlap candidates and unproposed turns. TurnBench searches both speaker directions; checking only rejected overlaps cannot establish full-dataset recall.
+Each page has at most ten examples, source-relative audio previews, model reasons where available and expandable transcript context. Sample order uses a fixed hash ordering per run, so paging is reproducible. It is for spot checks, not a statistically justified accuracy estimate. Freeform coverage lists complete recordings. Interruption coverage lists timed/untimed incoming turns, overlap candidates and unproposed turns. TurnBench searches both speaker directions; checking only rejected overlaps cannot establish full-dataset recall.
 
 **Keep**, **Exclude** and **Unsure** persist a review decision per example. **Clear** removes its effective review; **Undo review** restores the previous choice from the last action in the current detail view. Reviews have monotonically increasing revisions and reject stale writes from another tab. The audit history retains changes. A reviewer can keep a rejected or unproposed example after listening; this does not change the original model decision.
 
@@ -100,7 +109,7 @@ All export downloads verify their saved hash. Original source licenses remain ap
 
 ## Validation
 
-The suite has **109 passing tests**. The workflow tests use controlled model responses and synthetic audio; they check behavior, not acoustic classification accuracy. Coverage includes model-free preflight, source validation, pinned Hub download revisions, safe ZIP extraction, exact-result caching, bounded pause, HTTP 429 handling, retry-only-failures, restart persistence, error accounting, rejected/unproposed previews, review revision conflicts, kept-only exports, immutable earlier ZIPs, legacy history, archive/rerun/delete, source/export integrity, and write authorization.
+Run `.venv/bin/python -m pytest -q` for the current suite. The workflow tests use controlled model responses and synthetic audio; they check behavior, not acoustic classification accuracy. Coverage includes model-free preflight, source validation, pinned Hub download revisions, safe ZIP extraction, exact-result caching, bounded pause, HTTP 429 handling, retry-only-failures, restart persistence, error accounting, rejected/unproposed previews, review revision conflicts, kept-only exports, immutable earlier ZIPs, legacy history, archive/rerun/delete, source/export integrity, and write authorization.
 
 Browser verification uses an isolated server with a controlled judge. It checks upload → compatibility → curate → listen → review → reviewed ZIP → undo, notes, sample/filter controls and history management. No classifier accuracy improvement is claimed by these UI changes; the interruption policy and model prompts are unchanged.
 

@@ -194,6 +194,11 @@ class Workflow:
             try:
                 for name in ("prepared.json", "source.json"):
                     shutil.copyfile(self.folder(rid) / name, dest / name)
+                if (self.folder(rid) / "objective-plan.json").exists():
+                    shutil.copyfile(
+                        self.folder(rid) / "objective-plan.json",
+                        dest / "objective-plan.json",
+                    )
                 for name in ("assets", "source-notices"):
                     shutil.copytree(self.folder(rid) / name, dest / name)
                 row = {
@@ -254,6 +259,15 @@ class Workflow:
             if hashlib.sha256(audio).hexdigest() != event["evidence"]["clip_sha256"]:
                 raise Conflict("Clip integrity check failed")
             return audio, event["evidence"]
+        if event.get("detection", {}).get("whole_record"):
+            audio = source.read_bytes()
+            return audio, {
+                "clip_start_s": 0,
+                "clip_end_s": record["duration"],
+                "target_truncated": False,
+                "clip_sha256": hashlib.sha256(audio).hexdigest(),
+                "source_audio_sha256": record["audio_sha256"],
+            }
         # This also supports turns never proposed by the overlap detector.
         turn = record["turns"][event["target_turn_index"]]
         if turn["start_s"] is None:
@@ -347,6 +361,8 @@ class Workflow:
             start = max(0, target - 10)
             turns = record["turns"][start : target + 11]
             metadata = event.get("evidence")
+            if not metadata and event.get("detection", {}).get("whole_record"):
+                metadata = {"clip_start_s": 0, "clip_end_s": record["duration"]}
             if not metadata:
                 turn = record["turns"][target]
                 onset = max(0, (turn["start_s"] or 0) - 3)
@@ -417,6 +433,9 @@ class Workflow:
             prepared = self.prepared(rid)
             manifest = {
                 "run_id": rid,
+                "requirement": self.get(rid)["requirement"],
+                "objective_plan": self.get(rid).get("objective_plan"),
+                "policy_version": self.get(rid).get("policy_version"),
                 "export_id": eid,
                 "review_revision": revision,
                 "created": now(),
@@ -456,7 +475,7 @@ class Workflow:
     def package(self, rid, prepared, results, status):
         selected = [e for e in results if e.get("disposition") == "shortlist"]
         errors = sum(e["status"] == "error" for e in results)
-        unresolved = sum(e["status"] != "complete" for e in results)
+        unresolved = sum(e.get("disposition") == "needs_review" for e in results)
         fields = {
             "status": status,
             "errors": errors,
@@ -469,6 +488,15 @@ class Workflow:
             if status == "paused"
             else ("Finished with unresolved analysis errors" if errors else "Finished"),
         }
+        if status == "paused":
+            if any(e.get("error") == "RateLimit" for e in results):
+                fields["message"] = (
+                    "Gemini rate limit reached. Completed results are saved; wait before resuming."
+                )
+            elif any(e.get("error") == "ProviderAccess" for e in results):
+                fields["message"] = (
+                    "Gemini access failed. Completed results are saved; check model access before resuming."
+                )
         manifest = {
             **self.get(rid),
             **fields,
@@ -479,7 +507,11 @@ class Workflow:
             "untimed_turns": prepared["coverage"]["untimed_turns"],
             "event_errors": [r["id"] for r in results if r["status"] == "error"],
             "pending_events": [r["id"] for r in results if r["status"] == "pending"],
-            "selection": "At least one successful-interruption-v1 shortlist event. Overlap proposes candidates; no recall guarantee.",
+            "selection": (
+                "Complete recordings clearly matching the saved objective and rubric. Unclear judgments and errors are not negatives. No accuracy guarantee."
+                if prepared.get("mode") == "audio"
+                else "At least one successful-interruption-v1 shortlist event. Overlap proposes candidates; no recall guarantee."
+            ),
         }
         name = f"model-{uuid.uuid4().hex}.zip"
         target = self.folder(rid) / name
