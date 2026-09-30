@@ -274,7 +274,8 @@ def summarize(selection, results):
             {k: v for k, v in r.get("usage", {}).items() if isinstance(v, int)}
         )
     return {
-        "audio_clips": len(selection),
+        "audio_clips": len({r["audio_sha256"] for r in selection}),
+        "requests": len(selection),
         "goals": goals,
         "usage": dict(usage),
         "errors": sum(r["status"] == "error" for r in results),
@@ -284,8 +285,9 @@ def summarize(selection, results):
     }
 
 
-def export_selected(selection, results, root=ROOT):
+def export_selected(selection, results, root=None):
     """Create reviewable subsets; reference labels never become curated labels."""
+    root = ROOT if root is None else root
     exports = root / "exports"
     exports.mkdir(exist_ok=True)
     by_id = {r["id"]: r for r in results}
@@ -307,6 +309,11 @@ def export_selected(selection, results, root=ROOT):
                 "source": config["repo"],
                 "revision": config["revision"],
                 "selected": len(selected),
+                "requested_clips": sum(r["lane"] == lane for r in selection),
+                "failed_requests": sum(
+                    r["lane"] == lane and by_id[r["id"]].get("status") == "error"
+                    for r in selection
+                ),
                 "source_license_applies": True,
             }
             with zipfile.ZipFile(
@@ -351,7 +358,7 @@ def export_selected(selection, results, root=ROOT):
     return index
 
 
-def main():
+def main(argv=None, prepare_fn=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--run", action="store_true")
     parser.add_argument(
@@ -359,8 +366,8 @@ def main():
         action="store_true",
         help="One separately recorded retry for every transport failure; never rejudge completed answers",
     )
-    args = parser.parse_args()
-    selection = prepare()
+    args = parser.parse_args(argv)
+    selection = (prepare_fn or prepare)()
     if not args.run and not args.retry_transport_errors:
         return
     key = (

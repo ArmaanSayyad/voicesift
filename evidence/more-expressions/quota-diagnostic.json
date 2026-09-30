@@ -1,0 +1,10 @@
+{
+  "model": "gemini-3.8-flash",
+  "status": 429,
+  "quota_metric": "generativelanguage.googleapis.com/generate_requests_per_model_per_day",
+  "quota_id": "GenerateRequestsPerDayPerProjectPerModel",
+  "quota_value": 10000,
+  "retry_delay_seconds": 76220,
+  "diagnostic_calls": 1,
+  "meaning": "Project/model daily quota; not a count of requests made by this experiment."
+}

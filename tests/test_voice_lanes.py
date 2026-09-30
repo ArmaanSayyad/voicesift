@@ -70,7 +70,41 @@ def test_metrics_include_failures_and_abstentions_in_accuracy_denominator():
     assert evaluation.metrics([(False, "no")])["precision"] is None
 
 
-def test_exports_select_only_yes_and_withhold_reference_labels(tmp_path):
+def test_summary_distinguishes_repeated_requests_from_unique_audio(monkeypatch):
+    monkeypatch.setattr(
+        evaluation,
+        "LANES",
+        {
+            "pair_one": {"goals": {"happy": "happy speech"}},
+            "pair_two": {"goals": {"calm": "calm speech"}},
+        },
+    )
+    selection = [
+        {
+            "id": "a",
+            "lane": "pair_one",
+            "audio_sha256": "same-recording",
+            "truth": {"happy": True},
+        },
+        {
+            "id": "b",
+            "lane": "pair_two",
+            "audio_sha256": "same-recording",
+            "truth": {"calm": False},
+        },
+    ]
+    results = [
+        {"id": "a", "status": "complete", "answer": {"happy": "yes"}},
+        {"id": "b", "status": "complete", "answer": {"calm": "no"}},
+    ]
+    summary = evaluation.summarize(selection, results)
+    assert summary["audio_clips"] == 1 and summary["requests"] == 2
+    assert summary["goals"]["happy"]["accuracy"] == 1
+    assert summary["goals"]["calm"]["accuracy"] == 1
+
+
+def test_exports_select_only_yes_and_withhold_reference_labels(tmp_path, monkeypatch):
+    monkeypatch.setattr(evaluation, "ROOT", tmp_path)
     (tmp_path / "audio").mkdir()
     rows, results = [], []
     for index, decision in enumerate(["yes", "no", "unclear"]):
@@ -87,7 +121,7 @@ def test_exports_select_only_yes_and_withhold_reference_labels(tmp_path):
             }
         )
         results.append({"id": sid, "answer": {"laughter": decision, "cough": "no"}})
-    exports = evaluation.export_selected(rows, results, tmp_path)
+    exports = evaluation.export_selected(rows, results)
     assert exports["laughter"]["selected"] == 1
     assert exports["cough"]["selected"] == 0
     with zipfile.ZipFile(exports["laughter"]["zip"]) as archive:

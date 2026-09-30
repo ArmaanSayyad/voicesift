@@ -68,7 +68,7 @@ Results measure agreement with reference labels on the documented datasets. They
 (cd curation-web && pnpm build)
 ```
 
-The current suite has **95 passing tests**. It covers source validation, safe ZIP handling, run persistence, model caching, export integrity, history pagination, audio access, feedback persistence and authorization, and evaluation label isolation. Browser smoke tests exercised upload/download, actual audio playback, transcript previews, saved feedback after reload, and empty selections. Workflow tests do not measure classifier accuracy.
+The current suite has **96 passing tests**. It covers source validation, safe ZIP handling, run persistence, model caching, export integrity, history pagination, audio access, feedback persistence and authorization, and evaluation label isolation. Browser smoke tests exercised upload/download, actual audio playback, transcript previews, saved feedback after reload, and empty selections. Workflow tests do not measure classifier accuracy.
 
 ## Documentation
 
