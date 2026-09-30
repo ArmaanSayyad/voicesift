@@ -58,7 +58,7 @@ The runner resumes exactly matching protocols without repeating completed calls.
 - [SID-Bench](https://github.com/xkx-hub/SID-bench)
 - Dataset revision: `6eb13b573ad588646ce0de513d4255e55caf858b`.
 - Exact prompt/configuration and source artifact hashes: `evidence/gemini-interruption-eval/protocol.json`.
-- Earlier Laya protocol and results: `docs/INTERRUPTION_EVALUATION.md`.
+- Earlier Laya protocol and results: `research/archive/INTERRUPTION_EVALUATION.md`.
 
 ## Decision after this run
 

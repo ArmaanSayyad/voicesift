@@ -117,7 +117,7 @@ def main():
         "- [SID-Bench](https://github.com/xkx-hub/SID-bench)",
         "- Dataset revision: `6eb13b573ad588646ce0de513d4255e55caf858b`.",
         "- Exact prompt/configuration and source artifact hashes: `evidence/gemini-interruption-eval/protocol.json`.",
-        "- Earlier Laya protocol and results: `docs/INTERRUPTION_EVALUATION.md`.",
+        "- Earlier Laya protocol and results: `research/archive/INTERRUPTION_EVALUATION.md`.",
         "",
     ]
     lines += [
@@ -130,7 +130,7 @@ def main():
         "Validation: 34 tests pass; Ruff checks pass for the new evaluation scripts and tests.",
         "",
     ]
-    report = Path("docs/GEMINI_INTERRUPTION_EVALUATION.md")
+    report = Path("research/archive/GEMINI_INTERRUPTION_EVALUATION.md")
     report.write_text("\n".join(lines))
     for directory in (
         "/Users/armaansayyad/Documents/Codex/2026-09-29/go-t/outputs",

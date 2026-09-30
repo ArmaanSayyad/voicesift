@@ -50,7 +50,7 @@ Configuration: temperature zero, 2,048 maximum output tokens, structured JSON re
 
 The source test split had already been inspected during research. This is a development evaluation, not an untouched holdout claim. The four positive strata are equally sampled, so their combined percentage does not reflect PRESTO's natural category proportions or deployment prevalence.
 
-Reproduction commands and frozen, text-free protocol/selection/results are in [evidence/presto-evaluation](../evidence/presto-evaluation/README.md). Raw requests and evidence notes remain local under ignored `artifacts/presto-evaluation/`. The evaluator is [scripts/evaluate_presto.py](../scripts/evaluate_presto.py). Automated tests check gold-label exclusion and prohibit reporting unknown comparisons as measured false positives.
+Reproduction commands and frozen, text-free protocol/selection/results are in [evidence/presto-evaluation](../../evidence/presto-evaluation/README.md). Raw requests and evidence notes remain local under ignored `artifacts/presto-evaluation/`. The evaluator is [scripts/evaluate_presto.py](../../scripts/evaluate_presto.py). Automated tests check gold-label exclusion and prohibit reporting unknown comparisons as measured false positives.
 
 ## Decision
 

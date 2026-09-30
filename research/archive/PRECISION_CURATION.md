@@ -56,6 +56,6 @@ From the repository root, after preparing the gated TurnBench corpus and frozen 
 (cd curation-web && npm run build)
 ```
 
-Fresh API calls require `GEMINI_API_KEY` in the process environment. Existing result files are checked against exact request hashes; failed records are not selectively retried. `artifacts/precision-evaluation` contains local raw responses and protocols. `evidence/precision-curation` contains text-free predictions, summaries, request templates, and input hashes for audit. Dataset recordings and transcripts remain local under the gated dataset's license. See `evidence/turnbench-evaluation` and `docs/TURNBENCH_EVALUATION.md` for source revision and annotation protocol.
+Fresh API calls require `GEMINI_API_KEY` in the process environment. Existing result files are checked against exact request hashes; failed records are not selectively retried. `artifacts/precision-evaluation` contains local raw responses and protocols. `evidence/precision-curation` contains text-free predictions, summaries, request templates, and input hashes for audit. Dataset recordings and transcripts remain local under the gated dataset's license. See `evidence/turnbench-evaluation` and `research/archive/TURNBENCH_EVALUATION.md` for source revision and annotation protocol.
 
 The next meaningful validation is a fresh, conversation-disjoint agent-user corpus with independently adjudicated successful-interruption labels, followed by a blinded audit of exported examples. Further tuning on these same 400 events would not establish generalization.

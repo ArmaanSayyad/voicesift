@@ -2,7 +2,7 @@
 
 The default app at http://127.0.0.1:8766 now has one form and a run history. Choose a ZIP upload or a Hugging Face dataset URL, leave the fixed requirement `conversations where there is an interruption`, and submit. Other requirements are rejected by the API as well as being uneditable in the UI. No general-purpose natural-language planning is implemented yet.
 
-The policy remains `successful-interruption-v1`: timed overlaps propose candidates; Gemini judges the audio and nearby transcript; only clear successful-interruption suggestions with no detected evidence truncation are shortlisted. A conversation is selected when at least one event is shortlisted. **Automatic ZIPs contain model-selected, unreviewed examples.** They are not labeled as human-confirmed. The earlier precision evaluation still applies; this workflow does not improve the classifier's measured accuracy. The legacy human-review/export API and records remain intact, but the default page no longer exposes the review workbench.
+The policy remains `successful-interruption-v1`: timed overlaps propose candidates; Gemini judges the audio and nearby transcript; only clear successful-interruption suggestions with no detected evidence truncation are shortlisted. A conversation is selected when at least one event is shortlisted. **Automatic ZIPs contain model-selected, unreviewed examples.** They are not labeled as human-confirmed. Review selected examples before using them as training labels.
 
 ## Supported sources
 

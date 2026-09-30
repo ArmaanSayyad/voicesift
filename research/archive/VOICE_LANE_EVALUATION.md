@@ -69,7 +69,7 @@ Total attempted API calls: 1,123. Reported token usage for completed responses: 
 
 ## Artifacts and validation
 
-Run `.venv/bin/python scripts/evaluate_voice_lanes.py --run` to download pinned source files, freeze the sample, classify audio, score results, and export selected subsets. The optional `--retry-transport-errors` pass preserves original attempts and retries only failed transport/provider requests once. See [frozen protocol, per-item results, hashes and recovery evidence](../evidence/voice-lanes/README.md).
+Run `.venv/bin/python scripts/evaluate_voice_lanes.py --run` to download pinned source files, freeze the sample, classify audio, score results, and export selected subsets. The optional `--retry-transport-errors` pass preserves original attempts and retries only failed transport/provider requests once. See [frozen protocol, per-item results, hashes and recovery evidence](../../evidence/voice-lanes/README.md).
 
 Six ZIPs are saved under `artifacts/voice-lanes/exports/` and copied to the project's `outputs/voice-lane-evaluation/` directory. They contain normalized audio, manifests and explicit unverified-selection status; reference labels are excluded. They are clip datasets without timed conversation transcripts, and are not directly supported by the current interruption-only upload schema. Each archive passed CRC verification.
 

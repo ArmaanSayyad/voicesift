@@ -1,0 +1,41 @@
+# Card-freeze request curation
+
+Find spoken requests to freeze, block or deactivate a bank card, including requests for help with a lost or stolen card.
+
+**Final benchmark accuracy: 100.0%.** Precision: **100.0%**. Recall: **100.0%**.
+
+## Dataset and results
+
+[MINDS-14](https://huggingface.co/datasets/PolyAI/minds14). All 563 recordings in the US-English partition, covering 14 banking intents. Source license: CC BY 4.0.
+
+| Measure | Count |
+|---|---:|
+| Audio clips evaluated | 563 |
+| Reference positives | 45 |
+| Correctly selected | 45 |
+| Missed positives | 0 |
+| Incorrectly selected | 0 |
+| Correctly rejected | 518 |
+| Total selected | 45 |
+
+Accuracy counts all correct selections and rejections. Precision measures how many selected clips match the reference label; recall measures how many reference positives were found.
+
+## How it was tested
+
+The fixed `gemini-3.8-flash` judge received normalized 16 kHz audio and plain-language requirements. Transcripts, filenames and reference labels were withheld. Two requirements were evaluated independently per recording. No training or prompt tuning was performed on these results. Scores use the final completed predictions after one unchanged retry of transport/provider failures; completed predictions were never rerun. There were no unresolved errors or unclear decisions in the final scored set.
+
+Ordinary card declines or malfunction are a separate intent unless the speaker requests blocking the card. A perfect result on this sample does not guarantee perfect performance on new recordings. This is a clip-level benchmark result, not a full-conversation or production-wide accuracy guarantee. Source labels are the evaluation reference; exported selections remain unverified model judgments. Benchmark exposure during model pretraining is unknown.
+
+## Reproduce and inspect
+
+This goal is available through the evaluation CLI; it is not enabled in the interruption-only web UI. From the repository root, after the [core setup](../../README.md#run-locally):
+
+```sh
+.venv/bin/python scripts/evaluate_voice_lanes.py --run
+# If transport/provider requests fail, recover them once without rejudging completed answers:
+.venv/bin/python scripts/evaluate_voice_lanes.py --retry-transport-errors
+```
+
+The shared runner evaluates all configured voice goals and uses the Gemini API. It downloads pinned source files and caches results. The selected audio and manifest for this goal are saved to `artifacts/voice-lanes/exports/freeze.zip`. Source licenses apply to the exported clips.
+
+[Recorded summary](../../evidence/voice-lanes/summary.json) · [Frozen request and dataset protocol](../../evidence/voice-lanes/protocol.json) · [Experiment index](../README.md)

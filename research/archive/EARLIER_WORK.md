@@ -1,6 +1,6 @@
 # Earlier feasibility and workbench experiments
 
-Historical implementation notes retained for reproducibility. The current product is the dataset curator described in the [project README](../README.md). Commands below run from the repository root.
+Historical implementation notes retained for reproducibility. The current product is the dataset curator described in the [project README](../../README.md). Commands below run from the repository root.
 
 ## Conversation Repair Workbench — feasibility harness
 
@@ -64,4 +64,4 @@ sh scripts/setup.sh core
 
 The earlier model/fixture setup is required to start a real run. Run records live under ignored `artifacts/runs/`; they survive restarts, and unfinished attempts are marked interrupted. The API accepts one active run. Replay never silently starts microphone capture or audio playback. Stop the server with Ctrl-C after active runs complete. Local write endpoints require a per-process token and matching browser origin; this is not a remotely deployed service.
 
-**Direction checkpoint:** before extending this into a general runtime, assess reuse of Pipecat Evals and Full-Duplex-Bench. Existing tools overlap strongly. The highest-value custom work is the repair-specific dataset, diagnosis and controlled experiment, not duplicating generic voice infrastructure. Laya remains unvalidated; an offline repair-event miner is a candidate to evaluate, not an implemented or proven capability. See `docs/PRODUCT_DIRECTION.md`.
+**Direction checkpoint:** before extending this into a general runtime, assess reuse of Pipecat Evals and Full-Duplex-Bench. Existing tools overlap strongly. The highest-value custom work is the repair-specific dataset, diagnosis and controlled experiment, not duplicating generic voice infrastructure. Laya remains unvalidated; an offline repair-event miner is a candidate to evaluate, not an implemented or proven capability. See `research/archive/PRODUCT_DIRECTION.md`.

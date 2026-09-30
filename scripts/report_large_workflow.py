@@ -86,7 +86,7 @@ The evaluator resumes stored analyses and refuses a changed frozen protocol. Rec
 
 Sources: [SID-Bench](https://github.com/xkx-hub/SID-bench), [Kyutai audio samples](https://huggingface.co/datasets/kyutai/interactivity-alignment-samples), [FDB outputs](https://huggingface.co/datasets/MagicLuke/fdb-v1-outputs-v1).
 """
-p = Path("docs/LARGER_CURATION_EVALUATION.md")
+p = Path("research/archive/LARGER_CURATION_EVALUATION.md")
 p.write_text(text)
 for directory in (
     "/Users/armaansayyad/Documents/Codex/2026-09-29/go-t/outputs",

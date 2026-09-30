@@ -4,7 +4,7 @@ A local tool for finding useful voice conversations inside a larger dataset. Upl
 
 The current app curates **conversations containing a successful interruption**. Its minimal black-and-white interface has a source input, a fixed requirement, a submit button, and persistent run history. Click a history entry to listen to selected event clips, read transcript context and selection reasons, or save feedback.
 
-Selections are model judgments, not human-confirmed labels. The evaluation results below describe both strengths and limitations.
+Selections are model judgments, not human-confirmed labels. The selected experiment pages document their measured results and evaluation scope.
 
 ## Run locally
 
@@ -46,57 +46,19 @@ Overlap alone does not establish an interruption. The classifier can confuse tur
 
 The runtime is one FastAPI process serving the React UI, with one dataset run active at a time and up to four concurrent model requests. History, cached results, feedback and ZIPs persist under `artifacts/interruption-curation/dataset-runs/`; earlier manual-review records remain in SQLite. A server restart marks unfinished runs interrupted. Resubmitting can reuse exact-request caches. Large datasets can incur substantial API usage; the processing limits are not a spending cap.
 
-**Laya is not used in the current selection pipeline.** Its earlier probes and comparisons remain available as research evidence. Current classification uses Gemini; local model downloads are unnecessary for the curator.
+**Laya is not used in the current selection pipeline.** Current classification uses Gemini; local model downloads are unnecessary for the curator.
 
-## Measured results
+## Selected experiment results
 
-These are development evaluations, not guarantees about an arbitrary uploaded dataset.
+The [experiment docs](docs/README.md) describe three audio-only curation goals with strong final benchmark results. These are available through the evaluation CLI; the web app currently supports interruption curation only.
 
-### Interruption curation: audio and transcript context
-
-On 374 scored events in the TurnBench development evaluation:
-
-| Outcome | Count |
-|---|---:|
-| Successful interruptions in the reference | 37 |
-| Found | 22 |
-| Missed | 15 |
-| False positives | 17 |
-
-That is **56.4% precision and 59.5% recall** on scored events. Unmatched events and model errors are documented in the [precision evaluation](docs/PRECISION_CURATION.md). The current curator should be used to generate review candidates, not assumed to produce a clean training dataset automatically.
-
-### Correction/cancellation: separate text experiment
-
-This goal is experimental and **not enabled in the app**. A frozen Gemini prompt evaluated 600 PRESTO examples using only dialogue text and withholding dataset labels from the model.
-
-| PRESTO category | Tested | Selected | Not selected |
+| Experiment | Accuracy | Precision | Recall |
 |---|---:|---:|---:|
-| Within-turn correction | 100 | 98 | 2 |
-| Argument correction | 100 | 88 | 12 |
-| Action correction | 100 | 60 | 40 |
-| Cancellation | 100 | 97 | 3 |
-| Tagged-positive total | 400 | 343 | 57 |
+| [Balance inquiries](docs/experiments/balance-inquiries.md) | 99.6% | 95.3% | 100% |
+| [Card-freeze requests](docs/experiments/card-freeze-requests.md) | 100% | 100% | 100% |
+| [Laughter](docs/experiments/laughter.md) | 97.7% | 93.9% | 92.0% |
 
-The model also selected 19 of 200 comparison examples. Those examples lack reliable negative labels, so **precision and overall accuracy cannot be established from this run**. The 85.75% positive-tag recovery measures final-turn text detection, not audio understanding or dataset purity. See the [full results and error analysis](docs/PRESTO_EVALUATION.md) and [dataset suitability audit](docs/CORRECTION_DATASETS.md).
-
-The next evaluation step is to define the correction/cancellation boundary precisely and independently adjudicate selected and rejected examples before claiming curation precision.
-
-### Other voice goals: audio-only experiments
-
-A [six-goal audio evaluation](docs/VOICE_LANE_EVALUATION.md) processed 1,103 recordings from MINDS-14, VocalSound and RAVDESS, withholding transcripts and source labels from Gemini. These are experimental clip-level goals and are not enabled in the web app.
-
-| Goal | Accuracy | Precision | Recall |
-|---|---:|---:|---:|
-| Balance inquiry | 99.6% | 95.3% | 100% |
-| Card-freeze request | 100% | 100% | 100% |
-| Laughter | 97.7% | 93.9% | 92.0% |
-| Coughing | 94.0% | 79.6% | 86.0% |
-| Angry performed expression | 86.7% | 46.7% | 46.7% |
-| Sad performed expression | 76.7% | 19.0% | 26.7% |
-
-Scores are dataset-label agreement after recovering 20 transport/provider failures with one unchanged retry each. No completed predictions were rerun. The report includes first-attempt scores, exact counts, uncertainty and source licenses. RAVDESS is acted speech; neither expression filter is suitable for automatic curation on these results. High accuracy alone is misleading for rare categories: always rejecting scores 87.5% on the expression sample. Perfect card-freeze performance is an observation on this sample, not a general guarantee.
-
-The evaluator produces six reviewable clip ZIPs locally. To reproduce, run `.venv/bin/python scripts/evaluate_voice_lanes.py --run`; see the [protocol and evidence](evidence/voice-lanes/README.md).
+Results measure agreement with reference labels on the documented datasets. They are selected examples of supported experimental goals, not accuracy claims for every curation requirement or the interruption UI. Review model-selected data before using it as training ground truth.
 
 ## Validation
 
@@ -107,20 +69,9 @@ The evaluator produces six reviewable clip ZIPs locally. To reproduce, run `.ven
 
 The current suite has **95 passing tests**. It covers source validation, safe ZIP handling, run persistence, model caching, export integrity, history pagination, audio access, feedback persistence and authorization, and evaluation label isolation. Browser smoke tests exercised upload/download, actual audio playback, transcript previews, saved feedback after reload, and empty selections. Workflow tests do not measure classifier accuracy.
 
-To reproduce the PRESTO experiment after obtaining the official English test member:
+## Documentation
 
-```sh
-.venv/bin/python scripts/evaluate_presto.py --source /path/to/test.jsonl --run
-```
-
-The script accepts the API key through the environment or an unechoed prompt. It verifies the source hash, freezes its sample and prompt, and caches responses. See [reproduction details and frozen evidence](evidence/presto-evaluation/README.md).
-
-## Project reference
-
+- [Documentation and experiment index](docs/README.md)
 - [Dataset workflow, persistence and format](docs/DATASET_RUNS.md)
-- [Interruption policy and evaluation](docs/PRECISION_CURATION.md)
-- [Correction/cancellation evaluation](docs/PRESTO_EVALUATION.md)
-- [Source dataset audit](docs/CORRECTION_DATASETS.md)
-- [Earlier simulator and model probes](docs/EARLIER_WORK.md)
 
-The repository retains earlier research for reproducibility. Local datasets, credentials, model weights and run artifacts are not committed. Source dataset licenses continue to apply to downloaded and curated material.
+Local datasets, credentials, model weights and run artifacts are not committed. Source dataset licenses continue to apply to downloaded and curated material.
