@@ -91,7 +91,7 @@ def download_dataset(url, cache, progress):
     try:
         info = HfApi().dataset_info(repo, files_metadata=True)
         files = {s.rfilename: s for s in info.siblings}
-        dest = cache / hashlib.sha256(repo.encode()).hexdigest()[:20]
+        dest = cache / hashlib.sha256((repo + info.sha).encode()).hexdigest()[:20]
 
         def fetch(name):
             return Path(

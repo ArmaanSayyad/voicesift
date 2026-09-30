@@ -2,9 +2,9 @@
 
 A local tool for finding useful voice conversations inside a larger dataset. Upload a dataset ZIP or provide a supported Hugging Face link, run curation, inspect the selected examples, and download a curated ZIP.
 
-The current app curates **conversations containing a successful interruption**. Its minimal black-and-white interface has a source input, a fixed requirement, a submit button, and persistent run history. Click a history entry to listen to selected event clips, read transcript context and selection reasons, or save feedback.
+The current app curates **conversations containing a successful interruption**. Its minimal black-and-white interface has a source input, a fixed requirement, and persistent run history. Check compatibility before paid analysis; open a run to listen, review, inspect omissions and export the examples you explicitly keep.
 
-Selections are model judgments, not human-confirmed labels. The selected experiment pages document their measured results and evaluation scope.
+Model ZIPs contain unverified suggestions. Reviewed ZIPs contain only events explicitly marked **Keep**; Exclude, Unsure and unreviewed events are omitted. The selected experiment pages document their measured results and evaluation scope.
 
 ## Run locally
 
@@ -24,12 +24,12 @@ Open **http://127.0.0.1:8766/**. Source audio and nearby transcript context are 
 ## Use the app
 
 1. Upload a ZIP containing `dataset.jsonl` and its referenced audio, or paste a supported Hugging Face dataset URL.
-2. Submit the read-only requirement: `conversations where there is an interruption`.
-3. Wait for the background run. Closing the browser does not stop it.
-4. Open the history entry to review selected event clips and transcript context, ten events per page. Save run-level feedback if needed.
-5. Download the ZIP containing full selected conversations, audio, event clips, decisions and source notices.
+2. Click **Check dataset**. The source is downloaded/extracted and all audio and timed transcripts are validated without model calls.
+3. Click **Curate dataset** after the compatibility summary appears. Closing the browser does not stop processing; **Pause** stops new work after in-flight requests finish.
+4. Open a history entry. Listen and mark examples **Keep**, **Exclude** or **Unsure**, with undo. Use the example filter to inspect rejected, unresolved or never-proposed turns; optional sample order provides reproducible spot checks.
+5. Download the **Model ZIP**, or **Prepare reviewed ZIP** and download a version containing only explicitly kept examples.
 
-Feedback is saved separately from the export. It does not change selections, retrain the model, or mark examples as verified. Empty selections still produce a ZIP with the run manifest.
+History supports search, archive/restore, rerunning the same validated source, and confirmed deletion of a run's local data. Partial runs can resume/retry remaining work without rejudging completed responses. Earlier ZIP versions remain immutable. Run notes are separate from review labels; saving a note does not change exports or retrain the model. Empty selections still produce a ZIP with a manifest.
 
 ### Supported datasets
 
@@ -42,9 +42,9 @@ Arbitrary Hub schemas, raw audio without timed transcripts, and editable natural
 
 Timed speech overlap proposes candidates. Gemini judges their audio and nearby transcript using the `successful-interruption-v1` policy. Only clear successful-interruption suggestions with no detected evidence truncation are shortlisted. A conversation is exported if it contains at least one shortlisted event.
 
-Overlap alone does not establish an interruption. The classifier can confuse turn-taking, continuation and backchannels, and the pipeline can miss events absent from the supplied timing annotations. Exported labels are explicitly `model_selected_not_human_verified`.
+Overlap alone does not establish an interruption. The classifier can confuse turn-taking, continuation and backchannels, and the pipeline can miss events absent from the supplied timing annotations. Model exports are explicitly `model_selected_not_human_verified`; kept events in reviewed exports are `human_reviewed_keep`. Full conversations can contain other, unlabeled speech. Coverage and review counts are not accuracy estimates.
 
-The runtime is one FastAPI process serving the React UI, with one dataset run active at a time and up to four concurrent model requests. History, cached results, feedback and ZIPs persist under `artifacts/interruption-curation/dataset-runs/`; earlier manual-review records remain in SQLite. A server restart marks unfinished runs interrupted. Resubmitting can reuse exact-request caches. Large datasets can incur substantial API usage; the processing limits are not a spending cap.
+The runtime is one FastAPI process serving the React UI, with one dataset run active at a time and up to four concurrent model requests. History, cached results, feedback and ZIPs persist under `artifacts/interruption-curation/dataset-runs/`; earlier manual-review records remain in SQLite. A server restart marks unfinished runs interrupted. **Resume** reuses the prepared source and completed event records; exact-request model caches also persist. Provider rate/access limits pause scheduling rather than treating missing responses as negative labels. Large datasets can incur substantial API usage; the processing limits are not a spending cap.
 
 **Laya is not used in the current selection pipeline.** Current classification uses Gemini; local model downloads are unnecessary for the curator.
 
@@ -68,7 +68,7 @@ Results measure agreement with reference labels on the documented datasets. They
 (cd curation-web && pnpm build)
 ```
 
-The current suite has **96 passing tests**. It covers source validation, safe ZIP handling, run persistence, model caching, export integrity, history pagination, audio access, feedback persistence and authorization, and evaluation label isolation. Browser smoke tests exercised upload/download, actual audio playback, transcript previews, saved feedback after reload, and empty selections. Workflow tests do not measure classifier accuracy.
+The current suite has **109 passing tests**. It covers source validation, safe ZIP handling, run persistence, model caching, export integrity, history pagination, audio access, feedback persistence and authorization, and evaluation label isolation. Recovery/review tests cover model-free preflight, bounded pause and quota handling, restart/resume, retrying only failures, kept-only immutable exports, review conflicts, legacy history, archive/rerun/delete, and integrity/authorization. Browser smoke tests exercise the complete source-to-reviewed-ZIP flow, audio and transcript previews, undo, persistent notes, filters and history controls. Workflow tests do not measure classifier accuracy.
 
 ## Documentation
 

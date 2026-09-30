@@ -1,6 +1,6 @@
 # Dataset-in, curated-ZIP-out
 
-The default app at http://127.0.0.1:8766 now has one form and a run history. Choose a ZIP upload or a Hugging Face dataset URL, leave the fixed requirement `conversations where there is an interruption`, and submit. Other requirements are rejected by the API as well as being uneditable in the UI. No general-purpose natural-language planning is implemented yet.
+The default app at http://127.0.0.1:8766 now has one form and a run history. Choose a ZIP upload or a Hugging Face dataset URL, leave the fixed requirement `conversations where there is an interruption`, and check the dataset. After validation, click **Curate dataset**. Other requirements are rejected by the API as well as being uneditable in the UI. No general-purpose natural-language planning is implemented yet.
 
 The policy remains `successful-interruption-v1`: timed overlaps propose candidates; Gemini judges the audio and nearby transcript; only clear successful-interruption suggestions with no detected evidence truncation are shortlisted. A conversation is selected when at least one event is shortlisted. **Automatic ZIPs contain model-selected, unreviewed examples.** They are not labeled as human-confirmed. Review selected examples before using them as training labels.
 
@@ -32,7 +32,7 @@ FastAPI serves the built React page and a background worker in one localhost pro
 
 `artifacts/interruption-curation/dataset-runs/`
 
-History is reconstructed from atomically replaced per-run status files. This implementation assumes **one server process**, not multiple Uvicorn workers. It allows one active dataset run, with up to four Gemini requests concurrently. Closing the browser does not stop the worker. A server restart marks unfinished runs interrupted; submitting again reuses exact-request caches. Automatic resumption, cancellation, deletion/retention controls, multi-user access and distributed workers are not implemented. Back up the whole artifacts directory to preserve history and downloads.
+History is reconstructed from atomically replaced per-run status files. This implementation assumes **one server process**, not multiple Uvicorn workers. It allows one active dataset run, with up to four Gemini requests concurrently. Closing the browser does not stop the worker. A server restart marks unfinished runs interrupted; **Resume** reuses the frozen prepared source and completed event records. Exact-request caches are also retained. Resumption is explicit. Multi-user access and distributed workers are not implemented. Back up the whole artifacts directory to preserve history and downloads.
 
 The upload is streamed to disk, ZIP extraction rejects traversal, symlinks, encryption and duplicate entries, and the API retains same-origin/session-token write protection. Audio hashes and final ZIP hashes are verified; exact model requests are cached independently of run identity. Failed model calls remain explicit errors, never negative labels. Completed runs with errors still offer a ZIP whose manifest lists those errors. Empty selections also produce a downloadable empty dataset and manifest.
 
@@ -46,31 +46,61 @@ Limits are explicit rather than silent truncation:
 
 Costs scale with candidate count. The 10,000-event ceiling is a processing bound, not a dollar budget. Large runs can cost more than the small smoke tests.
 
+## Minimal workflow and review
+
+**Check dataset** creates a persistent run and downloads/extracts and validates the full supported source. It makes no model calls and works without a Gemini key. A compatible run stops at Ready, with conversation and candidate counts. **Curate dataset** starts paid classification. This is full validation, not a cheap remote metadata preview; checking a large Hugging Face source can download gigabytes. Unsupported schemas are rejected with an explanation rather than guessed column mappings. The Format link and Example ZIP show the expected structure; example audio is silence, not an interruption example.
+
+Open a history row for:
+
+- **Selected:** model-shortlisted events.
+- **Not selected:** candidates the model rejected.
+- **Unresolved:** pending, failed or uncertain candidates; these are not negative labels.
+- **Not proposed:** incoming turns outside the detector's candidate groups. They did not receive a model judgment.
+- **All examples:** these categories together. The unit is an event or incoming turn, not a distinct conversation.
+
+Each page has at most ten examples, source-relative audio previews, model reasons where available and expandable transcript context. Sample order uses a fixed hash ordering per run, so paging is reproducible. It is for spot checks, not a statistically justified accuracy estimate. Coverage lists timed/untimed incoming turns, overlap candidates and unproposed turns. TurnBench searches both speaker directions; checking only rejected overlaps cannot establish full-dataset recall.
+
+**Keep**, **Exclude** and **Unsure** persist a review decision per example. **Clear** removes its effective review; **Undo review** restores the previous choice from the last action in the current detail view. Reviews have monotonically increasing revisions and reject stale writes from another tab. The audit history retains changes. A reviewer can keep a rejected or unproposed example after listening; this does not change the original model decision.
+
+**Prepare reviewed ZIP** snapshots the current review revision. Only Keep events receive positive annotations; unreviewed, excluded and unsure events are omitted. A conversation is included if it has at least one kept event. Full conversations may contain other speech that is not labeled positive. Reviewed ZIPs have their own immutable versions; changes to reviews mark older downloads as out of date without changing their bytes. An all-excluded or cleared review can produce an empty reviewed dataset. Creating a reviewed export waits until processing has stopped.
+
+Run notes remain separate: they do not change labels or retrain anything. An unsaved note draft survives collapsing the run within the same browser tab; save it for durable server persistence.
+
+## Recovery and history
+
+- **Pause** stops scheduling new work. At most four model calls are in flight and may finish. During source preparation, pause takes effect at a progress checkpoint; an in-progress file download or audio normalization may finish first.
+- **Resume** starts a Ready run or continues Paused, Interrupted or Failed runs. **Retry failed items** retries analysis failures. Completed event judgments are not re-requested.
+- HTTP 429 and provider access errors stop further scheduling. Resume is manual, after quota/access is available; the app does not promise a reset time or automatically switch models.
+- Partial ZIP manifests distinguish unresolved and pending items. Resuming creates a new model ZIP version; earlier versions remain downloadable from run details.
+- **Run again from same source** creates a new Ready run with independent reviews and the same frozen validated data. Identical model requests reuse cache; this is not an independent fresh-model benchmark.
+- History search matches source, requirement and run ID. Archive hides a run from the main list; Archived shows it again. Archive/restore preserve all files.
+- **Delete local run** requires confirmation in the UI and removes that run's normalized audio, reviews, input copy and exports. Shared Hugging Face downloads and model caches remain because other runs may use them. Active runs cannot be archived or deleted.
+
+Prepared snapshots pin source metadata, normalized audio hashes, candidate records, model and policy version. Resuming a snapshot from a different model/policy is rejected. This implementation remains a single-process local worker.
+
+Existing older runs remain inspectable and reviewable without migration, but their available previews are limited to conversations retained in the original ZIP. Submit the source again for complete omission inspection. Older uploads can be re-prepared when their input ZIP remains available; older Hub jobs without resume metadata must be submitted again.
+
 ## ZIP contents
 
-Click a source name in History to expand its curated examples. The preview pages through 10 selected events at a time, with playable event excerpts, selection reasons, and nearby transcript context. Source timestamps and the selected turn are shown; shortened context is marked. Full conversations remain available in the ZIP. Empty and unfinished runs have explicit messages.
+Model exports contain:
 
-Each run has a feedback textbox and Save feedback button. Feedback persists in a separate `feedback.json` beside the run status, supports up to 10,000 characters, and can be edited or cleared. It is a run-level review note, not a new gold label: saving does not change the immutable ZIP, rerun curation, or retrain the model. Playback is opt-in. Only events in that run's exported selection can be played through the preview API, and clip hashes are checked.
-
-- `dataset.jsonl`: full selected conversations, audio paths, and selection status/event IDs.
+- `dataset.jsonl`: full selected conversations with audio paths and selected event IDs.
 - `audio/`: full selected recordings normalized to 16 kHz PCM16 WAV.
-- `clips/`: positive-event evidence clips, bounded by the existing analysis window.
-- `selected-events.jsonl`: selected event results with source timing and evidence.
-- `all-decisions.jsonl`: every proposed event's result, including errors and rejected suggestions.
-- `manifest.json`: source revision/hash, policy, counts, coverage limitations and error IDs.
-- `README.txt` and `source-notices/`: machine-label warning and source attribution/licenses.
+- `clips/`: event evidence excerpts.
+- `selected-events.jsonl`: model-selected events, evidence and timing.
+- `all-decisions.jsonl`: every proposed event, including failures and pending items.
+- `manifest.json`: provenance, policy, coverage, completion and error IDs.
+- `README.txt` and `source-notices/`: interpretation and original source notices.
 
-`label_status` is explicitly `model_selected_not_human_verified`. No accuracy or purity claim is attached to these automatic exports.
+Reviewed exports have the same dataset/audio/clip structure but `selected-events.jsonl` contains only human-kept annotations (`human_reviewed_keep`). `review-audit.json` records the review revision/history. They intentionally omit `all-decisions.jsonl` so excluded model-positive judgments cannot be confused with reviewed positive annotations; original model ZIPs retain those decisions.
+
+All export downloads verify their saved hash. Original source licenses remain applicable. Local data is never committed to Git.
 
 ## Validation
 
-88 automated tests passed, including 22 dataset-workflow cases: source-to-ZIP, cache reuse, persistent history, replay after interrupted state, unsupported requirements, concurrent-submit rejection, missing audio, source traversal, streamed upload size limits, empty results, provider errors, immutable download hashes, pinned Hub file requests, TurnBench schema adaptation and gold-label exclusion. History-detail tests also exercise pagination, playable selected clips, invalid event access, feedback authorization/length validation, feedback persistence after recreating the run manager, and unchanged ZIP bytes after saving feedback.
+The suite has **109 passing tests**. The workflow tests use controlled model responses and synthetic audio; they check behavior, not acoustic classification accuracy. Coverage includes model-free preflight, source validation, pinned Hub download revisions, safe ZIP extraction, exact-result caching, bounded pause, HTTP 429 handling, retry-only-failures, restart persistence, error accounting, rejected/unproposed previews, review revision conflicts, kept-only exports, immutable earlier ZIPs, legacy history, archive/rerun/delete, source/export integrity, and write authorization.
 
-The history-detail browser smoke test opened the existing selected-event run, played and paused its audio, expanded transcript context, saved a clearly marked workflow-test note, and confirmed the note survived a page reload. The empty-selection run displayed its empty state correctly. No new paid classification was needed for these UI checks.
-
-The React/TypeScript production build passed. The actual page was exercised through browser upload, submit, history update and ZIP download. A two-clip real-audio smoke run processed five candidate events with zero errors and selected no conversations. A second smoke run used a full 150-second conversation window, processed seven events with zero errors, and selected one conversation via one event. The downloaded archive passed ZIP CRC checks and contained full audio, the event clip and source license. These are workflow smoke tests on previously inspected development data, **not accuracy measurements**.
-
-Actual authenticated Hugging Face calls resolved TurnBench revision `c29aa4e6422122a8dccbe23598016a089bea2121` and five files totaling 4,215,901,555 bytes, reusing the existing local cache. The full 38-conversation dataset was not reclassified as part of this UI change. Unit tests separately cover the Hub-job integration and TurnBench adapter. Detailed runtime evidence is local in `artifacts/dataset-flow-check`; a text-free summary is committed under `evidence/dataset-runs`.
+Browser verification uses an isolated server with a controlled judge. It checks upload → compatibility → curate → listen → review → reviewed ZIP → undo, notes, sample/filter controls and history management. No classifier accuracy improvement is claimed by these UI changes; the interruption policy and model prompts are unchanged.
 
 ## Run locally
 

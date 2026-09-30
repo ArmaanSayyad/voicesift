@@ -39,3 +39,22 @@ summary { cursor: pointer; font-size: 14px; }
 .pagination { display: flex; gap: 12px; }
 .pagination button { margin-top: 8px; }
 .run-detail textarea { resize: vertical; }
+select { font: inherit; background: white; color: #111; border: 1px solid #999; padding: 9px; max-width: 100%; }
+.small-button { width: auto; padding: 8px 12px; margin: 0; }
+.review-summary, .filters, .history-filters, .run-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+.review-summary { justify-content: space-between; font-size: 13px; }
+.filters label { margin: 0; font-weight: 400; }
+.filters select { display: block; margin-top: 5px; }
+.checkbox { display: flex; align-items: center; gap: 7px; font-size: 13px; margin: 0; white-space: nowrap; }
+input[type=checkbox] { width: auto; accent-color: #111; }
+.history-filters input[type=search] { flex: 1; min-width: 180px; }
+.decisions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 16px 0; }
+.decisions button { width: auto; margin: 0; padding: 7px 14px; background: #fff; color: #111; }
+.decisions button[aria-pressed=true] { background: #111; color: #fff; }
+.decisions button:disabled { opacity: .5; }
+.run-detail details { margin: 16px 0; }
+.more summary { text-decoration: underline; text-underline-offset: 3px; }
+.more > div { display: flex; flex-wrap: wrap; gap: 16px; padding: 12px 0; }
+.source-check, .delete-confirm { border: 1px solid #bbb; padding: 12px; }
+.run-detail { padding: 16px; }
+.run-detail form .small-button { margin-top: 12px; }

@@ -6,7 +6,7 @@ import shutil
 import threading
 import uuid
 import zipfile
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from pathlib import Path
 
 import soundfile as sf
@@ -24,8 +24,9 @@ from .sources import (
     unpack,
 )
 from .store import Conflict, canonical, now
+from .workflow import Paused, Workflow
 
-ACTIVE = {"queued", "downloading", "preparing", "curating", "packaging"}
+ACTIVE = {"queued", "downloading", "preparing", "curating", "packaging", "pausing"}
 
 
 class EvidenceSource:
@@ -52,7 +53,7 @@ class EvidenceSource:
         return self.value
 
 
-class Runs:
+class Runs(Workflow):
     def __init__(self, root, backend=None, configured=True, downloader=None):
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
@@ -61,7 +62,8 @@ class Runs:
         self.backend = backend or gemini
         self.configured = configured
         self.downloader = downloader or download_dataset
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
+        self.stops = {}
         self.prediction_locks = {}
         self.pool = ThreadPoolExecutor(max_workers=1)
         for row in self.list():
@@ -69,15 +71,16 @@ class Runs:
                 self.update(
                     row["id"],
                     status="interrupted",
-                    message="Server restarted. Submit again to reuse cached model results.",
+                    message="Server restarted. Resume to reuse completed results.",
                 )
 
     def list(self):
-        return sorted(
-            [json.loads(p.read_text()) for p in self.root.glob("*/status.json")],
-            key=lambda r: r["created"],
-            reverse=True,
-        )
+        with self.lock:
+            return sorted(
+                [json.loads(p.read_text()) for p in self.root.glob("*/status.json")],
+                key=lambda r: r["created"],
+                reverse=True,
+            )
 
     def folder(self, rid):
         if (
@@ -92,20 +95,24 @@ class Runs:
         return path
 
     def get(self, rid):
-        return json.loads((self.folder(rid) / "status.json").read_text())
+        with self.lock:
+            return json.loads((self.folder(rid) / "status.json").read_text())
 
     def update(self, rid, **fields):
-        row = self.get(rid)
-        row.update(fields, updated=now())
-        atomic_json(self.folder(rid) / "status.json", row)
-        return row
+        with self.lock:
+            row = self.get(rid)
+            row.update(fields, updated=now())
+            atomic_json(self.folder(rid) / "status.json", row)
+            return row
 
-    def submit(self, requirement, *, upload=None, filename=None, url=None):
+    def submit(
+        self, requirement, *, upload=None, filename=None, url=None, preflight=False
+    ):
         if requirement != REQUIREMENT:
             raise ValueError("Only the fixed interruption requirement is supported")
         if bool(upload) == bool(url):
             raise ValueError("Choose either an upload or a Hugging Face URL")
-        if not self.configured:
+        if not self.configured and not preflight:
             raise ValueError("Gemini is not configured on the server")
         if url:
             repo_id(url)
@@ -133,8 +140,13 @@ class Runs:
                 "errors": 0,
                 "policy_version": precision.VERSION,
                 "download_ready": False,
+                "source_url": url,
+                "workflow_version": 2,
+                "preflight": preflight,
+                "archived": False,
             }
             atomic_json(folder / "status.json", row)
+            self.stops[rid] = threading.Event()
             self.pool.submit(self.run, rid, url)
         return row
 
@@ -159,67 +171,149 @@ class Runs:
 
     def run(self, rid, url):
         folder = self.folder(rid)
-        progress = lambda **kw: self.update(rid, **kw)
+        stop = self.stops.setdefault(rid, threading.Event())
+
+        def progress(**fields):
+            if stop.is_set():
+                raise Paused()
+            return self.update(rid, **fields)
+
         try:
-            if url:
-                progress(status="downloading", message="Resolving Hugging Face dataset")
-                source, provenance, _ = self.downloader(
-                    url, self.root / "downloads", progress
-                )
-                adapter = provenance["adapter"]
-            else:
-                progress(status="preparing", message="Reading uploaded ZIP")
-                source = unpack(folder / "upload.zip", folder / "input")
-                provenance = {
-                    "kind": "upload",
-                    "name": self.get(rid)["source"],
-                    "sha256": file_hash(folder / "upload.zip"),
-                    "adapter": "normalized-jsonl",
-                }
-                adapter = "normalized-jsonl"
-            progress(status="preparing", message="Validating transcripts and audio")
-            assets = folder / "assets"
-            records = prepare_records(source, assets, adapter, progress)
-            tasks = []
-            untimed = 0
-            for i, r in enumerate(records):
-                r["duration"] = sf.info(assets / r["file"]).duration
-                r["audio_sha256"] = file_hash(assets / r["file"])
-                for reverse in [False, True] if r["both_directions"] else [False]:
-                    turns = (
-                        [
-                            {
-                                **t,
-                                "role": "user"
-                                if t["role"] == "assistant"
-                                else "assistant",
-                            }
-                            for t in r["turns"]
-                        ]
-                        if reverse
-                        else r["turns"]
+            snapshot = folder / "prepared.json"
+            if snapshot.exists():
+                prepared = json.loads(snapshot.read_text())
+                if (
+                    prepared["policy_version"] != precision.VERSION
+                    or prepared["model"] != MODEL
+                ):
+                    raise ValueError(
+                        "This run used a different policy or model. Create a new run."
                     )
-                    detections, coverage = detect({"turns": turns})
-                    untimed += coverage["untimed_user_turns"]
-                    tasks.extend((i, d, reverse) for d in detections)
-            if len(tasks) > 10000:
-                raise ValueError(
-                    "This run exceeds 10,000 overlap candidates. Submit a smaller dataset."
+                records, tasks = prepared["records"], prepared["tasks"]
+            else:
+                if url:
+                    progress(
+                        status="downloading", message="Downloading and checking source"
+                    )
+                    source, provenance, _ = self.downloader(
+                        url, self.root / "downloads", progress
+                    )
+                    adapter = provenance["adapter"]
+                else:
+                    progress(status="preparing", message="Checking uploaded ZIP")
+                    # A cancelled extraction may leave a partial input directory.
+                    shutil.rmtree(folder / "input", ignore_errors=True)
+                    source = unpack(folder / "upload.zip", folder / "input")
+                    provenance = {
+                        "kind": "upload",
+                        "name": self.get(rid)["source"],
+                        "sha256": file_hash(folder / "upload.zip"),
+                        "adapter": "normalized-jsonl",
+                    }
+                    adapter = "normalized-jsonl"
+                progress(
+                    status="preparing",
+                    message="Validating transcripts and audio; no model calls",
                 )
-            atomic_json(folder / "source.json", provenance)
+                records = prepare_records(source, folder / "assets", adapter, progress)
+                tasks, unscreened = [], []
+                timed = untimed = 0
+                for i, r in enumerate(records):
+                    r["duration"] = sf.info(folder / "assets" / r["file"]).duration
+                    r["audio_sha256"] = file_hash(folder / "assets" / r["file"])
+                    for reverse in [False, True] if r["both_directions"] else [False]:
+                        turns = (
+                            [
+                                {
+                                    **t,
+                                    "role": "user"
+                                    if t["role"] == "assistant"
+                                    else "assistant",
+                                }
+                                for t in r["turns"]
+                            ]
+                            if reverse
+                            else r["turns"]
+                        )
+                        detections, coverage = detect({"turns": turns})
+                        timed += coverage["timed_user_turns"]
+                        untimed += coverage["untimed_user_turns"]
+                        tasks.extend((i, d, reverse) for d in detections)
+                        covered = {
+                            j for d in detections for j in d["user_turn_indices"]
+                        }
+                        unscreened.extend(
+                            {
+                                "id": f"{i:05d}-{int(reverse)}-{j}",
+                                "conversation_index": i,
+                                "source_conversation_id": r["id"],
+                                "target_turn_index": j,
+                                "roles_reversed": reverse,
+                                "status": "not_proposed",
+                                "disposition": "not_proposed",
+                            }
+                            for j, t in enumerate(turns)
+                            if t["role"] == "user" and j not in covered
+                        )
+                if len(tasks) > 10000:
+                    raise ValueError(
+                        "This run exceeds 10,000 overlap candidates. Submit a smaller dataset."
+                    )
+                notices = folder / "source-notices"
+                notices.mkdir(exist_ok=True)
+                for p in source.iterdir():
+                    if p.is_file() and (
+                        p.name.upper().startswith("LICENSE") or p.name == "README.md"
+                    ):
+                        shutil.copyfile(p, notices / p.name)
+                prepared = {
+                    "records": records,
+                    "tasks": tasks,
+                    "unscreened": unscreened,
+                    "provenance": provenance,
+                    "policy_version": precision.VERSION,
+                    "model": MODEL,
+                    "coverage": {
+                        "timed_turns": timed,
+                        "untimed_turns": untimed,
+                        "candidate_events": len(tasks),
+                        "not_proposed_turns": len(unscreened),
+                    },
+                }
+                atomic_json(snapshot, prepared)
+                atomic_json(folder / "source.json", provenance)
             progress(
-                status="curating",
-                message="Finding interruptions",
                 conversations=len(records),
                 candidates=len(tasks),
+                coverage=prepared["coverage"],
+                compatibility="Audio and timed speaker transcripts validated",
             )
+            if self.get(rid).get("preflight"):
+                progress(
+                    status="ready",
+                    message="Compatible. Ready for curation; no model calls made.",
+                )
+                return
+            progress(status="curating", message="Finding interruptions")
+            (folder / "clips").mkdir(exist_ok=True)
+            (folder / "events").mkdir(exist_ok=True)
             results = []
+            remaining = []
+            for task in tasks:
+                i, d, reverse = task
+                eid = f"{i:05d}-{int(reverse)}-{d['turn_index']}"
+                path = folder / "events" / f"{eid}.json"
+                previous = json.loads(path.read_text()) if path.exists() else None
+                if previous and previous["status"] == "complete":
+                    results.append(previous)
+                else:
+                    remaining.append(task)
 
             def analyze(task):
                 i, d, reverse = task
-                event_id = f"{i:05d}-{int(reverse)}-{d['turn_index']}"
+                eid = f"{i:05d}-{int(reverse)}-{d['turn_index']}"
                 result = {
-                    "id": event_id,
+                    "id": eid,
                     "conversation_index": i,
                     "source_conversation_id": records[i]["id"],
                     "target_turn_index": d["turn_index"],
@@ -230,116 +324,72 @@ class Runs:
                 }
                 try:
                     packet, audio, meta = evidence(
-                        EvidenceSource(folder, records[i], d, reverse), event_id
+                        EvidenceSource(folder, records[i], d, reverse), eid
                     )
-                    prediction = self.predict(packet, audio)
-                    result.update(prediction, evidence=meta, status="complete")
-                    if result["disposition"] == "shortlist":
-                        (folder / "clips" / f"{event_id}.wav").write_bytes(audio)
-                except Exception as exc:  # noqa: BLE001 - retain a sanitized record for every failed event
+                    result.update(evidence=meta)
+                    (folder / "clips" / f"{eid}.wav").write_bytes(audio)
+                    result.update(self.predict(packet, audio), status="complete")
+                except Exception as exc:  # noqa: BLE001 - persist sanitized failure state without provider secrets
                     result.update(
                         status="error",
                         disposition="needs_review",
                         error=type(exc).__name__,
                     )
-                atomic_json(folder / "events" / f"{event_id}.json", result)
+                    if getattr(exc, "code", None) in (401, 403, 429):
+                        result["error"] = (
+                            "RateLimit" if exc.code == 429 else "ProviderAccess"
+                        )
+                        stop.set()
+                atomic_json(folder / "events" / f"{eid}.json", result)
                 return result
 
-            (folder / "clips").mkdir()
-            (folder / "events").mkdir()
+            # Bounded scheduling: at most four calls in flight; pause/quota stops new calls.
+            iterator = iter(remaining)
             with ThreadPoolExecutor(max_workers=4) as pool:
-                for f in as_completed([pool.submit(analyze, t) for t in tasks]):
-                    results.append(f.result())
-                    selected = [r for r in results if r["disposition"] == "shortlist"]
-                    progress(
+                pending = set()
+                while True:
+                    while len(pending) < 4 and not stop.is_set():
+                        task = next(iterator, None)
+                        if task is None:
+                            break
+                        pending.add(pool.submit(analyze, task))
+                    if not pending:
+                        break
+                    done, pending = wait(pending, return_when=FIRST_COMPLETED)
+                    results.extend(f.result() for f in done)
+                    self.update(
+                        rid,
                         processed=len(results),
                         errors=sum(r["status"] == "error" for r in results),
-                        selected_events=len(selected),
-                        selected_conversations=len(
-                            {r["conversation_index"] for r in selected}
-                        ),
                     )
-            results.sort(key=lambda r: r["id"])
-            progress(status="packaging", message="Preparing ZIP download")
-            selected = [r for r in results if r["disposition"] == "shortlist"]
-            indices = sorted({r["conversation_index"] for r in selected})
-            manifest = {
-                **self.get(rid),
-                "status": "completed_with_errors"
-                if any(r["status"] == "error" for r in results)
-                else "completed",
-                "download_ready": True,
-                "message": "Finished",
-                "source_provenance": provenance,
-                "label_status": "model_selected_not_human_verified",
-                "selection": "At least one successful-interruption-v1 shortlist event; timing proposes candidates, Gemini judges audio and context.",
-                "coverage": "All detected overlaps in supplied timed user turns; both directions for TurnBench human-human audio. No recall guarantee.",
-                "audio": "Full selected conversations normalized to stereo/mono 16 kHz PCM16 WAV, plus event clips. Original channel order retained.",
-                "untimed_turns": untimed,
-                "event_errors": [r["id"] for r in results if r["status"] == "error"],
-            }
-            target = folder / "curated.zip"
-            with zipfile.ZipFile(
-                target.with_suffix(".tmp"), "w", compression=zipfile.ZIP_DEFLATED
-            ) as z:
-                rows = []
-                for i in indices:
-                    r = records[i]
-                    row = {
-                        k: v
-                        for k, v in r.items()
-                        if k not in ("file", "audio", "both_directions")
-                    }
-                    row.update(
-                        audio=f"audio/{r['file']}",
-                        curation={
-                            "label_status": "model_selected_not_human_verified",
-                            "events": [
-                                e["id"]
-                                for e in selected
-                                if e["conversation_index"] == i
-                            ],
-                        },
-                    )
-                    rows.append(row)
-                    z.write(assets / r["file"], row["audio"])
-                z.writestr("dataset.jsonl", "".join(canonical(r) + "\n" for r in rows))
-                z.writestr(
-                    "selected-events.jsonl",
-                    "".join(canonical(r) + "\n" for r in selected),
+            # Retain every candidate, including errors not retried because the run paused.
+            results = self.event_records(rid, include_unproposed=False)
+            paused = stop.is_set()
+            status = (
+                "paused"
+                if paused
+                else (
+                    "completed_with_errors"
+                    if any(r["status"] != "complete" for r in results)
+                    else "completed"
                 )
-                z.writestr(
-                    "all-decisions.jsonl", "".join(canonical(r) + "\n" for r in results)
-                )
-                z.writestr("manifest.json", json.dumps(manifest, indent=2))
-                z.writestr(
-                    "README.txt",
-                    "Machine-selected interruption candidates, not human-confirmed labels.\nReview before training. False positives and misses are expected.\nSee manifest.json for source, coverage and failures; dataset.jsonl contains full selected conversations.\nAn empty dataset.jsonl means no conversations were selected.\n",
-                )
-                for r in selected:
-                    z.write(folder / "clips" / f"{r['id']}.wav", f"clips/{r['id']}.wav")
-                for p in source.iterdir():
-                    if p.is_file() and (
-                        p.name.upper().startswith("LICENSE") or p.name == "README.md"
-                    ):
-                        z.write(p, f"source-notices/{p.name}")
-            target.with_suffix(".tmp").replace(target)
-            errors = sum(r["status"] == "error" for r in results)
-            progress(
-                status="completed_with_errors" if errors else "completed",
-                message="Finished with analysis errors; see ZIP manifest"
-                if errors
-                else "Finished",
-                download_ready=True,
-                zip_sha256=file_hash(target),
             )
-        except Exception as exc:  # noqa: BLE001 - never expose provider URLs, headers or credentials
+            self.update(
+                rid,
+                status="packaging",
+                message="Preparing ZIP",
+                processed=sum(r["status"] in ("complete", "error") for r in results),
+            )
+            self.package(rid, prepared, results, status)
+        except Paused:
+            self.update(rid, status="paused", message="Paused. Resume when ready.")
+        except Exception as exc:  # noqa: BLE001 - persist sanitized failure state without provider secrets
             message = (
                 str(exc)[:300]
                 if type(exc) is ValueError
                 else f"{type(exc).__name__}: could not process this dataset. Check the supported format and source access."
             )
-            progress(status="failed", message=message, download_ready=False)
+            self.update(rid, status="failed", message=message)
 
     def feedback(self, rid):
         path = self.folder(rid) / "feedback.json"
@@ -358,59 +408,7 @@ class Runs:
             atomic_json(self.folder(rid) / "feedback.json", value)
         return value
 
-    def detail(self, rid, offset=0, limit=10):
-        if offset < 0 or not 1 <= limit <= 25:
-            raise ValueError("Use a nonnegative offset and a limit from 1 to 25")
-        run = self.get(rid)
-        result = {
-            "run": run,
-            "feedback": self.feedback(rid),
-            "items": [],
-            "offset": offset,
-            "limit": limit,
-            "total": 0,
-        }
-        if not run["download_ready"]:
-            return result
-        with zipfile.ZipFile(self.folder(rid) / "curated.zip") as archive:
-            events = []
-            with archive.open("selected-events.jsonl") as stream:
-                for index, line in enumerate(stream):
-                    result["total"] += 1
-                    if offset <= index < offset + limit:
-                        events.append(json.loads(line))
-            wanted = {e["source_conversation_id"] for e in events}
-            conversations = {}
-            with archive.open("dataset.jsonl") as stream:
-                for line in stream:
-                    row = json.loads(line)
-                    if row["id"] in wanted:
-                        conversations[row["id"]] = row
-            for event in events:
-                conversation = conversations[event["source_conversation_id"]]
-                target = event["target_turn_index"]
-                start = max(0, target - 10)
-                turns = conversation["turns"][start : target + 11]
-                result["items"].append(
-                    {
-                        "id": event["id"],
-                        "conversation_id": conversation["id"],
-                        "target_turn_index": target,
-                        "roles_reversed": event["roles_reversed"],
-                        "answer": event["answer"],
-                        "evidence": event["evidence"],
-                        "turns": [
-                            {**t, "text": t["text"][:2000], "index": start + i}
-                            for i, t in enumerate(turns)
-                        ],
-                        "context_truncated": start > 0
-                        or target + 11 < len(conversation["turns"])
-                        or any(len(t["text"]) > 2000 for t in turns),
-                    }
-                )
-        return result
-
-    def selected_clip(self, rid, event_id):
+    def legacy_clip(self, rid, event_id):
         # Only IDs in this run's exported selection are playable, never arbitrary paths.
         if (
             not isinstance(event_id, str)
@@ -437,7 +435,7 @@ class Runs:
         row = self.get(rid)
         if not row["download_ready"]:
             raise Conflict("This run has no completed ZIP yet")
-        path = self.folder(rid) / "curated.zip"
+        path = self.folder(rid) / row.get("zip_path", "curated.zip")
         if file_hash(path) != row["zip_sha256"]:
             raise Conflict("Download integrity check failed")
         return path

@@ -1,3 +1,4 @@
+import asyncio
 import hashlib
 import io
 import json
@@ -5,8 +6,11 @@ import secrets
 import tempfile
 import uuid
 import zipfile
+from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Literal
 
+import numpy as np
 import soundfile as sf
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Response
@@ -31,6 +35,21 @@ class DatasetRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     url: str
     requirement: str = REQUIREMENT
+    preflight: bool = False
+
+
+class EventReviewRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    decision: Literal["keep", "exclude", "unsure", "unreviewed"]
+    revision: int = Field(ge=0)
+
+
+class ExportReviewRequest(BaseModel):
+    revision: int = Field(ge=0)
+
+
+class ArchiveRequest(BaseModel):
+    archived: bool
 
 
 REPO = Path(__file__).resolve().parents[3]
@@ -44,7 +63,13 @@ def create_app(root=None, backend=None):
         corpus.root / "dataset-runs", backend=backend, configured=analysis.configured
     )
     token = secrets.token_urlsafe(32)
-    app = FastAPI(title="Interruption Curation")
+
+    @asynccontextmanager
+    async def lifespan(app):
+        yield
+        await asyncio.to_thread(runs.shutdown)
+
+    app = FastAPI(title="Interruption Curation", lifespan=lifespan)
     app.state.corpus = corpus
     app.state.analysis = analysis
     app.state.runs = runs
@@ -144,15 +169,18 @@ source notices and a manifest. These are model-selected candidates, not human-co
 
     @app.post("/api/curation/runs/huggingface")
     def dataset_link(body: DatasetRequest):
-        return runs.submit(body.requirement, url=body.url)
+        return runs.submit(body.requirement, url=body.url, preflight=body.preflight)
 
     @app.post("/api/curation/runs/upload")
     async def dataset_upload(
-        request: Request, filename: str = "dataset.zip", requirement: str = REQUIREMENT
+        request: Request,
+        filename: str = "dataset.zip",
+        requirement: str = REQUIREMENT,
+        preflight: bool = False,
     ):
         if requirement != REQUIREMENT:
             raise ValueError("Only the fixed interruption requirement is supported")
-        if not runs.configured:
+        if not runs.configured and not preflight:
             raise ValueError("Gemini is not configured on the server")
         if not filename.lower().endswith(".zip"):
             raise ValueError(
@@ -170,16 +198,22 @@ source notices and a manifest. These are model-selected candidates, not human-co
                     if size > MAX_UPLOAD:
                         raise HTTPException(413, "Upload exceeds 512 MB")
                     f.write(chunk)
-            return runs.submit(requirement, upload=path, filename=filename)
+            return runs.submit(
+                requirement, upload=path, filename=filename, preflight=preflight
+            )
         finally:
             if path:
                 path.unlink(missing_ok=True)
 
     @app.get("/api/curation/runs/{rid}")
     def dataset_detail(
-        rid: str, offset: int = Query(0, ge=0), limit: int = Query(10, ge=1, le=25)
+        rid: str,
+        offset: int = Query(0, ge=0),
+        limit: int = Query(10, ge=1, le=25),
+        view: str = "selected",
+        sample: bool = False,
     ):
-        return runs.detail(rid, offset, limit)
+        return runs.detail(rid, offset, limit, view, sample)
 
     @app.put("/api/curation/runs/{rid}/feedback")
     def dataset_feedback(rid: str, body: FeedbackRequest):
@@ -195,6 +229,105 @@ source notices and a manifest. These are model-selected candidates, not human-co
             runs.download(rid),
             media_type="application/zip",
             filename=f"curated-{rid[:8]}.zip",
+        )
+
+    @app.get("/api/curation/runs/{rid}/model-exports/{name}")
+    def model_download(rid: str, name: str):
+        row = runs.get(rid)
+        version = next((v for v in row.get("exports", []) if v["path"] == name), None)
+        if not version:
+            raise KeyError(name)
+        path = runs.folder(rid) / name
+        from .sources import file_hash
+
+        if file_hash(path) != version["sha256"]:
+            raise Conflict("Export integrity check failed")
+        return FileResponse(path, media_type="application/zip", filename=name)
+
+    @app.post("/api/curation/runs/{rid}/resume")
+    def resume_run(rid: str):
+        return runs.resume(rid)
+
+    @app.post("/api/curation/runs/{rid}/pause")
+    def pause_run(rid: str):
+        return runs.pause(rid)
+
+    @app.post("/api/curation/runs/{rid}/rerun")
+    def rerun(rid: str):
+        return runs.rerun(rid)
+
+    @app.put("/api/curation/runs/{rid}/archive")
+    def archive_run(rid: str, body: ArchiveRequest):
+        return runs.archive(rid, body.archived)
+
+    @app.delete("/api/curation/runs/{rid}")
+    def delete_run(rid: str):
+        return runs.delete(rid)
+
+    @app.put("/api/curation/runs/{rid}/reviews/{eid}")
+    def review_event(rid: str, eid: str, body: EventReviewRequest):
+        return runs.review_event(rid, eid, body.decision, body.revision)
+
+    @app.get("/api/curation/runs/{rid}/events/{eid}/audio")
+    def event_audio(rid: str, eid: str):
+        return Response(
+            runs.event_audio(rid, runs._event(rid, eid))[0], media_type="audio/wav"
+        )
+
+    @app.post("/api/curation/runs/{rid}/reviewed-exports")
+    def reviewed_export(rid: str, body: ExportReviewRequest):
+        return runs.reviewed_export(rid, body.revision)
+
+    @app.get("/api/curation/runs/{rid}/reviewed-exports/{eid}")
+    def reviewed_download(rid: str, eid: str):
+        return FileResponse(
+            runs.reviewed_download(rid, eid),
+            media_type="application/zip",
+            filename=f"reviewed-{rid[:8]}-{eid[:8]}.zip",
+        )
+
+    @app.get("/api/curation/example.zip")
+    def example_zip():
+        audio = io.BytesIO()
+        sf.write(audio, np.zeros(80000), 16000, format="WAV", subtype="PCM_16")
+        output = io.BytesIO()
+        with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED) as z:
+            z.writestr(
+                "dataset.jsonl",
+                json.dumps(
+                    {
+                        "id": "format-example",
+                        "audio": "audio/example.wav",
+                        "provenance": "Silent structural fixture, not speech or a validated interruption",
+                        "turns": [
+                            {
+                                "role": "assistant",
+                                "text": "Replace with actual transcript",
+                                "start_s": 0,
+                                "end_s": 3,
+                            },
+                            {
+                                "role": "user",
+                                "text": "Replace with actual transcript",
+                                "start_s": 1,
+                                "end_s": 4,
+                            },
+                        ],
+                    }
+                )
+                + "\n",
+            )
+            z.writestr("audio/example.wav", audio.getvalue())
+            z.writestr(
+                "README.md",
+                "Format template only. The audio is SILENCE and the timestamps are invented. Replace audio and transcripts with your real data before curation.\n",
+            )
+        return Response(
+            output.getvalue(),
+            media_type="application/zip",
+            headers={
+                "Content-Disposition": 'attachment; filename="dataset-format-example.zip"'
+            },
         )
 
     @app.get("/api/curation/jobs")
