@@ -14,6 +14,17 @@ sh scripts/setup.sh core
 
 Automatic exports contain **model-selected candidates, not human-confirmed labels**. The [precision evaluation](docs/PRECISION_CURATION.md) documents known false positives and misses. Laya and general natural-language curation are deferred. Run history and artifacts persist locally; no Docker or GPU is required. Earlier manual-review data and exports remain intact.
 
+## Current status
+
+- Local UI: upload ZIP or supported Hugging Face URL → fixed interruption requirement → background run → ZIP download from persistent history.
+- Supported sources: normalized `dataset.jsonl` with audio, and TurnBench dev. Source schemas are validated before paid classification.
+- Automatic ZIPs contain full selected conversations, audio, event clips, decisions, source notices and provenance. Labels are explicitly machine-selected and unreviewed.
+- Runtime: one FastAPI process, four model requests at a time; disk-backed run history and cached responses. Existing manual-review data remains in SQLite. No Docker, PostgreSQL or GPU required.
+- Validation: 86 automated tests, a successful frontend build, actual Hub download/cache checks, and real browser upload/download smoke tests. Smoke tests are not accuracy benchmarks.
+- Accuracy: the latest interruption development evaluation selected 22 of 37 successful interruptions, missed 15, and selected 17 false positives among 374 scored events. Human validation is still needed before treating exports as clean training data.
+
+Correction/cancellation curation is the next experimental goal. Unlike interruptions, it must search turns without requiring overlapping speech. It is not enabled in the default UI yet.
+
 ---
 
 ## Preserved earlier work
