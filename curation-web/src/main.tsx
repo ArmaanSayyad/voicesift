@@ -53,7 +53,7 @@ function App() {
   }
   const visible = runs.filter(r => Boolean(r.archived) === archived && `${r.source} ${r.requirement} ${r.id}`.toLowerCase().includes(search.toLowerCase()));
   return <main>
-    <header><h1>Curate</h1><p>A dataset in. Reviewed examples out.</p></header>
+    <header><h1>VoiceSift</h1><p>A dataset in. Reviewed examples out.</p></header>
     <form onSubmit={submit}>
       <label htmlFor="dataset">Upload a dataset</label>
       <input id="dataset" type="file" accept=".zip" disabled={busy || running} onChange={e => {setFile(e.target.files?.[0] || null); setChecked(null); if (e.target.files?.[0]) setUrl("");}} />

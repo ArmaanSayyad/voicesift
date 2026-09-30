@@ -69,7 +69,7 @@ def create_app(root=None, backend=None):
         yield
         await asyncio.to_thread(runs.shutdown)
 
-    app = FastAPI(title="Interruption Curation", lifespan=lifespan)
+    app = FastAPI(title="VoiceSift", lifespan=lifespan)
     app.state.corpus = corpus
     app.state.analysis = analysis
     app.state.runs = runs

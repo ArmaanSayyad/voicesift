@@ -65,7 +65,7 @@ The final command assumes a key is set in the current environment; otherwise use
 | Reviewed download is marked older | Prepare a new reviewed ZIP after changing decisions. The previous ZIP remains immutable. |
 | Reviews changed in another window | Refresh run details, then apply your decision against the latest revision. |
 
-For a reproducible bug, [open an issue](https://github.com/ArmaanSayyad/conversation-repair-workbench/issues) with your OS, Node/Python versions, commit (`git rev-parse --short HEAD`), the action, and the visible error. Include a small non-sensitive reproducer when possible; omit credentials and private recordings.
+For a reproducible bug, [open an issue](https://github.com/ArmaanSayyad/voicesift/issues) with your OS, Node/Python versions, commit (`git rev-parse --short HEAD`), the action, and the visible error. Include a small non-sensitive reproducer when possible; omit credentials and private recordings.
 
 ## Checks
 

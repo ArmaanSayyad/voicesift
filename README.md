@@ -14,8 +14,8 @@ The repository is currently private: request access from the maintainer and auth
 # If pnpm is not already installed:
 npm install -g pnpm@12.6.0
 
-git clone --branch codex/minimal-curation-review https://github.com/ArmaanSayyad/conversation-repair-workbench.git
-cd conversation-repair-workbench
+git clone --branch codex/minimal-curation-review https://github.com/ArmaanSayyad/voicesift.git
+cd voicesift
 sh scripts/setup.sh core
 (cd curation-web && pnpm install --frozen-lockfile && pnpm build)
 ```
@@ -46,4 +46,4 @@ Pause/resume, retry failures, undo reviews, search, archive/restore and rerun ar
 
 [Setup help, gated datasets, updates and troubleshooting](docs/GETTING_STARTED.md) · [Full workflow and ZIP contents](docs/DATASET_RUNS.md) · [Verification](evidence/curation-workflow/README.md)
 
-**Distribution:** no project license has been selected yet; contact the maintainer about reuse or redistribution. Source dataset licenses continue to apply to curated outputs.
+**License:** [MIT](LICENSE), copyright 2026 Armaan Sayyad. The license covers this project’s code; source datasets, recordings and third-party dependencies retain their own licenses.
