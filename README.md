@@ -25,6 +25,8 @@ Automatic exports contain **model-selected candidates, not human-confirmed label
 
 Correction/cancellation curation is the next experimental goal. Unlike interruptions, it must search turns without requiring overlapping speech. It is not enabled in the default UI yet. The [dataset audit](docs/CORRECTION_DATASETS.md) verifies PRESTO and NC-Bench label counts, explains why untagged examples cannot automatically be negatives, and separates text evaluation from audio accuracy.
 
+The [PRESTO text experiment](docs/PRESTO_EVALUATION.md) tested 600 examples: selected 343 of 400 correction/cancellation-tagged examples and 19 of 200 comparison examples. Because comparison labels are incomplete, this measures positive-tag recovery, not curation precision. Cancellation recovery was 97/100; action-correction recovery was 60/100. The production UI remains interruption-only.
+
 ---
 
 ## Preserved earlier work

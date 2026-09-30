@@ -1,0 +1,82 @@
+{
+  "total": 600,
+  "groups": {
+    "cancel-action": {
+      "total": 100,
+      "selected": 97,
+      "not_selected": 3,
+      "labels": {
+        "cancellation": 97,
+        "unclear": 1,
+        "neither": 2
+      },
+      "reference_positive": true
+    },
+    "correct-action": {
+      "total": 100,
+      "selected": 60,
+      "not_selected": 40,
+      "labels": {
+        "neither": 36,
+        "correction": 50,
+        "unclear": 4,
+        "cancellation": 10
+      },
+      "reference_positive": true
+    },
+    "correct-argument": {
+      "total": 100,
+      "selected": 88,
+      "not_selected": 12,
+      "labels": {
+        "correction": 88,
+        "unclear": 1,
+        "neither": 11
+      },
+      "reference_positive": true
+    },
+    "disfluency_comparison": {
+      "total": 100,
+      "selected": 8,
+      "not_selected": 92,
+      "labels": {
+        "neither": 92,
+        "correction": 8
+      },
+      "reference_positive": false
+    },
+    "untagged_human_context": {
+      "total": 100,
+      "selected": 11,
+      "not_selected": 89,
+      "labels": {
+        "neither": 89,
+        "correction": 9,
+        "cancellation": 2
+      },
+      "reference_positive": false
+    },
+    "within-turn-correction": {
+      "total": 100,
+      "selected": 98,
+      "not_selected": 2,
+      "labels": {
+        "correction": 98,
+        "neither": 2
+      },
+      "reference_positive": true
+    }
+  },
+  "usage": {
+    "promptTokenCount": 200477,
+    "candidatesTokenCount": 25937,
+    "totalTokenCount": 352958,
+    "thoughtsTokenCount": 126544
+  },
+  "model_versions": {
+    "gemini-3.8-flash": 600
+  },
+  "precision": null,
+  "overall_accuracy": null,
+  "limitation": "Comparison examples are not gold negatives. This measures positive-tag recovery and comparison selection, not curated-dataset purity or audio accuracy."
+}
