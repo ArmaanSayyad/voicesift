@@ -23,7 +23,7 @@ Automatic exports contain **model-selected candidates, not human-confirmed label
 - Validation: 86 automated tests, a successful frontend build, actual Hub download/cache checks, and real browser upload/download smoke tests. Smoke tests are not accuracy benchmarks.
 - Accuracy: the latest interruption development evaluation selected 22 of 37 successful interruptions, missed 15, and selected 17 false positives among 374 scored events. Human validation is still needed before treating exports as clean training data.
 
-Correction/cancellation curation is the next experimental goal. Unlike interruptions, it must search turns without requiring overlapping speech. It is not enabled in the default UI yet.
+Correction/cancellation curation is the next experimental goal. Unlike interruptions, it must search turns without requiring overlapping speech. It is not enabled in the default UI yet. The [dataset audit](docs/CORRECTION_DATASETS.md) verifies PRESTO and NC-Bench label counts, explains why untagged examples cannot automatically be negatives, and separates text evaluation from audio accuracy.
 
 ---
 
