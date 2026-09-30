@@ -2,19 +2,24 @@
 
 Find **successful interruptions** in voice conversations, review the matches, and download a curated dataset. A minimal, black-and-white localhost app. No GPU, Docker or database setup required.
 
+<p>
+  <img src="docs/images/voicesift-start.jpg" width="49%" alt="VoiceSift dataset upload, Hugging Face link and interruption requirement" />
+  <img src="docs/images/voicesift-review.jpg" width="49%" alt="VoiceSift audio playback and Keep, Exclude or Unsure review controls" />
+</p>
+
+*Choose a source, then listen and review. Screenshots show a development run, not benchmark results.*
+
 **Local beta for technical users.** Tested on macOS; other platforms are not yet verified. The web app supports interruption curation only. It uses Gemini, not Laya. Model suggestions can be wrong—review them before using them as training labels.
 
 ## Get started
 
 You need Git, [uv](https://docs.astral.sh/uv/getting-started/installation/), [Node.js](https://nodejs.org/en/download) 24 and pnpm, plus a [Gemini API key](https://ai.google.dev/gemini-api/docs/api-key) with access to `gemini-3.8-flash` and available quota. Python 3.12 is installed by uv if needed.
 
-The repository is currently private: request access from the maintainer and authenticate GitHub before cloning. The latest review UI is on the branch below, not `main`.
-
 ```sh
 # If pnpm is not already installed:
 npm install -g pnpm@12.6.0
 
-git clone --branch codex/minimal-curation-review https://github.com/ArmaanSayyad/voicesift.git
+git clone https://github.com/ArmaanSayyad/voicesift.git
 cd voicesift
 sh scripts/setup.sh core
 (cd curation-web && pnpm install --frozen-lockfile && pnpm build)

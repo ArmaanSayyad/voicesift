@@ -50,7 +50,7 @@ The final command assumes a key is set in the current environment; otherwise use
 
 | Symptom | What to do |
 |---|---|
-| GitHub says repository not found | The repo is private. Obtain collaborator access and authenticate GitHub; clone the branch shown in the README. |
+| GitHub says repository not found | Use the public `ArmaanSayyad/voicesift` URL from the README. Check for typos or a stale remote URL. |
 | `uv`, `node` or `pnpm` not found | Install the missing prerequisite using the README links, then open a new terminal. |
 | Frontend build fails with a Node engine error | Use Node 24 and pnpm 12.6.0; reinstall with the committed lockfile. |
 | The root page is missing or stale | Run `pnpm build` inside `curation-web`, start the server from the repo root, and refresh the page. |
