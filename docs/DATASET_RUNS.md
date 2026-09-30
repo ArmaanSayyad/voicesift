@@ -48,6 +48,10 @@ Costs scale with candidate count. The 10,000-event ceiling is a processing bound
 
 ## ZIP contents
 
+Click a source name in History to expand its curated examples. The preview pages through 10 selected events at a time, with playable event excerpts, selection reasons, and nearby transcript context. Source timestamps and the selected turn are shown; shortened context is marked. Full conversations remain available in the ZIP. Empty and unfinished runs have explicit messages.
+
+Each run has a feedback textbox and Save feedback button. Feedback persists in a separate `feedback.json` beside the run status, supports up to 10,000 characters, and can be edited or cleared. It is a run-level review note, not a new gold label: saving does not change the immutable ZIP, rerun curation, or retrain the model. Playback is opt-in. Only events in that run's exported selection can be played through the preview API, and clip hashes are checked.
+
 - `dataset.jsonl`: full selected conversations, audio paths, and selection status/event IDs.
 - `audio/`: full selected recordings normalized to 16 kHz PCM16 WAV.
 - `clips/`: positive-event evidence clips, bounded by the existing analysis window.
@@ -60,7 +64,9 @@ Costs scale with candidate count. The 10,000-event ceiling is a processing bound
 
 ## Validation
 
-86 automated tests passed, including 20 new dataset-workflow cases: source-to-ZIP, cache reuse, persistent history, replay after interrupted state, unsupported requirements, concurrent-submit rejection, missing audio, source traversal, streamed upload size limits, empty results, provider errors, immutable download hashes, pinned Hub file requests, TurnBench schema adaptation and gold-label exclusion.
+88 automated tests passed, including 22 dataset-workflow cases: source-to-ZIP, cache reuse, persistent history, replay after interrupted state, unsupported requirements, concurrent-submit rejection, missing audio, source traversal, streamed upload size limits, empty results, provider errors, immutable download hashes, pinned Hub file requests, TurnBench schema adaptation and gold-label exclusion. History-detail tests also exercise pagination, playable selected clips, invalid event access, feedback authorization/length validation, feedback persistence after recreating the run manager, and unchanged ZIP bytes after saving feedback.
+
+The history-detail browser smoke test opened the existing selected-event run, played and paused its audio, expanded transcript context, saved a clearly marked workflow-test note, and confirmed the note survived a page reload. The empty-selection run displayed its empty state correctly. No new paid classification was needed for these UI checks.
 
 The React/TypeScript production build passed. The actual page was exercised through browser upload, submit, history update and ZIP download. A two-clip real-audio smoke run processed five candidate events with zero errors and selected no conversations. A second smoke run used a full 150-second conversation window, processed seven events with zero errors, and selected one conversation via one event. The downloaded archive passed ZIP CRC checks and contained full audio, the event clip and source license. These are workflow smoke tests on previously inspected development data, **not accuracy measurements**.
 

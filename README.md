@@ -1,6 +1,6 @@
 # Interruption dataset curation
 
-A minimal local app: upload a dataset ZIP or paste a supported Hugging Face dataset URL, submit the fixed interruption requirement, and download the selected conversations from run history. The interface is black and white; the requirement is currently read-only.
+A minimal local app: upload a dataset ZIP or paste a supported Hugging Face dataset URL, submit the fixed interruption requirement, and download the selected conversations from run history. Click a history entry to listen to curated event clips, inspect transcript context, and save feedback. The interface is black and white; the requirement is currently read-only.
 
 ```sh
 sh scripts/setup.sh core
@@ -20,7 +20,7 @@ Automatic exports contain **model-selected candidates, not human-confirmed label
 - Supported sources: normalized `dataset.jsonl` with audio, and TurnBench dev. Source schemas are validated before paid classification.
 - Automatic ZIPs contain full selected conversations, audio, event clips, decisions, source notices and provenance. Labels are explicitly machine-selected and unreviewed.
 - Runtime: one FastAPI process, four model requests at a time; disk-backed run history and cached responses. Existing manual-review data remains in SQLite. No Docker, PostgreSQL or GPU required.
-- Validation: 86 automated tests, a successful frontend build, actual Hub download/cache checks, and real browser upload/download smoke tests. Smoke tests are not accuracy benchmarks.
+- Validation: 88 automated tests, a successful frontend build, actual Hub download/cache checks, and browser smoke tests for upload/download, history previews, audio playback, and saved feedback after reload. Smoke tests are not accuracy benchmarks.
 - Accuracy: the latest interruption development evaluation selected 22 of 37 successful interruptions, missed 15, and selected 17 false positives among 374 scored events. Human validation is still needed before treating exports as clean training data.
 
 Correction/cancellation curation is the next experimental goal. Unlike interruptions, it must search turns without requiring overlapping speech. It is not enabled in the default UI yet. The [dataset audit](docs/CORRECTION_DATASETS.md) verifies PRESTO and NC-Bench label counts, explains why untagged examples cannot automatically be negatives, and separates text evaluation from audio accuracy.

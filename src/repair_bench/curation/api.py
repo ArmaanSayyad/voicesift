@@ -1,20 +1,30 @@
-import hashlib, io, json, secrets, uuid, zipfile
+import hashlib
+import io
+import json
+import secrets
 import tempfile
-from pydantic import BaseModel, ConfigDict
+import uuid
+import zipfile
+from pathlib import Path
+
+import soundfile as sf
+from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Response
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+
+from .analysis import Analysis, evidence
+from .models import Analyze, Import, Review
+from .precision import VERSION as POLICY_VERSION
 from .runs import Runs
 from .sources import MAX_UPLOAD, REQUIREMENT
-from pathlib import Path
-import soundfile as sf
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import JSONResponse, FileResponse
-from fastapi.staticfiles import StaticFiles
-from pydantic import ValidationError
-from starlette.middleware.trustedhost import TrustedHostMiddleware
-from .store import Corpus, Conflict
-from .models import Import, Review, Analyze
-from .analysis import Analysis, evidence
-from .precision import VERSION as POLICY_VERSION
-from fastapi.responses import Response, PlainTextResponse
+from .store import Conflict, Corpus
+
+
+class FeedbackRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    text: str = Field(max_length=10000, strict=True)
 
 
 class DatasetRequest(BaseModel):
@@ -164,6 +174,20 @@ source notices and a manifest. These are model-selected candidates, not human-co
         finally:
             if path:
                 path.unlink(missing_ok=True)
+
+    @app.get("/api/curation/runs/{rid}")
+    def dataset_detail(
+        rid: str, offset: int = Query(0, ge=0), limit: int = Query(10, ge=1, le=25)
+    ):
+        return runs.detail(rid, offset, limit)
+
+    @app.put("/api/curation/runs/{rid}/feedback")
+    def dataset_feedback(rid: str, body: FeedbackRequest):
+        return runs.save_feedback(rid, body.text)
+
+    @app.get("/api/curation/runs/{rid}/clips/{event_id}")
+    def dataset_clip(rid: str, event_id: str):
+        return Response(runs.selected_clip(rid, event_id), media_type="audio/wav")
 
     @app.get("/api/curation/runs/{rid}/download")
     def dataset_download(rid: str):

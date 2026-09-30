@@ -28,3 +28,14 @@ time { font-size: 11px; color: #555; white-space: nowrap; }
 .empty { border-top: 1px solid #ccc; padding-top: 20px; color: #555; }
 .error { border: 1px solid #111; padding: 12px; overflow-wrap: anywhere; }
 @media(max-width: 540px) { main { margin: 36px auto; padding: 0 18px; } .row { display: block; } time { display: block; margin-top: 5px; } .download { display: inline-block; margin: 6px 0; } }
+
+.history-title, .text-button { width: auto; background: transparent; color: #111; border: 0; padding: 0; margin: 0; text-align: left; text-decoration: underline; text-underline-offset: 3px; font-weight: inherit; overflow-wrap: anywhere; }
+.run-detail { margin: 20px 0 0; padding: 20px; border: 1px solid #ccc; }
+.datapoint { border-top: 1px solid #ddd; padding: 20px 0; }
+audio { display: block; width: 100%; margin: 14px 0; }
+summary { cursor: pointer; font-size: 14px; }
+.target-turn { border-left: 3px solid #111; padding-left: 10px; }
+.datapoint p { overflow-wrap: anywhere; white-space: pre-wrap; }
+.pagination { display: flex; gap: 12px; }
+.pagination button { margin-top: 8px; }
+.run-detail textarea { resize: vertical; }

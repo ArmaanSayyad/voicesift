@@ -341,6 +341,98 @@ class Runs:
             )
             progress(status="failed", message=message, download_ready=False)
 
+    def feedback(self, rid):
+        path = self.folder(rid) / "feedback.json"
+        return (
+            json.loads(path.read_text())
+            if path.exists()
+            else {"text": "", "updated": None}
+        )
+
+    def save_feedback(self, rid, text):
+        if not isinstance(text, str) or len(text) > 10000:
+            raise ValueError("Feedback must be text of at most 10,000 characters")
+        value = {"text": text, "updated": now()}
+        # Feedback is separate from live progress and the immutable dataset export.
+        with self.lock:
+            atomic_json(self.folder(rid) / "feedback.json", value)
+        return value
+
+    def detail(self, rid, offset=0, limit=10):
+        if offset < 0 or not 1 <= limit <= 25:
+            raise ValueError("Use a nonnegative offset and a limit from 1 to 25")
+        run = self.get(rid)
+        result = {
+            "run": run,
+            "feedback": self.feedback(rid),
+            "items": [],
+            "offset": offset,
+            "limit": limit,
+            "total": 0,
+        }
+        if not run["download_ready"]:
+            return result
+        with zipfile.ZipFile(self.folder(rid) / "curated.zip") as archive:
+            events = []
+            with archive.open("selected-events.jsonl") as stream:
+                for index, line in enumerate(stream):
+                    result["total"] += 1
+                    if offset <= index < offset + limit:
+                        events.append(json.loads(line))
+            wanted = {e["source_conversation_id"] for e in events}
+            conversations = {}
+            with archive.open("dataset.jsonl") as stream:
+                for line in stream:
+                    row = json.loads(line)
+                    if row["id"] in wanted:
+                        conversations[row["id"]] = row
+            for event in events:
+                conversation = conversations[event["source_conversation_id"]]
+                target = event["target_turn_index"]
+                start = max(0, target - 10)
+                turns = conversation["turns"][start : target + 11]
+                result["items"].append(
+                    {
+                        "id": event["id"],
+                        "conversation_id": conversation["id"],
+                        "target_turn_index": target,
+                        "roles_reversed": event["roles_reversed"],
+                        "answer": event["answer"],
+                        "evidence": event["evidence"],
+                        "turns": [
+                            {**t, "text": t["text"][:2000], "index": start + i}
+                            for i, t in enumerate(turns)
+                        ],
+                        "context_truncated": start > 0
+                        or target + 11 < len(conversation["turns"])
+                        or any(len(t["text"]) > 2000 for t in turns),
+                    }
+                )
+        return result
+
+    def selected_clip(self, rid, event_id):
+        # Only IDs in this run's exported selection are playable, never arbitrary paths.
+        if (
+            not isinstance(event_id, str)
+            or not event_id
+            or any(c not in "0123456789-" for c in event_id)
+        ):
+            raise KeyError(event_id)
+        if not self.get(rid)["download_ready"]:
+            raise Conflict("This run has no completed selection yet")
+        with zipfile.ZipFile(self.folder(rid) / "curated.zip") as archive:
+            with archive.open("selected-events.jsonl") as stream:
+                event = next(
+                    (r for line in stream if (r := json.loads(line))["id"] == event_id),
+                    None,
+                )
+            if event is None:
+                raise KeyError(event_id)
+            audio = archive.read(f"clips/{event_id}.wav")
+            if hashlib.sha256(audio).hexdigest() != event["evidence"]["clip_sha256"]:
+                raise Conflict("Clip integrity check failed")
+            return audio
+
     def download(self, rid):
         row = self.get(rid)
         if not row["download_ready"]:

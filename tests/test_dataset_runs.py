@@ -341,3 +341,98 @@ def test_no_overlap_is_successful_empty_run_without_model(tmp_path):
         and done["candidates"] == 0
         and done["errors"] == 0
     )
+
+
+def test_run_detail_pagination_clips_and_persistent_feedback(tmp_path):
+    app = create_app(tmp_path / "app", backend=backend)
+    turns = [{"role": "assistant", "text": "Options", "start_s": 0.0, "end_s": 3.0}]
+    turns += [
+        {
+            "role": "user",
+            "text": f"Wait {i}",
+            "start_s": 1.0 + i / 10,
+            "end_s": 1.05 + i / 10,
+        }
+        for i in range(12)
+    ]
+    with TestClient(app) as client:
+        client.headers["x-repair-token"] = client.get("/api/curation/bootstrap").json()[
+            "token"
+        ]
+        r = client.post(
+            "/api/curation/runs/upload",
+            content=bundle(tmp_path, turns=turns).read_bytes(),
+        ).json()
+        assert wait(app.state.runs, r["id"])["status"] == "completed"
+        base = f"/api/curation/runs/{r['id']}"
+        page = client.get(base).json()
+        assert page["total"] == 12 and len(page["items"]) == 10
+        second = client.get(base + "?offset=10").json()
+        assert len(second["items"]) == 2
+        assert not (
+            {r["id"] for r in page["items"]} & {r["id"] for r in second["items"]}
+        )
+        assert client.get(base + "?offset=100").json()["items"] == []
+        assert client.get(base + "?limit=26").status_code == 422
+        assert client.get(base + "?offset=-1").status_code == 422
+        event = page["items"][0]
+        assert (
+            event["answer"]["evidence_note"] == "Test double, not an acoustic judgment."
+        )
+        assert any(t["index"] == event["target_turn_index"] for t in event["turns"])
+        clip = client.get(base + f"/clips/{event['id']}")
+        assert (
+            clip.status_code == 200 and sf.info(io.BytesIO(clip.content)).duration > 0
+        )
+        assert client.get(base + "/clips/99999-0-99").status_code == 404
+        assert client.get(base + "/clips/not-an-event").status_code == 404
+        before = client.get(base + "/download").content
+        assert (
+            client.put(
+                base + "/feedback", json={"text": "Useful, but review event 1."}
+            ).status_code
+            == 200
+        )
+        assert (
+            client.get(base).json()["feedback"]["text"] == "Useful, but review event 1."
+        )
+        assert client.get(base + "/download").content == before
+        assert (
+            client.put(base + "/feedback", json={"text": "x" * 10001}).status_code
+            == 422
+        )
+        assert client.put(base + "/feedback", json={"text": 1}).status_code == 422
+        del client.headers["x-repair-token"]
+        assert (
+            client.put(base + "/feedback", json={"text": "unauthorized"}).status_code
+            == 403
+        )
+    restored = Runs(app.state.runs.root, backend=backend)
+    assert restored.feedback(r["id"])["text"] == "Useful, but review event 1."
+    assert restored.save_feedback(r["id"], "")["text"] == ""
+
+
+def test_detail_empty_and_unavailable_runs(tmp_path):
+    def negative(body):
+        result = backend(body)
+        result["answer"].update(
+            intent="backchannel", interruption_result="not_applicable"
+        )
+        return result
+
+    runs = Runs(tmp_path / "runs", backend=negative)
+    r = runs.submit(REQUIREMENT, upload=bundle(tmp_path))
+    assert wait(runs, r["id"])["status"] == "completed"
+    assert runs.detail(r["id"])["total"] == 0
+    with pytest.raises(KeyError):
+        runs.selected_clip(r["id"], "00000-0-1")
+    for status in ["curating", "failed", "interrupted"]:
+        runs.update(r["id"], status=status, download_ready=False)
+        assert runs.detail(r["id"])["items"] == []
+        assert runs.save_feedback(r["id"], "retry later")["text"] == "retry later"
+        with pytest.raises(Conflict):
+            runs.selected_clip(r["id"], "00000-0-1")
+    with pytest.raises(KeyError):
+        runs.detail("../elsewhere")
+    with pytest.raises(KeyError):
+        runs.save_feedback("0" * 32, "not a run")
