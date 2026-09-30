@@ -85,12 +85,19 @@ def test_review_conflict_and_export_eligibility(tmp_path):
     with pytest.raises(Conflict):
         c.review(cid, Review(label="uncertain", reviewer="test", expected_version=0))
     with pytest.raises(ValueError):
-        Review(label="backchannel", include=True, reviewer="test", expected_version=1)
+        Review(
+            label="backchannel",
+            include=True,
+            interruption_result="successful",
+            reviewer="test",
+            expected_version=1,
+        )
     c.review(
         cid,
         Review(
             label="interruption",
             include=True,
+            interruption_result="successful",
             reviewer="test",
             note="Fixture-only annotation",
             expected_version=1,
@@ -176,6 +183,7 @@ def test_api_auth_import_review_audio_export(tmp_path):
                 json={
                     "label": "interruption",
                     "include": True,
+                    "interruption_result": "successful",
                     "reviewer": "test",
                     "expected_version": 0,
                 },
@@ -205,7 +213,11 @@ def test_export_refuses_changed_source_audio(tmp_path):
     c.review(
         cid,
         Review(
-            label="interruption", include=True, reviewer="unit-test", expected_version=0
+            label="interruption",
+            include=True,
+            interruption_result="successful",
+            reviewer="unit-test",
+            expected_version=0,
         ),
     )
     with pytest.raises(ValueError, match="audio hash mismatch"):

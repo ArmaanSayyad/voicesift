@@ -1,0 +1,23 @@
+{
+  "policy": "successful-interruption-v1",
+  "total_events": 400,
+  "scored_events": 374,
+  "successful": {
+    "tp": 22,
+    "fp": 17,
+    "tn": 320,
+    "fn": 15,
+    "precision": 0.5641025641025641,
+    "recall": 0.5945945945945946
+  },
+  "shortlisted": 45,
+  "unscored_shortlisted": 6,
+  "errors": 8,
+  "usage": {
+    "promptTokenCount": 615993,
+    "candidatesTokenCount": 26158,
+    "thoughtsTokenCount": 155006
+  },
+  "estimated_recorded_usage_usd": 1.14135975,
+  "scope": "Adaptive development evaluation on previously inspected sample, not held-out validation."
+}

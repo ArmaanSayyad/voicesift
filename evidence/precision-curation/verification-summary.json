@@ -1,0 +1,21 @@
+{
+  "total_events": 400,
+  "scored_events": 374,
+  "verification_requests": 45,
+  "successful": {
+    "tp": 16,
+    "fp": 11,
+    "tn": 326,
+    "fn": 21,
+    "precision": 0.5925925925925926,
+    "recall": 0.43243243243243246
+  },
+  "shortlisted": 33,
+  "unscored_shortlisted": 6,
+  "verification_errors": 2,
+  "usage": {
+    "promptTokenCount": 80393,
+    "candidatesTokenCount": 3008,
+    "thoughtsTokenCount": 25489
+  }
+}

@@ -1,0 +1,1308 @@
+[
+  {
+    "usage": {
+      "promptTokenCount": 1815,
+      "candidatesTokenCount": 61,
+      "totalTokenCount": 3252,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1604
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 211
+        }
+      ],
+      "thoughtsTokenCount": 1376,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "not_selected",
+    "id": "105:1:139.2830",
+    "request_sha256": "565e4a7d9f82723b6de0475eb3d29efcd7f90358d5f03152269eaf1dec18f187",
+    "seconds": 6.88373404199956,
+    "labels": {
+      "intent": "continuation",
+      "agent_outcome": "continued",
+      "interruption_result": "not_applicable"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2085,
+      "candidatesTokenCount": 73,
+      "totalTokenCount": 2946,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1712
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 373
+        }
+      ],
+      "thoughtsTokenCount": 788,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "not_selected",
+    "id": "107:2:75.8790",
+    "request_sha256": "8e069c7dcca9aac28bf222a5e3e2c32b2b379c8640114bb7a7142020a2b244f0",
+    "seconds": 4.993562584000756,
+    "labels": {
+      "intent": "normal_handoff",
+      "agent_outcome": "stopped",
+      "interruption_result": "not_applicable"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1738,
+      "candidatesTokenCount": 76,
+      "totalTokenCount": 2128,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1509
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 229
+        }
+      ],
+      "thoughtsTokenCount": 314,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "112:1:405.6890",
+    "request_sha256": "60ba471f467472e494b8a6805c66cc4dda8d5bb6f53ec11fed8affab18ee4456",
+    "seconds": 2.933391833001224,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2039,
+      "candidatesTokenCount": 73,
+      "totalTokenCount": 3425,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1648
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 391
+        }
+      ],
+      "thoughtsTokenCount": 1313,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "113:2:545.0490",
+    "request_sha256": "bbf77349040528d8e1e0e7e9edd7268dc1fabd1dfe7c52c9e1a8abbab00e3049",
+    "seconds": 7.887645250004425,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1558,
+      "candidatesTokenCount": 76,
+      "totalTokenCount": 1953,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 189
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1369
+        }
+      ],
+      "thoughtsTokenCount": 319,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "114:1:272.2320",
+    "request_sha256": "4a1f6bb89b7f38a33915ddec01acb8dd53a319705bf587a38adbbd92c484b427",
+    "seconds": 2.6130480420033564,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1924,
+      "candidatesTokenCount": 71,
+      "totalTokenCount": 3253,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1488
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 436
+        }
+      ],
+      "thoughtsTokenCount": 1258,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "114:1:299.8830",
+    "request_sha256": "7ff0a280126ea893bf0c7d27d5928abf7eba32383ee8fd122665664e630dd191",
+    "seconds": 6.550994499993976,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2031,
+      "candidatesTokenCount": 69,
+      "totalTokenCount": 2593,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 452
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1579
+        }
+      ],
+      "thoughtsTokenCount": 493,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "not_selected",
+    "id": "114:1:463.3850",
+    "request_sha256": "ab750ea971c489bdc15ae33115b6c12c04e12ba2596ead5f34b37d7ed2e52922",
+    "seconds": 3.514263500001107,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "interruption_result": "unsuccessful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1809,
+      "candidatesTokenCount": 65,
+      "totalTokenCount": 2188,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1526
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 283
+        }
+      ],
+      "thoughtsTokenCount": 314,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "114:1:570.0990",
+    "request_sha256": "2a7ef32c42215eeebd72a9f5bdf9a31c637eb0b1e8385c6d596b4f0fe2fa69a8",
+    "seconds": 3.1531439169993973,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1687,
+      "candidatesTokenCount": 72,
+      "totalTokenCount": 2485,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1405
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 282
+        }
+      ],
+      "thoughtsTokenCount": 726,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "114:2:36.4210",
+    "request_sha256": "e34c807d77f747017e1fdc0567e347bbfe2063d7549865500902a4a282261406",
+    "seconds": 6.888788416996249,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2031,
+      "candidatesTokenCount": 50,
+      "totalTokenCount": 2264,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1586
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 445
+        }
+      ],
+      "thoughtsTokenCount": 183,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "114:2:530.4970",
+    "request_sha256": "aef8dbc52f4542659123160ec67656eb58ee94f6115e5d27a8f439812a973f5b",
+    "seconds": 2.109893708002346,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1624,
+      "candidatesTokenCount": 80,
+      "totalTokenCount": 2187,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1454
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 170
+        }
+      ],
+      "thoughtsTokenCount": 483,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "not_selected",
+    "id": "122:1:157.3400",
+    "request_sha256": "d9c19a5120f6a30f0869f71497d419ee38400004845b4141cd2ca99c6a6a04ce",
+    "seconds": 3.3898947080015205,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "interruption_result": "unsuccessful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1657,
+      "candidatesTokenCount": 68,
+      "totalTokenCount": 1856,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 306
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1351
+        }
+      ],
+      "thoughtsTokenCount": 131,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "125:1:372.3100",
+    "request_sha256": "ff4bca116a6f7bea8545d099719720cc160600b14f725e171535b69fbd12b99c",
+    "seconds": 2.0331284169951687,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1717,
+      "candidatesTokenCount": 79,
+      "totalTokenCount": 1901,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 256
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1461
+        }
+      ],
+      "thoughtsTokenCount": 105,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "125:1:491.0090",
+    "request_sha256": "0ce2ace1b8eee65575ab3c691e24e028fbed11817959b5f75e9950592e924d34",
+    "seconds": 1.89827795799647,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1720,
+      "candidatesTokenCount": 74,
+      "totalTokenCount": 2368,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1492
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 228
+        }
+      ],
+      "thoughtsTokenCount": 574,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "127:1:456.2800",
+    "request_sha256": "d9cd942853d7d9380f587c0e0a68fc3196033fb8d14b6910559b145ad9f71936",
+    "seconds": 5.343117874996096,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2127,
+      "candidatesTokenCount": 67,
+      "totalTokenCount": 4156,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 547
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1580
+        }
+      ],
+      "thoughtsTokenCount": 1962,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "not_selected",
+    "id": "128:2:273.4060",
+    "request_sha256": "0d785c2c20aef107988a342b02542e54ea21bc863d55c4a2c7050045636ce937",
+    "seconds": 9.450971500002197,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "interruption_result": "unsuccessful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1573,
+      "candidatesTokenCount": 58,
+      "totalTokenCount": 2372,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 180
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1393
+        }
+      ],
+      "thoughtsTokenCount": 741,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "129:1:364.5480",
+    "request_sha256": "a4011363d69b33934c790d1f10e90892d2560691e3f4ac41cfe26a3ceb7a24d9",
+    "seconds": 4.313454542003456,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1898,
+      "candidatesTokenCount": 75,
+      "totalTokenCount": 2087,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 388
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1510
+        }
+      ],
+      "thoughtsTokenCount": 114,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "129:2:178.4830",
+    "request_sha256": "da6fbe94214b778d360e8c36b0610c6409db25980809ccd81714b57a62139309",
+    "seconds": 2.362501167001028,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1860,
+      "candidatesTokenCount": 69,
+      "totalTokenCount": 2089,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1530
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 330
+        }
+      ],
+      "thoughtsTokenCount": 160,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "138:1:657.0250",
+    "request_sha256": "64724c4b92490ae7a43ca8a855638a3b9ebc8d373a0158d39de909c4cfdca822",
+    "seconds": 3.3541488330010907,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1506,
+      "candidatesTokenCount": 67,
+      "totalTokenCount": 1794,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1337
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 169
+        }
+      ],
+      "thoughtsTokenCount": 221,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "138:1:754.5460",
+    "request_sha256": "b2bf1409396cc67c214ecf6bd5f64f1c0c9c7f4a0f91f85a5a8b1a6e22592718",
+    "seconds": 2.710709749997477,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1755,
+      "candidatesTokenCount": 77,
+      "totalTokenCount": 3227,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 297
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1458
+        }
+      ],
+      "thoughtsTokenCount": 1395,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "not_selected",
+    "id": "139:2:178.0620",
+    "request_sha256": "2308315ac1d076729e3da8871fc7789a26ba36a0e837321999def6e49264e1a9",
+    "seconds": 7.506593750003958,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "interruption_result": "unsuccessful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1917,
+      "candidatesTokenCount": 69,
+      "totalTokenCount": 2369,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1415
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 502
+        }
+      ],
+      "thoughtsTokenCount": 383,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "not_selected",
+    "id": "140:2:313.7900",
+    "request_sha256": "835ee40f3d360b04cd23cfbb078e0db661612a01589da5d7e7178a64c46524b3",
+    "seconds": 4.007457209001586,
+    "labels": {
+      "intent": "normal_handoff",
+      "agent_outcome": "continued",
+      "interruption_result": "not_applicable"
+    }
+  },
+  {
+    "status": "error",
+    "error": "ValueError",
+    "disposition": "needs_review",
+    "id": "140:2:71.9800",
+    "request_sha256": "9a7fcd0f78b06e091e4b7587c1f3532da82e8868cad583591b6fb5c86130407c",
+    "seconds": 40.41261129200575
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2059,
+      "candidatesTokenCount": 76,
+      "totalTokenCount": 2806,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1546
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 513
+        }
+      ],
+      "thoughtsTokenCount": 671,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "141:2:449.2930",
+    "request_sha256": "d080fbc49fc2ef7d49a0902fe1a3a3d2ca4125200402e40fb12d721ff2bc3f2c",
+    "seconds": 4.400251375001972,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2162,
+      "candidatesTokenCount": 78,
+      "totalTokenCount": 2984,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1500
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 662
+        }
+      ],
+      "thoughtsTokenCount": 744,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "157:2:353.8320",
+    "request_sha256": "cbf98853901e95a6f678192c6c46e0270c5eec50437ed1cb4ee799ab49300a26",
+    "seconds": 5.621169958998507,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1719,
+      "candidatesTokenCount": 84,
+      "totalTokenCount": 3002,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 275
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1444
+        }
+      ],
+      "thoughtsTokenCount": 1199,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "not_selected",
+    "id": "157:2:400.7620",
+    "request_sha256": "62804f91962f2cfa9918e153b82fc1a532f981f43e23839a5a5bb49da40715c5",
+    "seconds": 6.830951624993759,
+    "labels": {
+      "intent": "normal_handoff",
+      "agent_outcome": "continued",
+      "interruption_result": "not_applicable"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1769,
+      "candidatesTokenCount": 85,
+      "totalTokenCount": 2006,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 242
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1527
+        }
+      ],
+      "thoughtsTokenCount": 152,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "158:1:645.1010",
+    "request_sha256": "f768b881eb2ad9bbd7347b084cd28704e98deca00adc6d7de9a5ee82f4d9a391",
+    "seconds": 2.2382927919970825,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "status": "error",
+    "error": "ValueError",
+    "disposition": "needs_review",
+    "id": "158:1:670.9120",
+    "request_sha256": "b3cf14c261da604f3fd64c1ebb92c6ba6baa4e004a06301d4847bc2b8dd93efd",
+    "seconds": 10.170147833996452
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2108,
+      "candidatesTokenCount": 72,
+      "totalTokenCount": 2542,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 383
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1725
+        }
+      ],
+      "thoughtsTokenCount": 362,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "160:2:430.6220",
+    "request_sha256": "e72867c9d54b54458f13355e3442496378ec69d952867b67a4cedd769569c955",
+    "seconds": 3.1516140829990036,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2146,
+      "candidatesTokenCount": 77,
+      "totalTokenCount": 2554,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 540
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1606
+        }
+      ],
+      "thoughtsTokenCount": 331,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "169:1:550.7550",
+    "request_sha256": "3ae029495bd163a08b9d4aca7290767948e1621bbd8f01b76f4088ed76c6e020",
+    "seconds": 3.531874041997071,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2045,
+      "candidatesTokenCount": 70,
+      "totalTokenCount": 3176,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 451
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1594
+        }
+      ],
+      "thoughtsTokenCount": 1061,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "169:1:576.8300",
+    "request_sha256": "25b2c545aa2d35d960a616d0f6cd7cddbc3db45c19038b5fbbf391bec506b3f9",
+    "seconds": 5.994345834005799,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2098,
+      "candidatesTokenCount": 72,
+      "totalTokenCount": 2465,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 546
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1552
+        }
+      ],
+      "thoughtsTokenCount": 295,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "169:1:91.1710",
+    "request_sha256": "b691ed75bb4602f1be99ca66572996300dc5919090f96bf1bac74cc5f41e05e1",
+    "seconds": 2.7044608340002014,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2250,
+      "candidatesTokenCount": 53,
+      "totalTokenCount": 2709,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1724
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 526
+        }
+      ],
+      "thoughtsTokenCount": 406,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "169:2:452.5510",
+    "request_sha256": "ef044827c5835a2d9625077d58907f2feaaf7b4143884f41b626f61a288741d2",
+    "seconds": 3.3371572499963804,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1804,
+      "candidatesTokenCount": 68,
+      "totalTokenCount": 3295,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1510
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 294
+        }
+      ],
+      "thoughtsTokenCount": 1423,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "not_selected",
+    "id": "169:2:574.1350",
+    "request_sha256": "e366a77a8d899ad2895daf5a6fe2b90e9c041ad7e41c8eda91f435cbfb23f7c5",
+    "seconds": 7.857663582995883,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "continued",
+      "interruption_result": "unsuccessful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1695,
+      "candidatesTokenCount": 75,
+      "totalTokenCount": 2152,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1468
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 227
+        }
+      ],
+      "thoughtsTokenCount": 382,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "169:2:88.9450",
+    "request_sha256": "90a3ef948fd120a9c7ad5921c9dd2f9928bdd5e04d1d04c1d82e58682a8b861c",
+    "seconds": 3.2366789160005283,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1913,
+      "candidatesTokenCount": 72,
+      "totalTokenCount": 2283,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 299
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1614
+        }
+      ],
+      "thoughtsTokenCount": 298,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "170:1:60.2540",
+    "request_sha256": "1293502c5b8ed4b5ab4a654a2b7976a65b19c03eeb09908b50813dd77fe3e58b",
+    "seconds": 3.1458164590003435,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1782,
+      "candidatesTokenCount": 67,
+      "totalTokenCount": 2104,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 223
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1559
+        }
+      ],
+      "thoughtsTokenCount": 255,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "170:2:457.5460",
+    "request_sha256": "0ade86db3cb215d705855c9bbb1174e43f8150d941d7e62aa4d3d9b80079ca12",
+    "seconds": 3.244107165999594,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "resumed",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2017,
+      "candidatesTokenCount": 45,
+      "totalTokenCount": 2427,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 364
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1653
+        }
+      ],
+      "thoughtsTokenCount": 365,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "171:2:13.0250",
+    "request_sha256": "4c0c502c8c2695c5e29e19f2f9952407dc6bd2369245d14b3c4a6f07f01a8564",
+    "seconds": 3.371162541996455,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1835,
+      "candidatesTokenCount": 75,
+      "totalTokenCount": 2484,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 271
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1564
+        }
+      ],
+      "thoughtsTokenCount": 574,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "172:1:445.9470",
+    "request_sha256": "4a97cf68ddc9a75eb0ccc92d10d612c8b380dd3bda0e202febf73faeb3f7e9bf",
+    "seconds": 4.118204124999465,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1843,
+      "candidatesTokenCount": 81,
+      "totalTokenCount": 2081,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 267
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1576
+        }
+      ],
+      "thoughtsTokenCount": 157,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "71:1:353.5790",
+    "request_sha256": "e9355fbd9cc574558df4424c2ce09991c350c7deb95eb582868490a6374bb702",
+    "seconds": 2.9066316670068773,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1638,
+      "candidatesTokenCount": 74,
+      "totalTokenCount": 2779,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1420
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 218
+        }
+      ],
+      "thoughtsTokenCount": 1067,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "71:1:677.5120",
+    "request_sha256": "66f84c5c17733d4852e68fa56d69acfa19d3abc04ebc67e439d487928daa535c",
+    "seconds": 6.502145665996068,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "resumed",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1852,
+      "candidatesTokenCount": 70,
+      "totalTokenCount": 2256,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1620
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 232
+        }
+      ],
+      "thoughtsTokenCount": 334,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "71:1:693.0370",
+    "request_sha256": "9ba37228819a06f2d4b74cb32e64266652e0a64999e304517ab3ee6c9ad2f369",
+    "seconds": 2.7024883330013836,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1820,
+      "candidatesTokenCount": 63,
+      "totalTokenCount": 2212,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 254
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1566
+        }
+      ],
+      "thoughtsTokenCount": 329,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "94:1:274.8740",
+    "request_sha256": "1d606d3a5de09fc86a05ebab2ecb8c845d0facb54a9cbfdb4f64db6092644356",
+    "seconds": 3.1637995839992072,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1889,
+      "candidatesTokenCount": 65,
+      "totalTokenCount": 2157,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1458
+        },
+        {
+          "modality": "AUDIO",
+          "tokenCount": 431
+        }
+      ],
+      "thoughtsTokenCount": 203,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "95:1:22.7450",
+    "request_sha256": "6a54fde92aae7eaa0c732c284bbe6c56f9d65a52e4b85f33dd06c748415b198c",
+    "seconds": 2.9069633330000215,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 1598,
+      "candidatesTokenCount": 63,
+      "totalTokenCount": 2864,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 257
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1341
+        }
+      ],
+      "thoughtsTokenCount": 1203,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "not_selected",
+    "id": "95:1:44.7670",
+    "request_sha256": "2074b441d7c6fdaa3c1acd3f1174963a5b39f6ea42e7228882eace88fcda6c18",
+    "seconds": 6.232617542002117,
+    "labels": {
+      "intent": "normal_handoff",
+      "agent_outcome": "stopped",
+      "interruption_result": "not_applicable"
+    }
+  },
+  {
+    "usage": {
+      "promptTokenCount": 2280,
+      "candidatesTokenCount": 54,
+      "totalTokenCount": 2659,
+      "promptTokensDetails": [
+        {
+          "modality": "AUDIO",
+          "tokenCount": 440
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 1840
+        }
+      ],
+      "thoughtsTokenCount": 325,
+      "serviceTier": "standard"
+    },
+    "model_version": "gemini-3.8-flash",
+    "status": "complete",
+    "disposition": "shortlist",
+    "id": "95:2:196.6920",
+    "request_sha256": "f58f783cfe26ee13cefef944bc40fec3d0a60e8d947c9810c8ca9223dfe549cf",
+    "seconds": 2.9584659160027513,
+    "labels": {
+      "intent": "take_floor",
+      "agent_outcome": "stopped",
+      "interruption_result": "successful"
+    }
+  }
+]

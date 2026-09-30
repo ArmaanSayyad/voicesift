@@ -9,6 +9,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from .store import Corpus, Conflict
 from .models import Import, Review, Analyze
 from .analysis import Analysis, evidence
+from .precision import VERSION as POLICY_VERSION
 from fastapi.responses import Response
 
 REPO = Path(__file__).resolve().parents[3]
@@ -79,6 +80,7 @@ def create_app(root=None, backend=None):
             "goal": "user onset during agent speech",
             "laya_enabled": False,
             "gemini_configured": analysis.configured,
+            "policy_version": POLICY_VERSION,
         }
 
     @app.get("/api/curation/jobs")

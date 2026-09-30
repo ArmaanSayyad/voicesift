@@ -7,6 +7,15 @@ from .models import Conversation, Review
 from .detect import detect, VERSION
 
 
+def exportable(review):
+    return bool(
+        review
+        and review.get("include")
+        and review.get("label") == "interruption"
+        and review.get("interruption_result") == "successful"
+    )
+
+
 def digest(value):
     return hashlib.sha256(canonical(value).encode()).hexdigest()
 
@@ -188,7 +197,7 @@ class Corpus:
             r = self.get(cid)["review"]
             if r:
                 labels[r["label"]] = labels.get(r["label"], 0) + 1
-                included += int(r["include"])
+                included += int(exportable(r))
         return {
             "conversations": conversations,
             "candidates": len(self.ids()),
@@ -206,7 +215,7 @@ class Corpus:
         for cid in self.ids():
             c = self.get(cid)
             r = c["review"]
-            if r and r["include"] and r["label"] == "interruption":
+            if exportable(r):
                 if c["audio"]:
                     asset = self.root / "assets" / c["audio"]["name"]
                     if (
@@ -217,7 +226,7 @@ class Corpus:
                         raise ValueError("Source audio hash mismatch; export refused")
                 rows.append(
                     {
-                        "schema_version": 2,
+                        "schema_version": 3,
                         "model_suggestion": c["analysis"],
                         "candidate_id": cid,
                         "conversation": c["conversation"],
@@ -226,12 +235,12 @@ class Corpus:
                         "annotation": r,
                         "detection": c["detection"],
                         "audio": c["audio"],
-                        "scope": "Human-annotated interruption candidate; no correction/cancellation or acoustic-quality label implied.",
+                        "scope": "Human-confirmed successful interruption; no correction/cancellation or acoustic-quality label implied.",
                     }
                 )
         if not rows:
             raise ValueError(
-                "No explicitly included, reviewer-confirmed interruptions to export"
+                "No explicitly included, reviewer-confirmed successful interruptions to export"
             )
         eid = uuid.uuid4().hex
         path = self.root / "exports" / f"{eid}.jsonl"

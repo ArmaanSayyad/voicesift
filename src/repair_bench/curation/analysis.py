@@ -14,6 +14,7 @@ from concurrent.futures import ThreadPoolExecutor
 import soundfile as sf
 import soxr
 
+from . import precision
 from .store import Conflict, canonical, now
 
 MODEL = "gemini-3.8-flash"
@@ -129,7 +130,7 @@ def gemini(body):
             if not p.get("thought")
         )
     )
-    validate(answer)
+    precision.validate(answer)
     return {
         "answer": answer,
         "usage": data.get("usageMetadata", {}),
@@ -204,7 +205,7 @@ class Analysis:
             start = time.perf_counter()
             try:
                 packet, audio, metadata = evidence(self.corpus, cid)
-                body = request_body(packet, audio)
+                body = precision.request(packet, audio)
                 fingerprint = hashlib.sha256(
                     (MODEL + canonical(body)).encode()
                 ).hexdigest()
@@ -213,13 +214,17 @@ class Analysis:
                         "SELECT body FROM analysis_cache WHERE hash=?", (fingerprint,)
                     ).fetchone()
                 result = json.loads(cached["body"]) if cached else self.backend(body)
-                validate(result["answer"])
+                precision.validate(result["answer"])
                 result = {
                     **result,
                     "status": "complete",
                     "cached": bool(cached),
                     "model": MODEL,
-                    "prompt_sha256": hashlib.sha256(PROMPT.encode()).hexdigest(),
+                    "policy_version": precision.VERSION,
+                    "disposition": precision.disposition(result["answer"], packet),
+                    "prompt_sha256": hashlib.sha256(
+                        precision.PROMPT.encode()
+                    ).hexdigest(),
                     "request_sha256": fingerprint,
                     "evidence": metadata,
                     "created": now(),

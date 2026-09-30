@@ -68,6 +68,7 @@ def test_analysis_cache_review_export_and_clip(tmp_path):
         return {
             "answer": {
                 "intent": "take_floor",
+                "interruption_result": "successful",
                 "agent_outcome": "unknown",
                 "evidence_note": "User takes floor",
             },
@@ -86,6 +87,9 @@ def test_analysis_cache_review_export_and_clip(tmp_path):
     assert len(calls) == 1
     result = client.get("/api/curation/candidates").json()["items"][0]
     assert result["analysis"]["cached"] and result["review"] is None
+    assert result["analysis"]["policy_version"] == "successful-interruption-v1"
+    assert result["analysis"]["disposition"] == "shortlist"
+    assert calls[0]["generationConfig"]["maxOutputTokens"] == 2048
     assert client.post("/api/curation/exports").status_code == 422
     clip = client.get(f"/api/curation/candidates/{c['id']}/clip")
     assert sf.info(io.BytesIO(clip.content)).samplerate == 16000
@@ -95,6 +99,7 @@ def test_analysis_cache_review_export_and_clip(tmp_path):
             json={
                 "label": "interruption",
                 "include": True,
+                "interruption_result": "successful",
                 "agent_outcome": "unknown",
                 "reviewer": "automated-test-not-human",
                 "expected_version": 0,
@@ -105,7 +110,7 @@ def test_analysis_cache_review_export_and_clip(tmp_path):
     export = client.post("/api/curation/exports").json()
     record = json.loads(client.get("/api/curation/exports/" + export["id"]).text)
     assert (
-        record["schema_version"] == 2
+        record["schema_version"] == 3
         and record["model_suggestion"]["answer"]["intent"] == "take_floor"
     )
     assert record["annotation"]["agent_outcome"] == "unknown"

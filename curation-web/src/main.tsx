@@ -9,6 +9,7 @@ type Turn = {
 };
 type Review = {
   agent_outcome?: string;
+  interruption_result?: string;
   label: string;
   include: boolean;
   note: string;
@@ -33,10 +34,12 @@ type Candidate = {
   };
   analysis?: {
     status: string;
+    policy_version?: string;
+    disposition?: string;
     error?: string;
     cached?: boolean;
     model?: string;
-    answer?: { intent: string; agent_outcome: string; evidence_note: string };
+    answer?: { intent: string; agent_outcome: string; evidence_note: string; interruption_result?: string };
     evidence?: {
       clip_start_s: number;
       clip_end_s: number;
@@ -120,13 +123,16 @@ function Timeline({ c }: { c: Candidate }) {
 function Detail({
   c,
   refresh,
+  policyVersion,
 }: {
   c: Candidate;
   refresh: () => Promise<void>;
+  policyVersion: string;
 }) {
   const [outcome, setOutcome] = useState(c.review?.agent_outcome || "unknown"),
     [label, setLabel] = useState(c.review?.label || "uncertain"),
-    [include, setInclude] = useState(c.review?.include || false),
+    [success, setSuccess] = useState(c.review?.interruption_result || "unknown"),
+    [include, setInclude] = useState(Boolean(c.review?.include && c.review?.interruption_result === "successful")),
     [note, setNote] = useState(c.review?.note || ""),
     [reviewer, setReviewer] = useState(c.review?.reviewer || "local-reviewer"),
     [message, setMessage] = useState(""),
@@ -139,6 +145,7 @@ function Detail({
       await api("/reviews/" + c.id, {
         label,
         agent_outcome: outcome,
+        interruption_result: success,
         include,
         note,
         reviewer,
@@ -244,9 +251,11 @@ function Detail({
       {c.analysis && (
         <section className="result">
           <h3>Gemini suggestion · {c.analysis.status}</h3>
+          <p>{c.analysis.policy_version !== policyVersion ? "Legacy analysis — reanalyze with the current policy." : `Curation: ${c.analysis.disposition?.replaceAll("_", " ") || "needs review"}`}</p>
           {c.analysis.answer ? (
             <>
               <strong>{c.analysis.answer.intent.replaceAll("_", " ")}</strong>
+              <p>Interruption result: {c.analysis.answer.interruption_result || "not assessed"}</p>
               <p>Agent outcome: {c.analysis.answer.agent_outcome}</p>
               <p>{c.analysis.answer.evidence_note}</p>
               <small>
@@ -299,13 +308,22 @@ function Detail({
             value={label}
             onChange={(e) => {
               setLabel(e.target.value);
-              if (e.target.value !== "interruption") setInclude(false);
+              if (e.target.value !== "interruption") { setInclude(false); setSuccess("unknown"); }
             }}
           >
             <option value="uncertain">Uncertain / insufficient evidence</option>
-            <option value="interruption">Confirmed interruption</option>
+            <option value="interruption">Confirmed interruption attempt</option>
             <option value="backchannel">Backchannel / acknowledgement</option>
             <option value="other_overlap">Other overlap / timing issue</option>
+          </select>
+        </label>
+        <p>Confirm who held the floor, whether entry preceded a natural completion point, and whether the incoming speaker actually gained the turn. Overlap or a stopped segment alone is insufficient.</p>
+        <label>
+          Did the interruption succeed?
+          <select value={success} onChange={(e) => { setSuccess(e.target.value); if (e.target.value !== "successful") setInclude(false); }}>
+            <option value="unknown">Unknown / not confirmed</option>
+            <option value="successful">Successful takeover, confirmed from evidence</option>
+            <option value="unsuccessful">Attempt only; did not take the floor</option>
           </select>
         </label>
         <label>
@@ -338,10 +356,10 @@ function Detail({
           <input
             type="checkbox"
             checked={include}
-            disabled={label !== "interruption"}
+            disabled={label !== "interruption" || success !== "successful"}
             onChange={(e) => setInclude(e.target.checked)}
           />{" "}
-          Include this confirmed interruption in exports
+          Include this confirmed successful interruption in exports
         </label>
         <button disabled={busy || !reviewer.trim()} onClick={save}>
           Save review
@@ -353,6 +371,7 @@ function Detail({
 }
 function App() {
   const [configured, setConfigured] = useState(false),
+    [policyVersion, setPolicyVersion] = useState(""),
     [jobs, setJobs] = useState<
       {
         id: string;
@@ -392,10 +411,11 @@ function App() {
     setSelected((old) => old || c.items[0]?.id || "");
   }
   useEffect(() => {
-    api<{ token: string; gemini_configured: boolean }>("/bootstrap")
+    api<{ token: string; gemini_configured: boolean; policy_version: string }>("/bootstrap")
       .then(async (b) => {
         token = b.token;
         setConfigured(b.gemini_configured);
+        setPolicyVersion(b.policy_version);
         await refresh();
       })
       .catch((e) => setError(String(e)));
@@ -464,17 +484,17 @@ function App() {
       (c) =>
         filter === "all" ||
         (filter === "unreviewed" && !c.review) ||
-        (filter === "included" && c.review?.include) ||
+        (filter === "included" && c.review?.include && c.review?.interruption_result === "successful") ||
         (filter === "suggested" &&
-          c.analysis?.answer?.intent === "take_floor") ||
+          c.analysis?.policy_version === policyVersion && c.analysis?.disposition === "shortlist") ||
         (filter === "needs_attention" &&
-          (c.analysis?.status === "error" ||
-            c.analysis?.answer?.intent === "unclear")),
+          (c.analysis?.status === "error" || c.analysis?.policy_version !== policyVersion ||
+            c.analysis?.disposition === "needs_review")),
     )
     .sort(
       (a, b) =>
-        Number(b.analysis?.answer?.intent === "take_floor") -
-        Number(a.analysis?.answer?.intent === "take_floor"),
+        Number(b.analysis?.policy_version === policyVersion && b.analysis?.disposition === "shortlist") -
+        Number(a.analysis?.policy_version === policyVersion && a.analysis?.disposition === "shortlist"),
     );
   const c = items.find((x) => x.id === selected);
   return (
@@ -521,8 +541,8 @@ function App() {
         <div className="notice">
           <strong>Overlap is a candidate, not a verdict.</strong>
           <span>
-            Gemini suggests intent from audio and context. You confirm the
-            annotation; models cannot include records in exports.
+            Gemini shortlists clear successful interruptions from audio and context. You confirm the
+            successful interruption; models cannot include records in exports.
           </span>
         </div>
         {error && (
@@ -618,14 +638,14 @@ function App() {
               !configured ||
               busy ||
               !items.some(
-                (x) => x.audio && x.analysis?.status !== "complete",
+                (x) => x.audio && (x.analysis?.status !== "complete" || x.analysis?.policy_version !== policyVersion),
               ) ||
               jobs.some((j) => j.status === "running" || j.status === "queued")
             }
             onClick={() =>
               analyze(
                 items
-                  .filter((x) => x.audio && x.analysis?.status !== "complete")
+                  .filter((x) => x.audio && (x.analysis?.status !== "complete" || x.analysis?.policy_version !== policyVersion))
                   .slice(0, 50)
                   .map((x) => x.id),
               )
@@ -652,8 +672,8 @@ function App() {
                 <option value="all">All</option>
                 <option value="unreviewed">Unreviewed</option>
                 <option value="included">Included</option>
-                <option value="suggested">Model: take floor</option>
-                <option value="needs_attention">Unclear / errors</option>
+                <option value="suggested">Model shortlist: successful</option>
+                <option value="needs_attention">Needs review / reanalysis</option>
               </select>
             </div>
             {visible.map((x) => (
@@ -711,6 +731,7 @@ function App() {
           <section className="detail">
             {c ? (
               <Detail
+                policyVersion={policyVersion}
                 key={c.id + ":" + (c.review?.version || 0) + ":" + !!c.audio}
                 c={c}
                 refresh={refresh}

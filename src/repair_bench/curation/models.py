@@ -39,6 +39,7 @@ class Conversation(Strict):
 class Review(Strict):
     label: Label
     agent_outcome: Literal["stopped", "continued", "resumed", "unknown"] = "unknown"
+    interruption_result: Literal["successful", "unsuccessful", "unknown"] = "unknown"
     include: bool = False
     note: str = Field(default="", max_length=2000)
     reviewer: str = Field(min_length=1, max_length=80)
@@ -46,8 +47,14 @@ class Review(Strict):
 
     @model_validator(mode="after")
     def inclusion(self):
-        if self.include and self.label != "interruption":
-            raise ValueError("Only reviewer-confirmed interruptions can be included")
+        if self.interruption_result != "unknown" and self.label != "interruption":
+            raise ValueError("An interruption outcome requires an interruption label")
+        if self.include and (
+            self.label != "interruption" or self.interruption_result != "successful"
+        ):
+            raise ValueError(
+                "Only reviewer-confirmed successful interruptions can be included"
+            )
         return self
 
 
