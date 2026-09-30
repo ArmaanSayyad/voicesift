@@ -1,96 +1,109 @@
-# Interruption dataset curation
+# Conversation dataset curator
 
-A minimal local app: upload a dataset ZIP or paste a supported Hugging Face dataset URL, submit the fixed interruption requirement, and download the selected conversations from run history. Click a history entry to listen to curated event clips, inspect transcript context, and save feedback. The interface is black and white; the requirement is currently read-only.
+A local tool for finding useful voice conversations inside a larger dataset. Upload a dataset ZIP or provide a supported Hugging Face link, run curation, inspect the selected examples, and download a curated ZIP.
+
+The current app curates **conversations containing a successful interruption**. Its minimal black-and-white interface has a source input, a fixed requirement, a submit button, and persistent run history. Click a history entry to listen to selected event clips, read transcript context and selection reasons, or save feedback.
+
+Selections are model judgments, not human-confirmed labels. The evaluation results below describe both strengths and limitations.
+
+## Run locally
+
+Prerequisites: `uv`, Node.js, `pnpm`, and a Gemini API key. The core setup uses Python 3.12; `uv` can obtain it. The application requires no GPU, Docker, or PostgreSQL.
+
+Run these commands from the repository root:
 
 ```sh
 sh scripts/setup.sh core
-# Build from curation-web/: pnpm install --frozen-lockfile && pnpm build
-# Set GEMINI_API_KEY in the process environment, outside project files.
+(cd curation-web && pnpm install --frozen-lockfile && pnpm build)
+# Set GEMINI_API_KEY in your process environment, outside project files.
 .venv/bin/curation-serve
-# Open http://127.0.0.1:8766
 ```
 
-[Supported input format, persistence, ZIP contents, limits and tests](docs/DATASET_RUNS.md). Hugging Face support currently covers normalized dataset.jsonl/audio repositories and mundo-ai/turn-benchmark-dev. Arbitrary schemas and raw audio without timed transcripts are not supported yet.
+Open **http://127.0.0.1:8766/**. Source audio and nearby transcript context are sent to Gemini during interruption classification. Downloaded source datasets, model caches, run artifacts and feedback stay on the local machine.
 
-Automatic exports contain **model-selected candidates, not human-confirmed labels**. The [precision evaluation](docs/PRECISION_CURATION.md) documents known false positives and misses. Laya and general natural-language curation are deferred. Run history and artifacts persist locally; no Docker or GPU is required. Earlier manual-review data and exports remain intact.
+## Use the app
 
-## Current status
+1. Upload a ZIP containing `dataset.jsonl` and its referenced audio, or paste a supported Hugging Face dataset URL.
+2. Submit the read-only requirement: `conversations where there is an interruption`.
+3. Wait for the background run. Closing the browser does not stop it.
+4. Open the history entry to review selected event clips and transcript context, ten events per page. Save run-level feedback if needed.
+5. Download the ZIP containing full selected conversations, audio, event clips, decisions and source notices.
 
-- Local UI: upload ZIP or supported Hugging Face URL → fixed interruption requirement → background run → ZIP download from persistent history.
-- Supported sources: normalized `dataset.jsonl` with audio, and TurnBench dev. Source schemas are validated before paid classification.
-- Automatic ZIPs contain full selected conversations, audio, event clips, decisions, source notices and provenance. Labels are explicitly machine-selected and unreviewed.
-- Runtime: one FastAPI process, four model requests at a time; disk-backed run history and cached responses. Existing manual-review data remains in SQLite. No Docker, PostgreSQL or GPU required.
-- Validation: 88 automated tests, a successful frontend build, actual Hub download/cache checks, and browser smoke tests for upload/download, history previews, audio playback, and saved feedback after reload. Smoke tests are not accuracy benchmarks.
-- Accuracy: the latest interruption development evaluation selected 22 of 37 successful interruptions, missed 15, and selected 17 false positives among 374 scored events. Human validation is still needed before treating exports as clean training data.
+Feedback is saved separately from the export. It does not change selections, retrain the model, or mark examples as verified. Empty selections still produce a ZIP with the run manifest.
 
-Correction/cancellation curation is the next experimental goal. Unlike interruptions, it must search turns without requiring overlapping speech. It is not enabled in the default UI yet. The [dataset audit](docs/CORRECTION_DATASETS.md) verifies PRESTO and NC-Bench label counts, explains why untagged examples cannot automatically be negatives, and separates text evaluation from audio accuracy.
+### Supported datasets
 
-The [PRESTO text experiment](docs/PRESTO_EVALUATION.md) tested 600 examples: selected 343 of 400 correction/cancellation-tagged examples and 19 of 200 comparison examples. Because comparison labels are incomplete, this measures positive-tag recovery, not curation precision. Cancellation recovery was 97/100; action-correction recovery was 60/100. The production UI remains interruption-only.
+- **Uploaded ZIP:** a root `dataset.jsonl` with unique conversation IDs, relative audio paths, and timed `assistant`/`user` turns, plus the referenced audio files.
+- **Hugging Face:** repositories using that same manifest/audio format, and a dedicated adapter for `mundo-ai/turn-benchmark-dev`. Gated datasets use existing local Hugging Face authentication and require accepted access terms.
 
----
+Arbitrary Hub schemas, raw audio without timed transcripts, and editable natural-language requirements are not supported yet. The current upload limit is 512 MB. See [input examples, limits and export format](docs/DATASET_RUNS.md).
 
-## Preserved earlier work
+## How selection works
 
-# Conversation Repair Workbench — feasibility harness
+Timed speech overlap proposes candidates. Gemini judges their audio and nearby transcript using the `successful-interruption-v1` policy. Only clear successful-interruption suggestions with no detected evidence truncation are shortlisted. A conversation is exported if it contains at least one shortlisted event.
 
-Local feasibility probes and a deterministic **simulator**, preceding the live workbench implementation. No paid API, remote GPU, microphone capture, or physical speaker playback is used here.
+Overlap alone does not establish an interruption. The classifier can confuse turn-taking, continuation and backchannels, and the pipeline can miss events absent from the supplied timing annotations. Exported labels are explicitly `model_selected_not_human_verified`.
 
-## Reproduce the deterministic harness
+The runtime is one FastAPI process serving the React UI, with one dataset run active at a time and up to four concurrent model requests. History, cached results, feedback and ZIPs persist under `artifacts/interruption-curation/dataset-runs/`; earlier manual-review records remain in SQLite. A server restart marks unfinished runs interrupted. Resubmitting can reuse exact-request caches. Large datasets can incur substantial API usage; the processing limits are not a spending cap.
 
-Requires `uv` and Python 3.12 (uv can obtain Python). From this directory:
+**Laya is not used in the current selection pipeline.** Its earlier probes and comparisons remain available as research evidence. Current classification uses Gemini; local model downloads are unnecessary for the curator.
+
+## Measured results
+
+These are development evaluations, not guarantees about an arbitrary uploaded dataset.
+
+### Interruption curation: audio and transcript context
+
+On 374 scored events in the TurnBench development evaluation:
+
+| Outcome | Count |
+|---|---:|
+| Successful interruptions in the reference | 37 |
+| Found | 22 |
+| Missed | 15 |
+| False positives | 17 |
+
+That is **56.4% precision and 59.5% recall** on scored events. Unmatched events and model errors are documented in the [precision evaluation](docs/PRECISION_CURATION.md). The current curator should be used to generate review candidates, not assumed to produce a clean training dataset automatically.
+
+### Correction/cancellation: separate text experiment
+
+This goal is experimental and **not enabled in the app**. A frozen Gemini prompt evaluated 600 PRESTO examples using only dialogue text and withholding dataset labels from the model.
+
+| PRESTO category | Tested | Selected | Not selected |
+|---|---:|---:|---:|
+| Within-turn correction | 100 | 98 | 2 |
+| Argument correction | 100 | 88 | 12 |
+| Action correction | 100 | 60 | 40 |
+| Cancellation | 100 | 97 | 3 |
+| Tagged-positive total | 400 | 343 | 57 |
+
+The model also selected 19 of 200 comparison examples. Those examples lack reliable negative labels, so **precision and overall accuracy cannot be established from this run**. The 85.75% positive-tag recovery measures final-turn text detection, not audio understanding or dataset purity. See the [full results and error analysis](docs/PRESTO_EVALUATION.md) and [dataset suitability audit](docs/CORRECTION_DATASETS.md).
+
+The next evaluation step is to define the correction/cancellation boundary precisely and independently adjudicate selected and rejected examples before claiming curation precision.
+
+## Validation
 
 ```sh
-sh scripts/setup.sh core
 .venv/bin/python -m pytest -q
-.venv/bin/repair-bench doctor
-.venv/bin/repair-bench fixture artifacts/my-run
-.venv/bin/repair-bench verify-bundle artifacts/my-run
+(cd curation-web && pnpm build)
 ```
 
-Output directories must not already exist. The two-second fixture uses **tones, not speech**. It writes input/generated/simulated-rendered WAVs, a hash-linked JSONL event log and artifact manifest. Interruption occurs at sample 7,200 (300 ms at 24 kHz); an obsolete chunk is rejected at 7,680; repair begins at 12,000. Two identical runs produce identical artifact bytes on the tested environment. Inference is measured separately and is not claimed deterministic.
+The current suite has **90 passing tests**. It covers source validation, safe ZIP handling, run persistence, model caching, export integrity, history pagination, audio access, feedback persistence and authorization, and evaluation label isolation. Browser smoke tests exercised upload/download, actual audio playback, transcript previews, saved feedback after reload, and empty selections. Workflow tests do not measure classifier accuracy.
 
-## Optional model probes
-
-These download multiple gigabytes of free model weights. Tested only on Apple silicon macOS. Separate environments are intentional: Moshi uses a different MLX version from mlx-audio. Run probes sequentially for less contention. `requirements/` contains the exact installed snapshots, including dependencies and pinned Git source for Laya; model revisions are pinned by the download script. These snapshots are not cross-platform lock guarantees.
+To reproduce the PRESTO experiment after obtaining the official English test member:
 
 ```sh
-sh scripts/setup.sh audio
-sh scripts/setup.sh moshi
-sh scripts/setup.sh laya
-.venv/bin/python scripts/download_models.py
-.venv-audio/bin/python scripts/probe_audio.py
-.venv/bin/python scripts/probe_ollama.py
-.venv-laya/bin/python scripts/probe_laya.py
-.venv-moshi/bin/python scripts/probe_moshi.py
-.venv-audio/bin/python scripts/probe_cascade.py
+.venv/bin/python scripts/evaluate_presto.py --source /path/to/test.jsonl --run
 ```
 
-Ollama probes require a running local Ollama server with `qwen3.5:9b` already downloaded; no server is started automatically. Audio probe must precede Moshi/cascade because it creates synthetic input WAVs. Probes overwrite their own ignored `artifacts/*-probe.json` files; copy prior results to preserve comparisons. No models, voices, personal audio, secrets, or environments are committed. `evidence/` stores small measured results from the original run.
+The script accepts the API key through the environment or an unechoed prompt. It verifies the source hash, freezes its sample and prompt, and caches responses. See [reproduction details and frozen evidence](evidence/presto-evaluation/README.md).
 
-## Boundaries that matter
+## Project reference
 
-- Virtual media samples are not host, AudioContext, microphone or DAC timestamps.
-- Renderer calls consume their complete requested interval. The caller must split blocks at scheduled interventions; retrospective cancellation cannot retract already rendered samples.
-- Generated audio, queued audio and simulated consumed audio have distinct ledgers. Hardware buffering and acoustic echo remain untested.
-- Transcript revisions are visible only at their availability sample. Prefix re-transcription is not a streaming decoder.
-- State patches check version/epoch and preserve unmentioned fields, but this skeleton has no application-specific semantic validator.
-- `public_scenario` is an orchestrator view that removes top-level evaluator fields. It includes intervention scheduling and must **not** be given wholesale to a conversational model. Full controller context isolation remains application work.
-- Hashes detect corruption relative to the manifest; they are not signatures against an adversary rewriting the entire bundle.
-- The harness has no frontend, microphone workflow, C0/C1 production adapter, durable streaming event writer, or real-world behavioral benchmark yet.
+- [Dataset workflow, persistence and format](docs/DATASET_RUNS.md)
+- [Interruption policy and evaluation](docs/PRECISION_CURATION.md)
+- [Correction/cancellation evaluation](docs/PRESTO_EVALUATION.md)
+- [Source dataset audit](docs/CORRECTION_DATASETS.md)
+- [Earlier simulator and model probes](docs/EARLIER_WORK.md)
 
-Read [feasibility findings](docs/FEASIBILITY.md) for the implementation decision and its limits.
-
-## Initial application slice
-
-A local React evidence viewer and serialized C0 development runner now wrap the tested models. This slice accepts **two completed synthetic utterances**, saves generated speech, proposed plans, host-clock events and hashes, and exposes replay controls. It does not exercise live interruption, perform real bookings, or establish a benchmark result.
-
-```sh
-sh scripts/setup.sh core
-# From web/: pnpm install --frozen-lockfile && pnpm build
-.venv/bin/repair-bench-serve
-# Open http://127.0.0.1:8765
-```
-
-The earlier model/fixture setup is required to start a real run. Run records live under ignored `artifacts/runs/`; they survive restarts, and unfinished attempts are marked interrupted. The API accepts one active run. Replay never silently starts microphone capture or audio playback. Stop the server with Ctrl-C after active runs complete. Local write endpoints require a per-process token and matching browser origin; this is not a remotely deployed service.
-
-**Direction checkpoint:** before extending this into a general runtime, assess reuse of Pipecat Evals and Full-Duplex-Bench. Existing tools overlap strongly. The highest-value custom work is the repair-specific dataset, diagnosis and controlled experiment, not duplicating generic voice infrastructure. Laya remains unvalidated; an offline repair-event miner is a candidate to evaluate, not an implemented or proven capability. See `docs/PRODUCT_DIRECTION.md`.
+The repository retains earlier research for reproducibility. Local datasets, credentials, model weights and run artifacts are not committed. Source dataset licenses continue to apply to downloaded and curated material.
