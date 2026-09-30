@@ -1,0 +1,32 @@
+{
+  "balance": {
+    "selected": 43,
+    "zip": "artifacts/voice-lanes/exports/balance.zip",
+    "sha256": "7dddec4a18d28c97296405111954bc578c5b4c0b530a661050200e14440989ce"
+  },
+  "freeze": {
+    "selected": 45,
+    "zip": "artifacts/voice-lanes/exports/freeze.zip",
+    "sha256": "9e32ece041f94d8e3977f73713e509ba1da3678a847abd703cca6a24b29bc33d"
+  },
+  "laughter": {
+    "selected": 49,
+    "zip": "artifacts/voice-lanes/exports/laughter.zip",
+    "sha256": "4408470262199ec9534871862203d77e8fdf0103125b6b167f17518c9574222c"
+  },
+  "cough": {
+    "selected": 54,
+    "zip": "artifacts/voice-lanes/exports/cough.zip",
+    "sha256": "94f8232fe5e4f62e9c92a6ebbdae75555a3d0b364cb739f1efd1d66ab814a9dc"
+  },
+  "angry": {
+    "selected": 30,
+    "zip": "artifacts/voice-lanes/exports/angry.zip",
+    "sha256": "4a6e1478a9b2e9d667cea8d8d96997358fca950bcef70bf8b1aa994bba0cbc3b"
+  },
+  "sad": {
+    "selected": 42,
+    "zip": "artifacts/voice-lanes/exports/sad.zip",
+    "sha256": "833398c38e5529bde5328fa14f5f6cf78f5a6191c9725a24f40bd14b7fd24865"
+  }
+}

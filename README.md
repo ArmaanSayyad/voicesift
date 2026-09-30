@@ -81,6 +81,23 @@ The model also selected 19 of 200 comparison examples. Those examples lack relia
 
 The next evaluation step is to define the correction/cancellation boundary precisely and independently adjudicate selected and rejected examples before claiming curation precision.
 
+### Other voice goals: audio-only experiments
+
+A [six-goal audio evaluation](docs/VOICE_LANE_EVALUATION.md) processed 1,103 recordings from MINDS-14, VocalSound and RAVDESS, withholding transcripts and source labels from Gemini. These are experimental clip-level goals and are not enabled in the web app.
+
+| Goal | Accuracy | Precision | Recall |
+|---|---:|---:|---:|
+| Balance inquiry | 99.6% | 95.3% | 100% |
+| Card-freeze request | 100% | 100% | 100% |
+| Laughter | 97.7% | 93.9% | 92.0% |
+| Coughing | 94.0% | 79.6% | 86.0% |
+| Angry performed expression | 86.7% | 46.7% | 46.7% |
+| Sad performed expression | 76.7% | 19.0% | 26.7% |
+
+Scores are dataset-label agreement after recovering 20 transport/provider failures with one unchanged retry each. No completed predictions were rerun. The report includes first-attempt scores, exact counts, uncertainty and source licenses. RAVDESS is acted speech; neither expression filter is suitable for automatic curation on these results. High accuracy alone is misleading for rare categories: always rejecting scores 87.5% on the expression sample. Perfect card-freeze performance is an observation on this sample, not a general guarantee.
+
+The evaluator produces six reviewable clip ZIPs locally. To reproduce, run `.venv/bin/python scripts/evaluate_voice_lanes.py --run`; see the [protocol and evidence](evidence/voice-lanes/README.md).
+
 ## Validation
 
 ```sh
@@ -88,7 +105,7 @@ The next evaluation step is to define the correction/cancellation boundary preci
 (cd curation-web && pnpm build)
 ```
 
-The current suite has **90 passing tests**. It covers source validation, safe ZIP handling, run persistence, model caching, export integrity, history pagination, audio access, feedback persistence and authorization, and evaluation label isolation. Browser smoke tests exercised upload/download, actual audio playback, transcript previews, saved feedback after reload, and empty selections. Workflow tests do not measure classifier accuracy.
+The current suite has **95 passing tests**. It covers source validation, safe ZIP handling, run persistence, model caching, export integrity, history pagination, audio access, feedback persistence and authorization, and evaluation label isolation. Browser smoke tests exercised upload/download, actual audio playback, transcript previews, saved feedback after reload, and empty selections. Workflow tests do not measure classifier accuracy.
 
 To reproduce the PRESTO experiment after obtaining the official English test member:
 

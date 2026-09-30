@@ -1,0 +1,32 @@
+{
+  "max_retries": 1,
+  "eligible_errors": [
+    "URLError",
+    "TimeoutError",
+    "ConnectionError",
+    "HTTPError"
+  ],
+  "ids": [
+    "0148b5625f932e5939c64ec4",
+    "0f447b70a9d00203417eb027",
+    "15093d9e0034a2c1ff36bbfe",
+    "3c048239d8a8edd5d54b7472",
+    "404e77b63591c14dd5c08609",
+    "4f9c1ae06f3006dda3877dfb",
+    "52ea10d18facdd86a74f0894",
+    "65dbad04e36fcbdf597a4e01",
+    "68d0b845e1d8b5ae62c7ea64",
+    "75fac56f4ed905ddde168bb7",
+    "775fb23bd1e16a78befd119e",
+    "9e07a299ca0352630232a35b",
+    "a01d5e1899b56d28740c9ffc",
+    "a3111e855e5b7b6cd85ba91a",
+    "d9be3a59fa973ff2f85f76c6",
+    "da2ffe236af17e5e259b6f62",
+    "e31adc2e3c12751dfea7b240",
+    "e83fed4b90491dbb9c25462e",
+    "f40456bc089f174a0131a729",
+    "fba8648e9da469c9e259f70e"
+  ],
+  "rule": "Retry all transport failures once with the unchanged frozen request; completed predictions are never rerun."
+}
