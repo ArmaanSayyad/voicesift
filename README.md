@@ -1,4 +1,4 @@
-# Conversation dataset curator
+# VoiceSift
 
 A local tool for finding useful voice conversations inside a larger dataset. Upload a dataset ZIP or provide a supported Hugging Face link, run curation, inspect the selected examples, and download a curated ZIP.
 
